@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net6.0</TargetFramework>
+	  <ImplicitUsings>disable</ImplicitUsings>
+	  <Nullable>disable</Nullable>
+	  <AssemblyName>YardLight.Authorization.Core</AssemblyName>
+	  <RootNamespace>YardLight.Authorization.Core</RootNamespace>
+	  <Authors>Greg Vondra</Authors>
+	  <Company />
+	  <Product>Yard Light</Product>
+	  <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>none</DebugType>
+		<Optimize>True</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DebugType>full</DebugType>
+		<Optimize>False</Optimize>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Authorization.Data\Authorization.Data.csproj" />
+    <ProjectReference Include="..\CommonCore\CommonCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Framework\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Polly.Caching.Memory" Version="3.0.2" />
+  </ItemGroup>
+
+</Project>
