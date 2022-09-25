@@ -115,6 +115,7 @@
     <Compile Include="AccessToken.cs" />
     <Compile Include="DependencyInjection\ContainerFactory.cs" />
     <Compile Include="DependencyInjection\SupportModule.cs" />
+    <Compile Include="Settings\ISettingsFactory.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Page Include="Control\ExceptionItem.xaml">
       <SubType>Designer</SubType>
