@@ -22,6 +22,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="BrassLoon.Interface.Account" Version="1.0.0-prerelease.21" />
 		<PackageReference Include="BrassLoon.Interface.Log" Version="1.0.0-prerelease.11" />
 		<PackageReference Include="YardLight.Interface.Authorization" Version="1.0.0-alpha.*" />
 		<PackageReference Include="Autofac" Version="6.4.0" />
