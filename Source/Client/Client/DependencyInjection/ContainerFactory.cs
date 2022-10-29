@@ -14,7 +14,7 @@ namespace YardLight.Client.DependencyInjection
         static ContainerFactory()
         {
             ContainerBuilder builder = new ContainerBuilder();
-            builder.RegisterModule(new SupportModule());
+            builder.RegisterModule(new ClientModule());            
             _container = builder.Build();
         }
 

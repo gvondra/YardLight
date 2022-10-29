@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using YardLight.Client.DependencyInjection;
+using YardLight.Interface.Authorization;
 
 namespace YardLight.Client
 {

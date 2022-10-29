@@ -24,5 +24,23 @@ namespace YardLight.Client
         {
             InitializeComponent();
         }
+
+        private void CloseCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void GoToPageCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            NavigationService navigationService = navigationFrame.NavigationService;
+            //NavigationService navigationService = NavigationService.GetNavigationService(navigationFrame);
+            navigationService.Navigate(new Uri((string)e.Parameter, UriKind.Relative));
+        }
+
+        private void GoogleLoginMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            GoogleLogin googleLogin = new GoogleLogin();
+            googleLogin.ShowDialog();
+        }
     }
 }
