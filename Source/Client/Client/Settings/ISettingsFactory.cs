@@ -8,6 +8,7 @@ namespace YardLight.Client
 {
     public interface ISettingsFactory
     {
+        YardLight.Interface.Authorization.ISettings CreateAuthorization();
         YardLight.Interface.Authorization.ISettings CreateAuthorization(string token);
     }
 }

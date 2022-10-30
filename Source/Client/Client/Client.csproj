@@ -146,6 +146,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AccessToken.cs" />
+    <Compile Include="Authorization\Roles.xaml.cs">
+      <DependentUpon>Roles.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Authorization\RoleValidator.cs" />
+    <Compile Include="Authorization\ViewModel\RolesVM.cs" />
+    <Compile Include="Authorization\ViewModel\RoleVM.cs" />
     <Compile Include="DependencyInjection\ContainerFactory.cs" />
     <Compile Include="DependencyInjection\ClientModule.cs" />
     <Compile Include="NavigationPage\Home.xaml.cs">
@@ -156,6 +162,10 @@
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Settings\SettingsFactory.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
+    <Page Include="Authorization\Roles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Control\ExceptionItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -9,6 +9,11 @@ namespace YardLight.Client
 {
     public class SettingsFactory : ISettingsFactory
     {
+        public ISettings CreateAuthorization()
+        {
+            return CreateAuthorization(AccessToken.Token);
+        }
+
         public ISettings CreateAuthorization(string token)
         {
             if (string.IsNullOrEmpty(token))
