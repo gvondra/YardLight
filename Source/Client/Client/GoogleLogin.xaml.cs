@@ -119,7 +119,7 @@ namespace YardLight.Client
 
             // Starts the code exchange at the Token Endpoint.
             await PerformCodeExchange(code, code_verifier, redirectURI);
-            await GetAquaFlaimToken();
+            await GetYardLightToken();
             this.Close();
         }
 
@@ -186,7 +186,7 @@ namespace YardLight.Client
             }
         }
 
-        private async Task GetAquaFlaimToken()
+        private async Task GetYardLightToken()
         {
             try
             {
@@ -195,12 +195,22 @@ namespace YardLight.Client
                     ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                     ITokenService tokenService = scope.Resolve<ITokenService>();
                     AccessToken.Token = await tokenService.Create(settingsFactory.CreateAuthorization(AccessToken.GetGoogleIdToken()));
-                    Output("Token received");
+                    NotifyOwner();
+                    Output("Token received");                    
                 }
             }
             catch (Exception ex)
             {
                 Output(ex.ToString());
+            }
+        }
+
+        private void NotifyOwner()
+        {
+            if (Owner != null && Owner.GetType().Equals(typeof(MainWindow)))
+            {
+                MainWindow mainWindow = (MainWindow)Owner;
+                mainWindow.AfterTokenRefresh();
             }
         }
 
@@ -259,11 +269,11 @@ namespace YardLight.Client
             return base64;
         }
 
-        public static void ShowLoginDialog(bool checkAccessToken = true)
+        public static void ShowLoginDialog(bool checkAccessToken = true, Window owner = null)
         {
             if (!checkAccessToken || string.IsNullOrEmpty(AccessToken.Token))
             {
-                GoogleLogin googleLogin = new GoogleLogin();
+                GoogleLogin googleLogin = new GoogleLogin() { Owner = owner };
                 googleLogin.ShowDialog();
             }
         }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YardLight.Client.ViewModel;
 
 namespace YardLight.Client
 {
@@ -23,7 +24,11 @@ namespace YardLight.Client
         public MainWindow()
         {
             InitializeComponent();
+            MainWindowVM = new MainWindowVM();
+            DataContext = MainWindowVM;
         }
+
+        private MainWindowVM MainWindowVM { get; set; }
 
         private void CloseCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -39,8 +44,12 @@ namespace YardLight.Client
 
         private void GoogleLoginMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            GoogleLogin googleLogin = new GoogleLogin();
-            googleLogin.ShowDialog();
+            GoogleLogin.ShowLoginDialog(checkAccessToken: false, owner: this);
+        }
+
+        public void AfterTokenRefresh()
+        {
+            MainWindowVM.ShowUserRole = AccessToken.UserHasUserAdminRoleAccess() ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }
