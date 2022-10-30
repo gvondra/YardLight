@@ -42,6 +42,7 @@ namespace AuthorizationAPI.Controllers
         [ProducesResponseType(typeof(List<Role>), 200)]
         public async Task<IActionResult> GetAll()
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -53,6 +54,10 @@ namespace AuthorizationAPI.Controllers
             {
                 await WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                _ = WriteMetrics("get-all-roles", DateTime.UtcNow.Subtract(start).TotalSeconds);
             }
             return result;
         }

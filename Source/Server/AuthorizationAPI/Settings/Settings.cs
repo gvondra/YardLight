@@ -12,7 +12,6 @@ namespace AuthorizationAPI
         public string InternalIdIssuer { get; set; }
         public bool EnableDatabaseAccessToken { get; set; } = false;
         public string ExternalIdIssuer { get; set; }
-        public string LogApiBaseAddress { get; set; }
         public Guid LogDomainId { get; set; }
         public string SuperUser { get; set; }
         public string TknCsp { get; set; }
