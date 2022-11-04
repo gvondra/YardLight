@@ -150,6 +150,11 @@
       <DependentUpon>Roles.xaml</DependentUpon>
     </Compile>
     <Compile Include="Authorization\RoleValidator.cs" />
+    <Compile Include="Authorization\User.xaml.cs">
+      <DependentUpon>User.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Authorization\ViewModel\FindUserRoleVM.cs" />
+    <Compile Include="Authorization\ViewModel\FindUserVM.cs" />
     <Compile Include="Authorization\ViewModel\RolesVM.cs" />
     <Compile Include="Authorization\ViewModel\RoleVM.cs" />
     <Compile Include="DependencyInjection\ContainerFactory.cs" />
@@ -163,6 +168,10 @@
     <Compile Include="Settings\SettingsFactory.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Page Include="Authorization\Roles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Authorization\User.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
