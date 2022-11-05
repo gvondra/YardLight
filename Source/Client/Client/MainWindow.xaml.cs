@@ -49,7 +49,10 @@ namespace YardLight.Client
 
         public void AfterTokenRefresh()
         {
-            MainWindowVM.ShowUserRole = AccessToken.UserHasUserAdminRoleAccess() ? Visibility.Visible : Visibility.Collapsed;
+            MainWindowVM.ShowUserRole = GetRoleVisibility(AccessToken.UserHasUserAdminRoleAccess());
+            MainWindowVM.ShowLogs = GetRoleVisibility(AccessToken.UserHasLogReadAccess());
         }
+
+        private Visibility GetRoleVisibility(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
     }
 }

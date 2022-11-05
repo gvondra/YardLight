@@ -13,6 +13,7 @@ namespace YardLight.Client.ViewModel
     {
         private Visibility _showUserAdmin = Visibility.Collapsed;
         private Visibility _showUserRole = Visibility.Collapsed;
+        private Visibility _showLogs = Visibility.Collapsed;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -39,6 +40,19 @@ namespace YardLight.Client.ViewModel
                     _showUserRole = value;
                     NotifyPropertyChanged();
                     SetShowUserAdmin();
+                }
+            }
+        }
+
+        public Visibility ShowLogs
+        {
+            get => _showLogs;
+            set
+            {
+                if (_showLogs != value)
+                {
+                    _showLogs = value;
+                    NotifyPropertyChanged();
                 }
             }
         }

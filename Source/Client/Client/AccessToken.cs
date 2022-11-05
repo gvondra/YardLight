@@ -26,13 +26,17 @@ namespace YardLight.Client
 
         public static string GetGoogleIdToken() => GoogleToken?["id_token"];
 
-        public static bool UserHasUserAdminRoleAccess()
+        public static bool UserHasUserAdminRoleAccess() => UserHasRoleAccess("ROLE:EDIT");
+
+        public static bool UserHasLogReadAccess() => UserHasRoleAccess("LOG:READ");
+
+        public static bool UserHasRoleAccess(string role)
         {
-            return _jwtSecurityToken != null 
+            return _jwtSecurityToken != null
                 && _jwtSecurityToken.Claims.Any(
                     clm => string.Equals(clm.Issuer, Issuer, StringComparison.OrdinalIgnoreCase)
                     && string.Equals(clm.Type, "role", StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(clm.Value, "ROLE:EDIT", StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(clm.Value, role, StringComparison.OrdinalIgnoreCase)
                     );
         }
     }

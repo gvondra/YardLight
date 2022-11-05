@@ -9,6 +9,13 @@ namespace YardLight.Client
 {
     public class SettingsFactory : ISettingsFactory
     {
+        public Interface.ISettings CreateApi()
+        {
+            if (string.IsNullOrEmpty(AccessToken.Token))
+                throw new ArgumentNullException(nameof(AccessToken.Token));
+            return new APISettings(Settings.ApiBaseAddress, AccessToken.Token);
+        }
+
         public ISettings CreateAuthorization()
         {
             return CreateAuthorization(AccessToken.Token);

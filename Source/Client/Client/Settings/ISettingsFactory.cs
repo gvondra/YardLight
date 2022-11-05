@@ -10,5 +10,6 @@ namespace YardLight.Client
     {
         YardLight.Interface.Authorization.ISettings CreateAuthorization();
         YardLight.Interface.Authorization.ISettings CreateAuthorization(string token);
+        YardLight.Interface.ISettings CreateApi();
     }
 }

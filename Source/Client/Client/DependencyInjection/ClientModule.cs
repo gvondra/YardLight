@@ -13,6 +13,7 @@ namespace YardLight.Client.DependencyInjection
         {
             base.Load(builder);
             builder.RegisterModule(new YardLight.Interface.Authorization.InterfaceAuthorizationModule());
+            builder.RegisterModule(new YardLight.Interface.InterfaceModule());
             builder.RegisterType<SettingsFactory>().As<ISettingsFactory>().SingleInstance();
         }
     }
