@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "API": {
+      "commandName": "Project",
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "BrassLoonLogClientId": "5123679e-9b0f-4e72-b2c3-3e1c725cb860",
+        "BrassLoonLogClientSecret": "4935f9ddcbe34dbebb22648f79c3935205ba7370fedd4b26b341c56c6a726ca7"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5001"
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
+}
