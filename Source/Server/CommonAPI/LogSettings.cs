@@ -15,7 +15,7 @@ namespace YardLight.CommonAPI
         public LogSettings(ITokenService tokenService,
             string baseAddress,
             string brassLoonAccountBaseAddress,
-            Guid clientId,
+            Guid? clientId,
             string clientSecret)
         {
             _tokenService = tokenService;
