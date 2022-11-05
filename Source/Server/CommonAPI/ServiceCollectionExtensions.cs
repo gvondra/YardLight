@@ -131,8 +131,8 @@ namespace YardLight.CommonAPI
                     RequireAudience = false,
                     RequireExpirationTime = true,
                     RequireSignedTokens = true,
-                    ValidAudience = configuration["InternalIdIssuer"],
-                    ValidIssuer = configuration["InternalIdIssuer"],
+                    ValidAudience = configuration["IdIssuer"],
+                    ValidIssuer = configuration["IdIssuer"],
                     IssuerSigningKey = keySet.Keys[0]
                 };
                 o.IncludeErrorDetails = true;

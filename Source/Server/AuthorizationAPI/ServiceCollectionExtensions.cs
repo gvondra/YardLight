@@ -52,8 +52,8 @@ namespace AuthorizationAPI
                     RequireAudience = false,
                     RequireExpirationTime = true,
                     RequireSignedTokens = true,
-                    ValidAudience = configuration["InternalIdIssuer"],
-                    ValidIssuer = configuration["InternalIdIssuer"],
+                    ValidAudience = configuration["IdIssuer"],
+                    ValidIssuer = configuration["IdIssuer"],
                     IssuerSigningKey = RsaSecurityKeySerializer.GetSecurityKey(configuration["TknCsp"])
                 };
                 o.IncludeErrorDetails = true;

@@ -173,8 +173,8 @@ namespace AuthorizationAPI.Controllers
             claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.Name));
             await AddRoleClaims(settings, claims, user);
             JwtSecurityToken token = new JwtSecurityToken(
-                _settings.Value.InternalIdIssuer,
-                _settings.Value.InternalIdIssuer,
+                _settings.Value.IdIssuer,
+                _settings.Value.IdIssuer,
                 claims,
                 expires: DateTime.Now.AddHours(6),
                 signingCredentials: credentials
@@ -202,8 +202,8 @@ namespace AuthorizationAPI.Controllers
             };
             claims.Add(new Claim(JwtRegisteredClaimNames.Sub, client.ClientId.ToString("N")));
             JwtSecurityToken token = new JwtSecurityToken(
-                _settings.Value.InternalIdIssuer,
-                _settings.Value.InternalIdIssuer,
+                _settings.Value.IdIssuer,
+                _settings.Value.IdIssuer,
                 claims,
                 expires: DateTime.Now.AddHours(6),
                 signingCredentials: credentials

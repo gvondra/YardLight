@@ -9,7 +9,7 @@ namespace AuthorizationAPI
         public Guid BrassLoonLogClientId { get; set; }
         public string BrassLoonLogClientSecret { get; set; }
         public string ConnectionString { get; set; }
-        public string InternalIdIssuer { get; set; }
+        public string IdIssuer { get; set; }
         public bool EnableDatabaseAccessToken { get; set; } = false;
         public string ExternalIdIssuer { get; set; }
         public Guid LogDomainId { get; set; }
