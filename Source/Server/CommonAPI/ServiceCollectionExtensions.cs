@@ -42,20 +42,28 @@ namespace YardLight.CommonAPI
                 .RequireAuthenticatedUser()
                 .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_EXTERNAL, Constants.AUTH_SCHEMA_YARD_LIGHT)
                 .Build();
-                o.AddPolicy(Constants.POLICY_TOKEN_CREATE,
-                    configure =>
-                    {
-                        configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_TOKEN_CREATE, configuration["ExternalIdIssuer"]))
-                        .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_EXTERNAL)
-                        .Build();
-                    });
-                AddPolicy(o, Constants.POLICY_CLIENT_EDIT, Constants.AUTH_SCHEMA_YARD_LIGHT, configuration["InternalIdIssuer"]);
-                AddPolicy(o, Constants.POLICY_CLIENT_READ, Constants.AUTH_SCHEMA_YARD_LIGHT, configuration["InternalIdIssuer"]);
-                AddPolicy(o, Constants.POLICY_LOG_READ, Constants.AUTH_SCHEMA_YARD_LIGHT, configuration["InternalIdIssuer"], _additionalLogWritePolicies);
-                AddPolicy(o, Constants.POLICY_LOG_WRITE, Constants.AUTH_SCHEMA_YARD_LIGHT, configuration["InternalIdIssuer"], _additionalLogWritePolicies);
-                AddPolicy(o, Constants.POLICY_ROLE_EDIT, Constants.AUTH_SCHEMA_YARD_LIGHT, configuration["InternalIdIssuer"]);
-                AddPolicy(o, Constants.POLICY_USER_EDIT, Constants.AUTH_SCHEMA_YARD_LIGHT, configuration["InternalIdIssuer"]);
-                AddPolicy(o, Constants.POLICY_USER_READ, Constants.AUTH_SCHEMA_YARD_LIGHT, configuration["InternalIdIssuer"]);
+                string idIssuer = configuration["ExternalIdIssuer"];
+                if (!string.IsNullOrEmpty(idIssuer))
+                {
+                    o.AddPolicy(Constants.POLICY_TOKEN_CREATE,
+                        configure =>
+                        {
+                            configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_TOKEN_CREATE, idIssuer))
+                            .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_EXTERNAL)
+                            .Build();
+                        });
+                }
+                idIssuer = configuration["IdIssuer"];
+                if (!string.IsNullOrEmpty(idIssuer))
+                {
+                    AddPolicy(o, Constants.POLICY_CLIENT_EDIT, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer);
+                    AddPolicy(o, Constants.POLICY_CLIENT_READ, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer);
+                    AddPolicy(o, Constants.POLICY_LOG_READ, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer, _additionalLogWritePolicies);
+                    AddPolicy(o, Constants.POLICY_LOG_WRITE, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer, _additionalLogWritePolicies);
+                    AddPolicy(o, Constants.POLICY_ROLE_EDIT, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer);
+                    AddPolicy(o, Constants.POLICY_USER_EDIT, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer);
+                    AddPolicy(o, Constants.POLICY_USER_READ, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer);
+                }
             });
             return services;
         }
