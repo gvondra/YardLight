@@ -11,9 +11,6 @@ namespace YardLight.CommonAPI
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthorizationRequirement requirement)
         {            
-            Console.WriteLine($"Is authenticated {context.User.Identity.IsAuthenticated}");
-            Console.WriteLine($"Checking requirement policy {requirement.PolicyName} having issuer {requirement.Issuer}");
-            Console.WriteLine($"Roles {string.Join(", ", requirement.Roles)}");
             if (context.User.Identity.IsAuthenticated &&
                 IssuerMatches(context.User, requirement.Issuer) &&
                 RoleMatches(context.User, requirement.Roles))
