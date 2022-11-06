@@ -43,6 +43,7 @@ namespace YardLight.CommonAPI
                 .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_EXTERNAL, Constants.AUTH_SCHEMA_YARD_LIGHT)
                 .Build();
                 string idIssuer = configuration["ExternalIdIssuer"];
+                Console.WriteLine($"ExternalIdIssuer={idIssuer}");
                 if (!string.IsNullOrEmpty(idIssuer))
                 {
                     o.AddPolicy(Constants.POLICY_TOKEN_CREATE,
@@ -54,6 +55,7 @@ namespace YardLight.CommonAPI
                         });
                 }
                 idIssuer = configuration["IdIssuer"];
+                Console.WriteLine($"IdIssuer={idIssuer}");
                 if (!string.IsNullOrEmpty(idIssuer))
                 {
                     AddPolicy(o, Constants.POLICY_CLIENT_EDIT, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer);
