@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using YardLight.Interface.Models;
 
 namespace YardLight.Interface
 {
@@ -30,7 +31,7 @@ namespace YardLight.Interface
             return response.Value;
         }
 
-        public async Task<dynamic[]> Search(ISettings settings, DateTime maxTimestamp, string eventCode)
+        public async Task<List<Metric>> Search(ISettings settings, DateTime maxTimestamp, string eventCode)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
                 .AddPath("api/Metric")
@@ -38,9 +39,9 @@ namespace YardLight.Interface
                 .AddQueryParameter("eventCode", eventCode)
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
-            IResponse<List<dynamic>> response = await _service.Send<List<dynamic>>(request);
+            IResponse<List<Metric>> response = await _service.Send<List<Metric>>(request);
             _restUtil.CheckSuccess(response);
-            return response.Value.ToArray();
+            return response.Value;
         }
     }
 }
