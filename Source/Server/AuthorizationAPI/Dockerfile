@@ -7,7 +7,6 @@ WORKDIR /src
 COPY . .
 WORKDIR "/src/Source/Server/AuthorizationAPI"
 RUN dotnet nuget add source "/src/NugetPackages" -n "LocalPackages" --configfile "nuget.config"
-RUN cat "nuget.config"
 RUN dotnet build "AuthorizationAPI.csproj" -c Release -o /app/build --configfile "nuget.config"
 
 FROM build AS publish
