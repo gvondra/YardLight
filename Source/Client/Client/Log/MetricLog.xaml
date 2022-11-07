@@ -32,6 +32,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status, Mode=OneWay}"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

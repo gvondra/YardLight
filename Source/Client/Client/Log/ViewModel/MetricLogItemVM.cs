@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YardLight.Interface.Models;
 
 namespace YardLight.Client.Log.ViewModel
 {
     public class MetricLogItemVM
     {
-        private readonly dynamic _innerItem;
+        private readonly Metric _innerItem;
 
-        public MetricLogItemVM(dynamic innerItem)
+        public MetricLogItemVM(Metric innerItem)
         {
             _innerItem = innerItem;
         }
@@ -18,5 +19,7 @@ namespace YardLight.Client.Log.ViewModel
         public DateTime Timestamp => ((DateTime)_innerItem.CreateTimestamp).ToLocalTime();
 
         public double? Magnitude => _innerItem.Magnitude != null ? Math.Round((double)_innerItem.Magnitude, 3) : default(double?);
+
+        public string Status => _innerItem.Status;
     }
 }
