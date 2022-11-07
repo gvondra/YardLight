@@ -51,9 +51,7 @@ namespace YardLight.CommonAPI
                 status = ((int)Response.StatusCode).ToString();
             try
             {
-                // todo find away to save the status
-                // await _metricService.Create(settings, domainId, eventCode, magnitude ?? 0.0, status, data);
-                await _metricService.Create(settings, domainId, eventCode, magnitude ?? 0.0, data);
+                await _metricService.Create(settings, domainId, eventCode, magnitude ?? 0.0, status: status, data: data);
             }
             catch (Exception ex)
             {

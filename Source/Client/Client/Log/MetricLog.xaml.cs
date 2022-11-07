@@ -35,10 +35,13 @@ namespace YardLight.Client.Log
 
         private void MetricLog_Loaded(object sender, RoutedEventArgs e)
         {
-            MetricLogVM = new MetricLogVM();
-            DataContext = MetricLogVM;
-            Task.Run(GetEventCodes)
-                .ContinueWith(GetEventCodesCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+            using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+            {
+                MetricLogVM = MetricLogVM.Create(scope.Resolve<ISettingsFactory>(), scope.Resolve<IMetricService>());
+                DataContext = MetricLogVM;
+                Task.Run(GetEventCodes)
+                    .ContinueWith(GetEventCodesCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+            }
         }
 
         private Task<List<string>> GetEventCodes()

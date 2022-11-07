@@ -43,9 +43,8 @@ namespace API.Controllers
                 if (result == null)
                 {
                     Log.ISettings settings = _settingsFactory.CreateLog(_settings.Value);
-                    result = Ok(
-                        await _metricService.Search(settings, _settings.Value.LogDomainId.Value, maxTimestamp.Value, eventCode)
-                        );
+                    List<Log.Models.Metric> metrics = await _metricService.Search(settings, _settings.Value.LogDomainId.Value, maxTimestamp.Value, eventCode);
+                    result = Ok(metrics);
                 }
             }
             catch (Exception ex)
