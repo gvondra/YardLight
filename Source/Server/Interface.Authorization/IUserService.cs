@@ -10,6 +10,7 @@ namespace YardLight.Interface.Authorization
     public interface IUserService
     {
         Task<User> Get(ISettings settings);
+        Task<User> Get(ISettings settings, Guid id);
         Task<User> GetByEmailAddress(ISettings settings, string emailAddress);
         Task<User> Update(ISettings settings, User user);
     }

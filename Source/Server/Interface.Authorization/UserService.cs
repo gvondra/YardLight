@@ -24,7 +24,18 @@ namespace YardLight.Interface.Authorization
         public async Task<User> Get(ISettings settings)
         {
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "User");
+            builder.Path = _restUtil.AppendPath(builder.Path, "User");
+            IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Get);
+            request.AddJwtAuthorizationToken(settings.GetToken);
+            IResponse<User> response = await _service.Send<User>(request);
+            _restUtil.CheckSuccess(response);
+            return response.Value;
+        }
+
+        public async Task<User> Get(ISettings settings, Guid id)
+        {
+            UriBuilder builder = new UriBuilder(settings.BaseAddress);
+            builder.Path = _restUtil.AppendPath(builder.Path, "User", id.ToString("N"));
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Get);
             request.AddJwtAuthorizationToken(settings.GetToken);
             IResponse<User> response = await _service.Send<User>(request);
@@ -37,7 +48,7 @@ namespace YardLight.Interface.Authorization
             if (string.IsNullOrEmpty(emailAddress))
                 throw new ArgumentNullException(nameof(emailAddress));
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "User");
+            builder.Path = _restUtil.AppendPath(builder.Path, "User");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Get);
             request.AddQueryParameter("emailAddress", emailAddress);
             request.AddJwtAuthorizationToken(settings.GetToken);
@@ -51,7 +62,7 @@ namespace YardLight.Interface.Authorization
             if (!user.UserId.HasValue || user.UserId.Value.Equals(Guid.Empty))
                 throw new ArgumentNullException(nameof(user.UserId));
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "User", "{id}");
+            builder.Path = _restUtil.AppendPath(builder.Path, "User", "{id}");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Put, user);
             request.AddPathParameter("id", user.UserId.Value.ToString("N"));
             request.AddJwtAuthorizationToken(settings.GetToken);

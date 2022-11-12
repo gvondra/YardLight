@@ -33,6 +33,7 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Requestor" Binding="{Binding RequestorName, Mode=OneWay}" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

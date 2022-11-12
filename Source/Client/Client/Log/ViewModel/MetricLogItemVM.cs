@@ -21,5 +21,7 @@ namespace YardLight.Client.Log.ViewModel
         public double? Magnitude => _innerItem.Magnitude != null ? Math.Round((double)_innerItem.Magnitude, 3) : default(double?);
 
         public string Status => _innerItem.Status;
+
+        public string RequestorName => _innerItem.RequestorName;
     }
 }

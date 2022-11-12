@@ -25,7 +25,7 @@ namespace YardLight.Interface.Authorization
         public async Task<string> Create(ISettings settings)
         {
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "Token");
+            builder.Path = _restUtil.AppendPath(builder.Path, "Token");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Post);
             request.AddJwtAuthorizationToken(settings.GetToken);
             IResponse<string> response = await Policy
@@ -39,7 +39,7 @@ namespace YardLight.Interface.Authorization
         public async Task<string> Create(ISettings settings, ClientCredential clientCredential)
         {
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "Token", "ClientCredential");
+            builder.Path = _restUtil.AppendPath(builder.Path, "Token", "ClientCredential");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Post, clientCredential);
             IResponse<string> response = await Policy
                 .HandleResult<IResponse<string>>(res => !res.IsSuccessStatusCode)

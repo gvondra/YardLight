@@ -23,7 +23,7 @@ namespace YardLight.Interface
         public async Task<List<string>> GetEventCodes(ISettings settings)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
-                .AddPath("api/MetricEventCode")
+                .AddPath("MetricEventCode")
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
             IResponse<List<string>> response = await _service.Send<List<string>>(request);
@@ -34,7 +34,7 @@ namespace YardLight.Interface
         public async Task<List<Metric>> Search(ISettings settings, DateTime maxTimestamp, string eventCode)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
-                .AddPath("api/Metric")
+                .AddPath("Metric")
                 .AddQueryParameter("maxTimestamp", maxTimestamp.ToString("o"))
                 .AddQueryParameter("eventCode", eventCode)
                 .AddJwtAuthorizationToken(settings.GetToken)

@@ -16,5 +16,6 @@ namespace YardLight.Interface.Models
         public DateTime? CreateTimestamp { get; set; }
         public string Status { get; set; }
         public string Requestor { get; set; }
+        public string RequestorName { get; set; }
     }
 }

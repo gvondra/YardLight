@@ -26,7 +26,7 @@ namespace YardLight.Interface.Authorization
             if (saveRequest.Client == null)
                 throw new ArgumentNullException(nameof(saveRequest.Client));
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "Client");
+            builder.Path = _restUtil.AppendPath(builder.Path, "Client");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Post, saveRequest);
             request.AddJwtAuthorizationToken(settings.GetToken);
             IResponse<Client> response = await _service.Send<Client>(request);
@@ -47,7 +47,7 @@ namespace YardLight.Interface.Authorization
         public async Task<string> CreateSecret(ISettings settings)
         {
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "ClientCredentialSecret");
+            builder.Path = _restUtil.AppendPath(builder.Path, "ClientCredentialSecret");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Get);
             request.AddJwtAuthorizationToken(settings.GetToken);
             IResponse<string> response = await _service.Send<string>(request);
@@ -60,7 +60,7 @@ namespace YardLight.Interface.Authorization
             if (id.Equals(Guid.Empty))
                 throw new ArgumentNullException(nameof(id));
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "Client", "{id}");
+            builder.Path = _restUtil.AppendPath(builder.Path, "Client", "{id}");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Get);
             request.AddPathParameter("id", id.ToString("N"));
             request.AddJwtAuthorizationToken(settings.GetToken);
@@ -72,7 +72,7 @@ namespace YardLight.Interface.Authorization
         public async Task<IEnumerable<Client>> GetAll(ISettings settings)
         {
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "Client");
+            builder.Path = _restUtil.AppendPath(builder.Path, "Client");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Get);
             request.AddJwtAuthorizationToken(settings.GetToken);
             IResponse<List<Client>> response = await _service.Send<List<Client>>(request);
@@ -87,7 +87,7 @@ namespace YardLight.Interface.Authorization
             if (!saveRequest.Client.ClientId.HasValue || saveRequest.Client.ClientId.Value.Equals(Guid.Empty))
                 throw new ArgumentNullException(nameof(saveRequest.Client.ClientId));
             UriBuilder builder = new UriBuilder(settings.BaseAddress);
-            builder.Path = _restUtil.AppendPath(builder.Path, "api", "Client", "{id}");
+            builder.Path = _restUtil.AppendPath(builder.Path, "Client", "{id}");
             IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Put, saveRequest);
             request.AddPathParameter("id", saveRequest.Client.ClientId.Value.ToString("N"));
             request.AddJwtAuthorizationToken(settings.GetToken);

@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using YardLight.Interface.Models;
 using AuthorizationAPI = YardLight.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
 
@@ -16,6 +19,7 @@ namespace API.Controllers
     public class MetricController : APIContollerBase
     {
         private readonly Log.IMetricService _metricService;
+        private readonly AuthorizationAPI.IUserService _userService;
 
         public MetricController(
             IOptions<Settings> settings,
@@ -26,6 +30,7 @@ namespace API.Controllers
             ) : base(settings, settingsFactory, metricService, exceptionService, userService)
         { 
             _metricService = metricService;
+            _userService = userService;
         }
 
         [HttpGet()]
@@ -45,7 +50,11 @@ namespace API.Controllers
                 if (result == null)
                 {
                     Log.ISettings settings = _settingsFactory.CreateLog(_settings.Value);
-                    List<Log.Models.Metric> metrics = await _metricService.Search(settings, _settings.Value.LogDomainId.Value, maxTimestamp.Value, eventCode);
+                    IMapper mapper = new Mapper(MapperConfiguration.Get());
+                    List<Metric> metrics = (await _metricService.Search(settings, _settings.Value.LogDomainId.Value, maxTimestamp.Value, eventCode))
+                        .Select(m => mapper.Map<Metric>(m))
+                        .ToList();
+                    await AddUserData(metrics);
                     result = Ok(metrics);
                 }
             }
@@ -59,6 +68,32 @@ namespace API.Controllers
                 await WriteMetrics("get-metrics-search", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { nameof(maxTimestamp), maxTimestamp?.ToString("o") } });
             }
             return result;
+        }
+
+        [NonAction]
+        private async Task AddUserData(List<Metric> metrics)
+        {
+            if (metrics != null)
+            {
+                Guid id;
+                Dictionary<Guid, AuthorizationAPI.Models.User> userCache = new Dictionary<Guid, AuthorizationAPI.Models.User>();
+                AuthorizationAPI.Models.User user;
+                AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value, GetUserToken());
+                foreach (Metric metric in metrics.Where(m => !string.IsNullOrEmpty(m.Requestor)))
+                {
+                    if (Guid.TryParse(metric.Requestor.Trim(), out id))
+                    {
+                        if (!userCache.ContainsKey(id))
+                        {
+                            user = await _userService.Get(settings, id);
+                            if (user != null)
+                                userCache.Add(id, user);
+                        }
+                        if (userCache.ContainsKey(id))
+                            metric.RequestorName = userCache[id].Name ?? string.Empty;
+                    }
+                }
+            }
         }
 
         [HttpGet("/api/MetricEventCode")]
