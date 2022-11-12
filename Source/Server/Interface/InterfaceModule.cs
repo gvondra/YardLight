@@ -15,6 +15,7 @@ namespace YardLight.Interface
             base.Load(builder);
             builder.RegisterInstance(new RestUtil());
             builder.RegisterType<Service>().As<IService>().SingleInstance();
+            builder.RegisterType<ExceptionService>().As<IExceptionService>();
             builder.RegisterType<MetricService>().As<IMetricService>();
         }
     }

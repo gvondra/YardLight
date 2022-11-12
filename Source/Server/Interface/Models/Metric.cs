@@ -9,7 +9,6 @@ namespace YardLight.Interface.Models
     public class Metric
     {
         public long? MetricId { get; set; }
-        public Guid? DomainId { get; set; }
         public string EventCode { get; set; }
         public double? Magnitude { get; set; }
         public dynamic Data { get; set; }

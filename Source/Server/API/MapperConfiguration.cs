@@ -11,6 +11,7 @@ namespace API
         {
             _mapperConfiguration= new AutoMapper.MapperConfiguration((c) =>
             {
+                c.CreateMap<LogAPI.Exception, YardLight.Interface.Models.Exception>();
                 c.CreateMap<LogAPI.Metric, Metric>();
             });
         }

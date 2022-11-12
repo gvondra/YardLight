@@ -64,7 +64,7 @@ namespace YardLight.Client.Log.Behaviors
                     }
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, null);
             }

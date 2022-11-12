@@ -136,8 +136,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.10\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.12\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
     <Reference Include="YardLight.Interface.Authorization, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YardLight.Interface.Authorization.1.0.0-alpha.4\lib\net48\YardLight.Interface.Authorization.dll</HintPath>
@@ -163,9 +163,17 @@
     <Compile Include="DependencyInjection\ContainerFactory.cs" />
     <Compile Include="DependencyInjection\ClientModule.cs" />
     <Compile Include="Log\Behaviors\MetricLoader.cs" />
+    <Compile Include="Log\ErrorLog.xaml.cs">
+      <DependentUpon>ErrorLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Log\LeftNav.xaml.cs">
+      <DependentUpon>LeftNav.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Log\MetricLog.xaml.cs">
       <DependentUpon>MetricLog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Log\ViewModel\ErrorLogVM.cs" />
+    <Compile Include="Log\ViewModel\ExceptionLogItemVM.cs" />
     <Compile Include="Log\ViewModel\MetricLogItemVM.cs" />
     <Compile Include="Log\ViewModel\MetricLogVM.cs" />
     <Compile Include="NavigationPage\Home.xaml.cs">
@@ -194,6 +202,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GoogleLogin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Log\ErrorLog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Log\LeftNav.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

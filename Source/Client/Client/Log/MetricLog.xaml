@@ -9,6 +9,7 @@
       Title="Yard Light: Metrics" Style="{StaticResource DefaultPageStyle}">
 
     <DockPanel>
+        <local:LeftNav></local:LeftNav>
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

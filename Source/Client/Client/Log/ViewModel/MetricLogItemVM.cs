@@ -16,7 +16,7 @@ namespace YardLight.Client.Log.ViewModel
             _innerItem = innerItem;
         }
 
-        public DateTime Timestamp => ((DateTime)_innerItem.CreateTimestamp).ToLocalTime();
+        public DateTime? Timestamp => _innerItem.CreateTimestamp?.ToLocalTime();
 
         public double? Magnitude => _innerItem.Magnitude != null ? Math.Round((double)_innerItem.Magnitude, 3) : default(double?);
 

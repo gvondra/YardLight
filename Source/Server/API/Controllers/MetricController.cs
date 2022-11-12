@@ -58,7 +58,7 @@ namespace API.Controllers
                     result = Ok(metrics);
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 await WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
@@ -114,7 +114,7 @@ namespace API.Controllers
                         );
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 await WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
