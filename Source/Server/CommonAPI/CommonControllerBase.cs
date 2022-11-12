@@ -1,25 +1,38 @@
-﻿using LogAPI = BrassLoon.Interface.Log;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
+using Polly;
+using Polly.Caching;
+using Polly.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AuthAPI = YardLight.Interface.Authorization;
+using LogAPI = BrassLoon.Interface.Log;
 
 namespace YardLight.CommonAPI
 {
     public abstract class CommonControllerBase : Controller
     {
+        private readonly static Polly.Policy _currentUserCache = Polly.Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), new SlidingTtl(TimeSpan.FromMinutes(3)));
         private readonly LogAPI.IMetricService _metricService;
         private readonly LogAPI.IExceptionService _exceptionService;
+        private readonly AuthAPI.IUserService _userService;
 
         protected CommonControllerBase(LogAPI.IMetricService metricService,
-            LogAPI.IExceptionService exceptionService)
+            LogAPI.IExceptionService exceptionService) : this(metricService, exceptionService, null)
+        {}
+
+        protected CommonControllerBase(LogAPI.IMetricService metricService,
+            LogAPI.IExceptionService exceptionService,
+            AuthAPI.IUserService userService)
         {
             _metricService = metricService;
             _exceptionService = exceptionService;
+            _userService = userService; 
         }
 
         protected string GetCurrentUserReferenceId() 
@@ -27,6 +40,26 @@ namespace YardLight.CommonAPI
 
         protected string GetCurrentUserEmailAddress()
             => User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+        protected async Task<AuthAPI.Models.User> GetCurrentUser(AuthAPI.ISettings settings)
+        {
+            AuthAPI.Models.User user = null;
+            if (_userService != null)
+                user = await _currentUserCache.Execute(
+                    (context) => _userService.Get(settings),
+                    new Context(GetCurrentUserReferenceId())
+                    );
+            return user;
+        }
+
+        protected async Task<Guid?> GetCurrentUserId(AuthAPI.ISettings settings)
+        {
+            Guid? id = null;
+            AuthAPI.Models.User user = await GetCurrentUser(settings);
+            if (user != null)
+                id = user.UserId;
+            return id;
+        }
 
         protected string GetUserToken()
         {
@@ -44,14 +77,36 @@ namespace YardLight.CommonAPI
             return token;
         }
 
-        protected async Task WriteMetrics(LogAPI.ISettings settings, Guid domainId, string eventCode, double? magnitude, Dictionary<string, string> data = null)
+        protected Task WriteMetrics(LogAPI.ISettings settings, Guid domainId, string eventCode, double? magnitude, Dictionary<string, string> data = null)
+            => WriteMetrics(settings, domainId, eventCode, magnitude, userId: null, data: data);
+
+        protected async Task WriteMetrics(LogAPI.ISettings logSettings, AuthAPI.ISettings authSettings, Guid domainId, string eventCode, double? magnitude, Dictionary<string, string> data = null)
         {
-            string status = string.Empty;
-            if (Response != null)
-                status = ((int)Response.StatusCode).ToString();
             try
             {
-                await _metricService.Create(settings, domainId, eventCode, magnitude ?? 0.0, status: status, data: data);
+                await WriteMetrics(logSettings, domainId, eventCode, magnitude, userId: await GetCurrentUserId(authSettings), data: data);
+            }
+            catch (Exception ex)
+            {
+                await WriteException(logSettings, domainId, ex);
+            }
+        }
+
+        protected async Task WriteMetrics(LogAPI.ISettings settings, Guid domainId, string eventCode, double? magnitude, Guid? userId, Dictionary<string, string> data)
+        {
+            string status = string.Empty;
+            try
+            {
+                if (Response != null)
+                    status = ((int)Response.StatusCode).ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error getting status for metric log: " + ex.Message);
+            }
+            try
+            {
+                await _metricService.Create(settings, domainId, eventCode, magnitude ?? 0.0, status, userId?.ToString("N"), data);
             }
             catch (Exception ex)
             {

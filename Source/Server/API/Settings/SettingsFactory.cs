@@ -13,6 +13,11 @@ namespace API
             _tokenService = tokenService;
         }
 
+        public YardLight.Interface.Authorization.ISettings CreateAuthorization(Settings settings, string token)
+        {
+            return new YardLightAuthorizationSettings(settings.AuthorizationApiBaseAddress, token);
+        }
+
         public ISettings CreateLog(Settings settings)
         {
             return new LogSettings(_tokenService,

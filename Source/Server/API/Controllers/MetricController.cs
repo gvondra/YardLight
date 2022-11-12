@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using AuthorizationAPI = YardLight.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
@@ -20,8 +21,9 @@ namespace API.Controllers
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
             Log.IMetricService metricService,
-            Log.IExceptionService exceptionService
-            ) : base(settings, settingsFactory, metricService, exceptionService)
+            Log.IExceptionService exceptionService,
+            AuthorizationAPI.IUserService userService
+            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
         { 
             _metricService = metricService;
         }
@@ -54,7 +56,7 @@ namespace API.Controllers
             }
             finally
             {
-                _ = WriteMetrics("get-metrics-search", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { nameof(maxTimestamp), maxTimestamp?.ToString("o") } });
+                await WriteMetrics("get-metrics-search", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { nameof(maxTimestamp), maxTimestamp?.ToString("o") } });
             }
             return result;
         }
@@ -84,7 +86,7 @@ namespace API.Controllers
             }
             finally
             {
-                _ = WriteMetrics("get-metric-event-codes", DateTime.UtcNow.Subtract(start).TotalSeconds);
+                await WriteMetrics("get-metric-event-codes", DateTime.UtcNow.Subtract(start).TotalSeconds);
             }
             return result;
         }

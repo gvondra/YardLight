@@ -9,5 +9,6 @@ namespace API
         public Guid? BrassLoonLogClientId { get; set; }
         public string BrassLoonLogClientSecret { get; set; }
         public Guid? LogDomainId { get; set; }
+        public string AuthorizationApiBaseAddress { get; set; }
     }
 }
