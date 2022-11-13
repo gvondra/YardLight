@@ -69,6 +69,15 @@
     <Build Include="Table\yl.WorkItem.sql" />
     <Build Include="Table\yl.Comment.sql" />
     <Build Include="Table\yl.WorkItem_Comment.sql" />
+    <Build Include="Table\yl.Project.sql" />
+    <Build Include="Table\yl.ProjectUser.sql" />
+    <Build Include="Stored Procedure\yl.CreateProjectUser.sql" />
+    <Build Include="Stored Procedure\yl.CreateProject.sql" />
+    <Build Include="Stored Procedure\yl.UpdateProject.sql" />
+    <Build Include="Stored Procedure\yl.UpdateProjectUser.sql" />
+    <Build Include="Stored Procedure\yl.GetProject.sql" />
+    <Build Include="Stored Procedure\yl.GetProject_by_UserId.sql" />
+    <Build Include="Stored Procedure\yl.GetProjectUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />
