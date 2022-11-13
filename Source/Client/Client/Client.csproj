@@ -136,8 +136,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.12\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.16, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.16\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
     <Reference Include="YardLight.Interface.Authorization, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YardLight.Interface.Authorization.1.0.0-alpha.4\lib\net48\YardLight.Interface.Authorization.dll</HintPath>
@@ -160,6 +160,10 @@
     <Compile Include="Authorization\ViewModel\FindUserVM.cs" />
     <Compile Include="Authorization\ViewModel\RolesVM.cs" />
     <Compile Include="Authorization\ViewModel\RoleVM.cs" />
+    <Compile Include="Behaviors\CreateProjectValidator.cs" />
+    <Compile Include="CreateProjectWindow.xaml.cs">
+      <DependentUpon>CreateProjectWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DependencyInjection\ContainerFactory.cs" />
     <Compile Include="DependencyInjection\ClientModule.cs" />
     <Compile Include="Log\Behaviors\MetricLoader.cs" />
@@ -184,6 +188,7 @@
     <Compile Include="Settings\ISettingsFactory.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Settings\SettingsFactory.cs" />
+    <Compile Include="ViewModel\CreateProjectWindowVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Page Include="Authorization\Roles.xaml">
       <SubType>Designer</SubType>
@@ -194,6 +199,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Control\ExceptionItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CreateProjectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

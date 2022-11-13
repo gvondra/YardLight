@@ -54,5 +54,12 @@ namespace YardLight.Client
         }
 
         private Visibility GetRoleVisibility(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
+
+        private void CreateProjectMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            GoogleLogin.ShowLoginDialog(owner: this);
+            CreateProjectWindow window= new CreateProjectWindow() { Owner = this };
+            window.ShowDialog();
+        }
     }
 }
