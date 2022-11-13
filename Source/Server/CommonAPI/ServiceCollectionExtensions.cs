@@ -38,23 +38,27 @@ namespace YardLight.CommonAPI
         {
             services.AddAuthorization(o =>
             {
+                string externalIdIssuer = configuration["ExternalIdIssuer"];
+                string idIssuer = configuration["IdIssuer"];
+                List<string> authenticationSchemes = new List<string>();
+                authenticationSchemes.Add(Constants.AUTH_SCHEMA_YARD_LIGHT);
+                if (!string.IsNullOrEmpty(externalIdIssuer))
+                    authenticationSchemes.Add(Constants.AUTH_SCHEMA_EXTERNAL);
                 o.DefaultPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_EXTERNAL, Constants.AUTH_SCHEMA_YARD_LIGHT)
+                .AddAuthenticationSchemes(authenticationSchemes.ToArray())
                 .Build();
-                string idIssuer = configuration["ExternalIdIssuer"];
-                Console.WriteLine($"ExternalIdIssuer={idIssuer}");
-                if (!string.IsNullOrEmpty(idIssuer))
+                Console.WriteLine($"ExternalIdIssuer={externalIdIssuer}");
+                if (!string.IsNullOrEmpty(externalIdIssuer))
                 {
                     o.AddPolicy(Constants.POLICY_TOKEN_CREATE,
                         configure =>
                         {
-                            configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_TOKEN_CREATE, idIssuer))
+                            configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_TOKEN_CREATE, externalIdIssuer))
                             .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_EXTERNAL)
                             .Build();
                         });
                 }
-                idIssuer = configuration["IdIssuer"];
                 Console.WriteLine($"IdIssuer={idIssuer}");
                 if (!string.IsNullOrEmpty(idIssuer))
                 {
