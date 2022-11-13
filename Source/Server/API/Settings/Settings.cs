@@ -4,6 +4,8 @@ namespace API
 {
     public class Settings
     {
+        public string ConnectionString { get; set; }
+        public bool EnableDatabaseAccessToken { get; set; } = false;
         public string BrassLoonAccountApiBaseAddress { get; set; }
         public string BrassLoonLogApiBaseAddress { get; set; }
         public Guid? BrassLoonLogClientId { get; set; }

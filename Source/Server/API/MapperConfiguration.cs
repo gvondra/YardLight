@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using YardLight.Framework;
 using YardLight.Interface.Models;
 using LogAPI = BrassLoon.Interface.Log.Models;
 namespace API
@@ -13,6 +14,8 @@ namespace API
             {
                 c.CreateMap<LogAPI.Exception, YardLight.Interface.Models.Exception>();
                 c.CreateMap<LogAPI.Metric, Metric>();
+                c.CreateMap<Project, IProject>();
+                c.CreateMap<IProject, Project>();
             });
         }
 

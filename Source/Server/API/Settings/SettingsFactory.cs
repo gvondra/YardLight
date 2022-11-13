@@ -18,6 +18,15 @@ namespace API
             return new YardLightAuthorizationSettings(settings.AuthorizationApiBaseAddress, token);
         }
 
+        public YardLight.CommonCore.ISettings CreateCore(Settings settings)
+        {
+            return new CoreSettings()
+            {
+                ConnectionString = settings.ConnectionString,
+                EnableDatabaseAccessToken = settings.EnableDatabaseAccessToken
+            };
+        }
+
         public ISettings CreateLog(Settings settings)
         {
             return new LogSettings(_tokenService,
