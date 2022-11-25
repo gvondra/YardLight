@@ -136,8 +136,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.16\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.17, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.17\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
     <Reference Include="YardLight.Interface.Authorization, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YardLight.Interface.Authorization.1.0.0-alpha.4\lib\net48\YardLight.Interface.Authorization.dll</HintPath>
@@ -183,13 +183,19 @@
     <Compile Include="NavigationPage\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenProjectWindow.xaml.cs">
+      <DependentUpon>OpenProjectWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Settings\APISettings.cs" />
     <Compile Include="Settings\AuthorizationSettings.cs" />
     <Compile Include="Settings\ISettingsFactory.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Settings\SettingsFactory.cs" />
+    <Compile Include="UserSession.cs" />
+    <Compile Include="UserSessionLoader.cs" />
     <Compile Include="ViewModel\CreateProjectWindowVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
+    <Compile Include="ViewModel\OpenProjectWindowVM.cs" />
     <Page Include="Authorization\Roles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -248,6 +254,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NavigationPage\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OpenProjectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

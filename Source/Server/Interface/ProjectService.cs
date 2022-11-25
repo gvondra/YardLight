@@ -35,6 +35,7 @@ namespace YardLight.Interface
         public async Task<Project> Get(ISettings settings, Guid id)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
+                .AddPath("Project")
                 .AddPath(id.ToString("N"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
@@ -46,6 +47,7 @@ namespace YardLight.Interface
         public async Task<List<Project>> Get(ISettings settings)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
+                .AddPath("Project")
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
             IResponse<List<Project>> response = await _service.Send<List<Project>>(request);
@@ -61,6 +63,7 @@ namespace YardLight.Interface
         public async Task<Project> Update(ISettings settings, Guid id, Project project)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Put, project)
+                .AddPath("Project")
                 .AddPath(id.ToString("N"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;

@@ -59,7 +59,22 @@ namespace YardLight.Client
         {
             GoogleLogin.ShowLoginDialog(owner: this);
             CreateProjectWindow window= new CreateProjectWindow() { Owner = this };
-            window.ShowDialog();
+            if (window.ShowDialog() ?? false)
+            {
+                NavigationService navigationService = navigationFrame.NavigationService;
+                navigationService.Navigate(new Uri("NavigationPage/Home.xaml", UriKind.Relative));
+            }
+        }
+
+        private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            GoogleLogin.ShowLoginDialog(owner: this);
+            Window window = new OpenProjectWindow() { Owner = this };
+            if (window.ShowDialog() ?? false)
+            {
+                NavigationService navigationService = navigationFrame.NavigationService;
+                navigationService.Navigate(new Uri("NavigationPage/Home.xaml", UriKind.Relative));
+            }
         }
     }
 }

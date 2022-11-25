@@ -9,6 +9,8 @@
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Close"
                         Executed="CloseCommandBinding_Executed"/>
+        <CommandBinding Command="ApplicationCommands.Open"
+                        Executed="OpenCommandBinding_Executed"/>
         <CommandBinding Command="NavigationCommands.GoToPage"
                         Executed="GoToPageCommandBinding_Executed" />
     </Window.CommandBindings>
@@ -17,12 +19,16 @@
             <MenuItem Header="_Options">
                 <MenuItem Header="_Home" Command="NavigationCommands.GoToPage" CommandParameter="NavigationPage/Home.xaml"/>
                 <MenuItem Header="_Google Login" Click="GoogleLoginMenuItem_Click"/>
-                <MenuItem Header="Create Project" Click="CreateProjectMenuItem_Click"/>
+                <MenuItem Header="_Project">
+                    <MenuItem Header="_Open" Command="ApplicationCommands.Open"/>
+                    <MenuItem Header="_Create" Click="CreateProjectMenuItem_Click"/>
+                </MenuItem>
                 <MenuItem Header="_Logs" Visibility="{Binding ShowLogs}" Command="NavigationCommands.GoToPage" CommandParameter="Log/MetricLog.xaml"/>
                 <MenuItem Header="_User Admin" Visibility="{Binding ShowUserAdmin}">
                     <MenuItem Header="Find User" Visibility="{Binding ShowUserRole}" Command="NavigationCommands.GoToPage" CommandParameter="Authorization/User.xaml"/>
                     <MenuItem Header="Roles" Visibility="{Binding ShowUserRole}" Command="NavigationCommands.GoToPage" CommandParameter="Authorization/Roles.xaml"/>
                 </MenuItem>
+                <MenuItem Header="Close" Command="ApplicationCommands.Close"/>
             </MenuItem>
         </Menu>
         <Frame x:Name="navigationFrame" Source="NavigationPage/Home.xaml" Margin="0,0,0,15" NavigationUIVisibility="Hidden" />

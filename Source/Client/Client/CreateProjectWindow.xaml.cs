@@ -58,24 +58,26 @@ namespace YardLight.Client
             }
         }
 
-        private async Task CreateProject(Project project)
+        private Task<Project> CreateProject(Project project)
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IProjectService projectService = scope.Resolve<IProjectService>();
-                await projectService.Create(settingsFactory.CreateApi(), project);
+                return projectService.Create(settingsFactory.CreateApi(), project);
             }
         }
 
-        private async Task CreateProjectCallback(Task createProject, object state)
+        private async Task CreateProjectCallback(Task<Project> createProject, object state)
         {
             try
             {
-                await createProject;
-                // todo activate newly created project
+                Project project = await createProject;
+                UserSession userSession = UserSessionLoader.GetUserSession();
+                userSession.OpenProjectId = project.ProjectId;
+                DialogResult = true;
                 this.Close();
-                MessageBox.Show(Window.GetWindow(this), "Project Created", "New Project", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(Window.GetWindow(this), "Project Created", project.Title, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Exception ex)
             {
