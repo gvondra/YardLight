@@ -5,19 +5,17 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "AuthorizationDatabase\Database.sqlproj", "{65D03369-0186-4753-8218-3BED9BBECFB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Data", "Authorization.Data\Authorization.Data.csproj", "{582D0F5C-30DE-46F9-9F2B-AB3C9F034442}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Data", "Authorization.Data\Authorization.Data.csproj", "{582D0F5C-30DE-46F9-9F2B-AB3C9F034442}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Core", "Authorization.Core\Authorization.Core.csproj", "{E3EC94BC-09BF-4A28-A898-404F1176A054}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Core", "Authorization.Core\Authorization.Core.csproj", "{E3EC94BC-09BF-4A28-A898-404F1176A054}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonCore", "CommonCore\CommonCore.csproj", "{FBF0CBBB-25BB-4EFB-9DDA-6F5816B78C50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonCore", "CommonCore\CommonCore.csproj", "{FBF0CBBB-25BB-4EFB-9DDA-6F5816B78C50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonAPI", "CommonAPI\CommonAPI.csproj", "{C5AA61D6-1D6C-47E8-B128-6BAB4F6515DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonAPI", "CommonAPI\CommonAPI.csproj", "{C5AA61D6-1D6C-47E8-B128-6BAB4F6515DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface.Authorization", "Interface.Authorization\Interface.Authorization.csproj", "{6FEB3923-4F14-47A8-9769-C0DC4A19D41B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interface.Authorization", "Interface.Authorization\Interface.Authorization.csproj", "{6FEB3923-4F14-47A8-9769-C0DC4A19D41B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RsaSecurityKeyGenerator", "RsaSecurityKeyGenerator\RsaSecurityKeyGenerator.csproj", "{F93CA93C-D634-466A-978E-A2D8D977FE5D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorizationAPI", "AuthorizationAPI\AuthorizationAPI.csproj", "{5EA57CF3-0715-4F51-A38C-3A260FC0D7FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorizationAPI", "AuthorizationAPI\AuthorizationAPI.csproj", "{5EA57CF3-0715-4F51-A38C-3A260FC0D7FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,10 +49,6 @@ Global
 		{6FEB3923-4F14-47A8-9769-C0DC4A19D41B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FEB3923-4F14-47A8-9769-C0DC4A19D41B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FEB3923-4F14-47A8-9769-C0DC4A19D41B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F93CA93C-D634-466A-978E-A2D8D977FE5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F93CA93C-D634-466A-978E-A2D8D977FE5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F93CA93C-D634-466A-978E-A2D8D977FE5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F93CA93C-D634-466A-978E-A2D8D977FE5D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5EA57CF3-0715-4F51-A38C-3A260FC0D7FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5EA57CF3-0715-4F51-A38C-3A260FC0D7FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EA57CF3-0715-4F51-A38C-3A260FC0D7FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
