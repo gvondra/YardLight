@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BrassLoon.JwtUtility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using YardLight.Authorization.Core.Framework;
 using YardLight.CommonAPI;
@@ -160,26 +159,16 @@ namespace AuthorizationAPI.Controllers
         private async Task<string> CreateToken(IUser user)
         {
             ISettings settings = _settingsFactory.CreateCore(_settings.Value);
-            RsaSecurityKey securityKey = RsaSecurityKeySerializer.GetSecurityKey(_settings.Value.TknCsp, true);
-            SigningCredentials credentials = new SigningCredentials(securityKey, SecurityAlgorithms.RsaSha512);
-            List<Claim> claims = new List<Claim>
-                {
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N"))
-                };
+            List<Claim> claims = new List<Claim>();
             Claim claim = User.Claims.FirstOrDefault(c => string.Equals(_settings.Value.ExternalIdIssuer, c.Issuer, StringComparison.OrdinalIgnoreCase) && string.Equals(ClaimTypes.NameIdentifier, c.Type, StringComparison.OrdinalIgnoreCase));
             if (claim != null)
                 claims.Add(new Claim(JwtRegisteredClaimNames.Sub, claim.Value));
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, (await user.GetEmailAddress(_settingsFactory.CreateCore(_settings.Value))).Address));
             claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.Name));
             await AddRoleClaims(settings, claims, user);
-            JwtSecurityToken token = new JwtSecurityToken(
-                _settings.Value.IdIssuer,
-                _settings.Value.IdIssuer,
-                claims,
-                expires: DateTime.Now.AddHours(6),
-                signingCredentials: credentials
+            return JwtSecurityTokenUtility.Write(
+                JwtSecurityTokenUtility.Create(_settings.Value.TknCsp, _settings.Value.IdIssuer, _settings.Value.IdIssuer, claims, CreateExpiration)
                 );
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         [NonAction]
@@ -194,21 +183,15 @@ namespace AuthorizationAPI.Controllers
         [NonAction]
         private Task<string> CreateToken(IClient client)
         {
-            RsaSecurityKey securityKey = RsaSecurityKeySerializer.GetSecurityKey(_settings.Value.TknCsp, true);
-            SigningCredentials credentials = new SigningCredentials(securityKey, SecurityAlgorithms.RsaSha512);
             List<Claim> claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N"))
+                new Claim(JwtRegisteredClaimNames.Sub, client.ClientId.ToString("N"))
             };
-            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, client.ClientId.ToString("N")));
-            JwtSecurityToken token = new JwtSecurityToken(
-                _settings.Value.IdIssuer,
-                _settings.Value.IdIssuer,
-                claims,
-                expires: DateTime.Now.AddHours(6),
-                signingCredentials: credentials
-                );
-            return Task.FromResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
+            return Task.FromResult<string>(JwtSecurityTokenUtility.Write(
+                JwtSecurityTokenUtility.Create(_settings.Value.TknCsp, _settings.Value.IdIssuer, _settings.Value.IdIssuer, claims, CreateExpiration)
+                ));
         }
+
+        private static DateTime CreateExpiration() => DateTime.Now.AddHours(6);
     }
 }
