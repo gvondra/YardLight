@@ -28,8 +28,6 @@ namespace YardLight.Client.Project
         {
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
-            ProjectSettingsVM = new ProjectSettingsVM();
-            DataContext = ProjectSettingsVM;
             InitializeComponent();
             this.Loaded += ProjectSettings_Loaded;
         }
@@ -38,6 +36,8 @@ namespace YardLight.Client.Project
 
         private void ProjectSettings_Loaded(object sender, RoutedEventArgs e)
         {
+            ProjectSettingsVM = new ProjectSettingsVM();
+            DataContext = ProjectSettingsVM;
             GoogleLogin.ShowLoginDialog(owner: Window.GetWindow(this));
             UserSession userSession = UserSessionLoader.GetUserSession();
             if (userSession?.OpenProjectId != null)
