@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using YardLight.Client.ViewModel;
 using YardLight.Interface;
-using YardLight.Interface.Models;
+using Models = YardLight.Interface.Models;
 
 namespace YardLight.Client
 {
@@ -50,7 +50,7 @@ namespace YardLight.Client
             }
         }
 
-        private async Task<IEnumerable<Project>> GetProjects()
+        private async Task<IEnumerable<Models.Project>> GetProjects()
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
@@ -60,7 +60,7 @@ namespace YardLight.Client
             }
         }
 
-        private async Task GetProjectsCallback(Task<IEnumerable<Project>> getProjects, object state)
+        private async Task GetProjectsCallback(Task<IEnumerable<Models.Project>> getProjects, object state)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace YardLight.Client
                 OpenProjectWindowVM.ProjectIds.Clear();
                 OpenProjectWindowVM.Projects.Clear();
                 int i = 0;
-                foreach (Project project in await getProjects)
+                foreach (Models.Project project in await getProjects)
                 {
                     OpenProjectWindowVM.ProjectIds.Add(project.ProjectId);
                     OpenProjectWindowVM.Projects.Add(project.Title);

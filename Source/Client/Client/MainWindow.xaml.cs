@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.ViewModel;
+using YardLight.Interface;
+using Models = YardLight.Interface.Models;
 
 namespace YardLight.Client
 {
@@ -23,12 +26,25 @@ namespace YardLight.Client
     {
         public MainWindow()
         {
-            InitializeComponent();
             MainWindowVM = new MainWindowVM();
             DataContext = MainWindowVM;
+            InitializeComponent();
+            this.Loaded += MainWindow_Loaded;
         }
 
         private MainWindowVM MainWindowVM { get; set; }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            UserSession userSession = UserSessionLoader.GetUserSession();
+            MainWindowVM.ShowProjectSettings = BoolToVisibility(userSession?.OpenProjectId != null);
+            //if (userSession?.OpenProjectId != null)
+            //{
+            //    GoogleLogin.ShowLoginDialog(true, this);
+            //    Task.Run(() => GetProject(userSession?.OpenProjectId))
+            //        .ContinueWith(GetProjectCallback, userSession?.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
+            //}
+        }
 
         private void CloseCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -49,11 +65,11 @@ namespace YardLight.Client
 
         public void AfterTokenRefresh()
         {
-            MainWindowVM.ShowUserRole = GetRoleVisibility(AccessToken.UserHasUserAdminRoleAccess());
-            MainWindowVM.ShowLogs = GetRoleVisibility(AccessToken.UserHasLogReadAccess());
+            MainWindowVM.ShowUserRole = BoolToVisibility(AccessToken.UserHasUserAdminRoleAccess());
+            MainWindowVM.ShowLogs = BoolToVisibility(AccessToken.UserHasLogReadAccess());
         }
 
-        private Visibility GetRoleVisibility(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
+        private Visibility BoolToVisibility(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
 
         private void CreateProjectMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -61,8 +77,7 @@ namespace YardLight.Client
             CreateProjectWindow window= new CreateProjectWindow() { Owner = this };
             if (window.ShowDialog() ?? false)
             {
-                NavigationService navigationService = navigationFrame.NavigationService;
-                navigationService.Navigate(new Uri("NavigationPage/Home.xaml", UriKind.Relative));
+                AfterChangeProject();
             }
         }
 
@@ -72,9 +87,52 @@ namespace YardLight.Client
             Window window = new OpenProjectWindow() { Owner = this };
             if (window.ShowDialog() ?? false)
             {
-                NavigationService navigationService = navigationFrame.NavigationService;
-                navigationService.Navigate(new Uri("NavigationPage/Home.xaml", UriKind.Relative));
+                AfterChangeProject();
             }
         }
+
+        private void AfterChangeProject()
+        {
+            NavigationService navigationService = navigationFrame.NavigationService;
+            navigationService.Navigate(new Uri("NavigationPage/Home.xaml", UriKind.Relative));
+            UserSession userSession = UserSessionLoader.GetUserSession();
+            MainWindowVM.ShowProjectSettings = BoolToVisibility(userSession?.OpenProjectId != null);
+            //Task.Run(() => GetProject(userSession?.OpenProjectId))
+            //    .ContinueWith(GetProjectCallback, userSession?.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        //private Task<Models.Project> GetProject(Guid? projectId)
+        //{
+        //    if (projectId.HasValue)
+        //    {
+        //        using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+        //        {
+        //            ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+        //            IProjectService projectService = scope.Resolve<IProjectService>();
+        //            return projectService.Get(settingsFactory.CreateApi(), projectId.Value);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return Task.FromResult(default(Models.Project));
+        //    }
+        //}
+
+        //private async Task GetProjectCallback(Task<Models.Project> getProject, object state)
+        //{
+        //    try
+        //    {
+        //        if (state != null)
+        //        {
+        //            Models.Project project = await getProject;
+        //            if (project == null || project.ProjectId == (Guid)state)
+        //                MainWindowVM.Project = project;
+        //        }
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        ErrorWindow.Open(ex, this);
+        //    }
+        //}
     }
 }

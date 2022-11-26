@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Models = YardLight.Interface.Models;
 
 namespace YardLight.Client.ViewModel
 {
@@ -14,8 +15,37 @@ namespace YardLight.Client.ViewModel
         private Visibility _showUserAdmin = Visibility.Collapsed;
         private Visibility _showUserRole = Visibility.Collapsed;
         private Visibility _showLogs = Visibility.Collapsed;
+        private Visibility _showProjectSettings = Visibility.Collapsed;
+        //private Models.Project _project = null;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        //public Models.Project Project
+        //{
+        //    get => _project;
+        //    set
+        //    {
+        //        if (_project != value)
+        //        {
+        //            _project= value;
+        //            NotifyPropertyChanged();
+        //        }
+        //        ShowProjectSettings = _project == null ? Visibility.Collapsed : Visibility.Visible;
+        //    }
+        //}
+
+        public Visibility ShowProjectSettings
+        {
+            get => _showProjectSettings;
+            set
+            {
+                if (_showProjectSettings!= value)
+                {
+                    _showProjectSettings= value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public Visibility ShowUserAdmin
         {

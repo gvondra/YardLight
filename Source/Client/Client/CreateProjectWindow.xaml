@@ -8,15 +8,6 @@
         Title="Yard Light: Create Project" Height="450" Width="800"
         Style="{StaticResource DefaultWindowStyle}"
         WindowState="Normal">
-    <Window.Resources>
-        <Style x:Key="TextBoxWithError" TargetType="TextBox">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
     <Border BorderThickness="5,1">
         <Border.BorderBrush>
             <RadialGradientBrush>

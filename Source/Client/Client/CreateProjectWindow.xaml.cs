@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using YardLight.Client.ViewModel;
 using YardLight.Interface;
-using YardLight.Interface.Models;
+using Models = YardLight.Interface.Models;
 
 namespace YardLight.Client
 {
@@ -44,7 +44,7 @@ namespace YardLight.Client
             {
                 if (CreateProjectWindowVM.CanCreate)
                 {
-                    Project project = new Project
+                    Models.Project project = new Models.Project
                     {
                         Title = CreateProjectWindowVM.Title
                     };
@@ -58,7 +58,7 @@ namespace YardLight.Client
             }
         }
 
-        private Task<Project> CreateProject(Project project)
+        private Task<Models.Project> CreateProject(Models.Project project)
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
@@ -68,11 +68,11 @@ namespace YardLight.Client
             }
         }
 
-        private async Task CreateProjectCallback(Task<Project> createProject, object state)
+        private async Task CreateProjectCallback(Task<Models.Project> createProject, object state)
         {
             try
             {
-                Project project = await createProject;
+                Models.Project project = await createProject;
                 UserSession userSession = UserSessionLoader.GetUserSession();
                 userSession.OpenProjectId = project.ProjectId;
                 DialogResult = true;
