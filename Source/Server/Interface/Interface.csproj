@@ -11,8 +11,8 @@
 	  <Product>Yard Light</Product>
 	  <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.0.0-alpha.17</Version>
-	  <AssemblyVersion>1.0.0.17</AssemblyVersion>
+	  <Version>1.0.0-alpha.18</Version>
+	  <AssemblyVersion>1.0.0.18</AssemblyVersion>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -26,8 +26,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Autofac" Version="6.4.0" />
-	  <PackageReference Include="BrassLoon.RestClient" Version="2.0.1" />
+	  <PackageReference Include="Autofac" Version="[6.4.0,6.6)" />
+	  <PackageReference Include="BrassLoon.RestClient" Version="[2.0.1,2.1)" />
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
