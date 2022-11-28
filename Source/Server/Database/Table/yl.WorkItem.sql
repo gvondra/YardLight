@@ -1,9 +1,10 @@
 ﻿CREATE TABLE [yl].[WorkItem]
 (
 	[WorkItemId] UNIQUEIDENTIFIER NOT NULL,
+	[ProjectId] UNIQUEIDENTIFIER NOT NULL,
 	[Title] NVARCHAR(512) NOT NULL,
-	[Type] SMALLINT NOT NULL,
-	[Status] SMALLINT CONSTRAINT [DF_WorkItem_Status] DEFAULT (0) NOT NULL,
+	[TypeId] UNIQUEIDENTIFIER NOT NULL,
+	[StatusId] UNIQUEIDENTIFIER NOT NULL,
 	[Team] NVARCHAR(1024) CONSTRAINT [DF_WorkItem_Team] DEFAULT ('') NOT NULL,
 	[Itteration] NVARCHAR(1024) CONSTRAINT [DF_WorkItem_Itteration] DEFAULT ('') NOT NULL,
 	[StartDate] DATE NULL,
@@ -16,5 +17,20 @@
 	[UpdateTimestamp] DATETIME2(4) CONSTRAINT [DF_WorkItem_UpdateTimestamp] DEFAULT (SYSUTCDATETIME()) NOT NULL,
 	[CreateUserId] UNIQUEIDENTIFIER NOT NULL,
 	[UpdateUserId] UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT [PK_WorkItem] PRIMARY KEY CLUSTERED ([WorkItemId])
+	CONSTRAINT [PK_WorkItem] PRIMARY KEY CLUSTERED ([WorkItemId]), 
+    CONSTRAINT [FK_WorkItem_To_Project] FOREIGN KEY ([ProjectId]) REFERENCES [yl].[Project]([ProjectId]), 
+    CONSTRAINT [FK_WorkItem_To_Status] FOREIGN KEY ([StatusId]) REFERENCES [yl].[WorkItemStatus]([WorkItemStatusId]), 
+    CONSTRAINT [FK_WorkItem_To_Type] FOREIGN KEY ([TypeId]) REFERENCES [yl].[WorkItemType]([WorkItemTypeId])
 )
+
+GO
+
+CREATE INDEX [IX_WorkItem_ProjectId] ON [yl].[WorkItem] ([ProjectId])
+
+GO
+
+CREATE INDEX [IX_WorkItem_StatusId] ON [yl].[WorkItem] ([StatusId])
+
+GO
+
+CREATE INDEX [IX_WorkItem_TypeId] ON [yl].[WorkItem] ([TypeId])

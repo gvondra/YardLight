@@ -14,6 +14,10 @@ namespace YardLight.Data
             builder.RegisterType<ProjectDataSaver>().As<IProjectDataSaver>();
             builder.RegisterType<ProjectUserDataFactory>().As<IProjectUserDataFactory>();
             builder.RegisterType<ProjectUserDataSaver>().As<IProjectUserDataSaver>();
+            builder.RegisterType<WorkItemStatusDataFactory>().As<IWorkItemStatusDataFactory>();
+            builder.RegisterType<WorkItemStatusDataSaver>().As<IWorkItemStatusDataSaver>();
+            builder.RegisterType<WorkItemTypeDataFactory>().As<IWorkItemTypeDataFactory>();
+            builder.RegisterType<WorkItemTypeDataSaver>().As<IWorkItemTypeDataSaver>();
         }
     }
 }

@@ -78,6 +78,16 @@
     <Build Include="Stored Procedure\yl.GetProject.sql" />
     <Build Include="Stored Procedure\yl.GetProject_by_UserId.sql" />
     <Build Include="Stored Procedure\yl.GetProjectUser.sql" />
+    <Build Include="Table\yl.WorkItemStatus.sql" />
+    <Build Include="Table\yl.WorkItemType.sql" />
+    <Build Include="Stored Procedure\yl.GetWorkItemStatus_by_ProjectId.sql" />
+    <Build Include="Stored Procedure\yl.GetWorkItemType_by_ProjectId.sql" />
+    <Build Include="Stored Procedure\yl.UpdateWorkItemStatus.sql" />
+    <Build Include="Stored Procedure\yl.CreateWorkItemStatus.sql" />
+    <Build Include="Stored Procedure\yl.UpdateWorkItemType.sql" />
+    <Build Include="Stored Procedure\yl.CreateWorkItemType.sql" />
+    <Build Include="Stored Procedure\yl.GetWorkItemStatus.sql" />
+    <Build Include="Stored Procedure\yl.GetWorkItemType.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />
