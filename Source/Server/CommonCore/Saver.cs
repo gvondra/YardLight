@@ -39,5 +39,37 @@ namespace YardLight.CommonCore
 
             }
         }
+
+        public async Task Save(ITransactionHandler transactionHandler, Guid userId, Func<ITransactionHandler, Guid, Task> save)
+        {
+            try
+            {
+                await save(transactionHandler, userId);
+                if (transactionHandler.Transaction != null)
+                    transactionHandler.Transaction.Commit();
+                if (transactionHandler.Connection != null)
+                    transactionHandler.Connection.Close();
+            }
+            catch
+            {
+                if (transactionHandler.Transaction != null)
+                    transactionHandler.Transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+                if (transactionHandler.Transaction != null)
+                {
+                    transactionHandler.Transaction.Dispose();
+                    transactionHandler.Transaction = null;
+                }
+                if (transactionHandler.Connection != null)
+                {
+                    transactionHandler.Connection.Dispose();
+                    transactionHandler.Connection = null;
+                }
+
+            }
+        }
     }
 }

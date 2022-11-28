@@ -16,7 +16,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MetricController : APIContollerBase
+    public class MetricController : APIControllerBase
     {
         private readonly Log.IMetricService _metricService;
         private readonly AuthorizationAPI.IUserService _userService;

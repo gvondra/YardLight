@@ -7,12 +7,12 @@ using AuthorizationAPI = YardLight.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
 namespace API
 {
-    public abstract class APIContollerBase : CommonControllerBase
+    public abstract class APIControllerBase : CommonControllerBase
     {
         protected readonly ISettingsFactory _settingsFactory;
         protected readonly IOptions<Settings> _settings;
 
-        public APIContollerBase(
+        public APIControllerBase(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
             Log.IMetricService metricService, 

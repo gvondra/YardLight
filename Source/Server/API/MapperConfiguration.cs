@@ -16,6 +16,15 @@ namespace API
                 c.CreateMap<LogAPI.Metric, Metric>();
                 c.CreateMap<Project, IProject>();
                 c.CreateMap<IProject, Project>();
+                c.CreateMap<WorkItemStatus, IWorkItemStatus>()
+                .ForMember(s => s.Order, config => config.MapFrom(source => source.Order ?? 0))
+                .ForMember(s => s.IsActive, config => config.MapFrom(source => source.IsActive ?? true))
+                ;
+                c.CreateMap<IWorkItemStatus, WorkItemStatus>();
+                c.CreateMap<WorkItemType, IWorkItemType>()
+                .ForMember(t => t.IsActive, config => config.MapFrom(source => source.IsActive ?? true))
+                ;
+                c.CreateMap<IWorkItemType, WorkItemType>();
             });
         }
 

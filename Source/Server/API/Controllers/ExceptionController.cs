@@ -15,7 +15,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExceptionController : APIContollerBase
+    public class ExceptionController : APIControllerBase
     {
         private readonly Log.IExceptionService _exceptionService;
 

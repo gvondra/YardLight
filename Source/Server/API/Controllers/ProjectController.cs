@@ -17,7 +17,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectController : APIContollerBase
+    public class ProjectController : APIControllerBase
     {
         private readonly IProjectFactory _projectFactory;
         private readonly IProjectSaver _projectSaver;
