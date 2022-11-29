@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YardLight.Client.Project.ViewModel;
+using YardLight.Client.ProjectSettings.ViewModel;
 
-namespace YardLight.Client.Project.Behaviors
+namespace YardLight.Client.ProjectSettings.Behaviors
 {
     public class ProjectSettingsValidator
     {

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using YardLight.Client.Project.Behaviors;
+using YardLight.Client.ProjectSettings.Behaviors;
 using Models = YardLight.Interface.Models;
 
-namespace YardLight.Client.Project.ViewModel
+namespace YardLight.Client.ProjectSettings.ViewModel
 {
     public class ProjectSettingsVM : INotifyPropertyChanged, IDataErrorInfo
     {

@@ -13,11 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using YardLight.Client.Project.ViewModel;
+using YardLight.Client.ProjectSettings.ViewModel;
 using YardLight.Interface;
 using Models = YardLight.Interface.Models;
 
-namespace YardLight.Client.Project
+namespace YardLight.Client.ProjectSettings
 {
     /// <summary>
     /// Interaction logic for ProjectSettings.xaml

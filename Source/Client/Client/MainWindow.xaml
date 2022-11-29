@@ -21,7 +21,7 @@
                 <MenuItem Header="_Google Login" Click="GoogleLoginMenuItem_Click"/>
                 <MenuItem Header="_Project">
                     <MenuItem Header="_Open" Command="ApplicationCommands.Open"/>
-                    <MenuItem Header="_Settings" Visibility="{Binding ShowProjectSettings}" Command="NavigationCommands.GoToPage" CommandParameter="Project/ProjectSettings.xaml" />
+                    <MenuItem Header="_Settings" Visibility="{Binding ShowProjectSettings}" Command="NavigationCommands.GoToPage" CommandParameter="ProjectSettings/Main.xaml" />
                     <MenuItem Header="_Create" Click="CreateProjectMenuItem_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Logs" Visibility="{Binding ShowLogs}" Command="NavigationCommands.GoToPage" CommandParameter="Log/MetricLog.xaml"/>
