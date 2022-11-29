@@ -43,9 +43,11 @@ namespace YardLight.Data
                     AddCommonParameters(command.Parameters, data, userId);
 
                     await command.ExecuteNonQueryAsync();
-                    data.ProjectId = (Guid)id.Value;
+                    data.WorkItemTypeId = (Guid)id.Value;
                     data.CreateTimestamp = (DateTime)timestamp.Value;
                     data.UpdateTimestamp = (DateTime)timestamp.Value;
+                    data.CreateUserId = userId;
+                    data.UpdateUserId = userId;
                 }
             }
         }
@@ -70,6 +72,7 @@ namespace YardLight.Data
 
                     await command.ExecuteNonQueryAsync();
                     data.UpdateTimestamp = (DateTime)timestamp.Value;
+                    data.UpdateUserId = userId;
                 }
             }
         }
