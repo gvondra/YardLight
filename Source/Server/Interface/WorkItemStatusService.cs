@@ -64,7 +64,7 @@ namespace YardLight.Interface
 
         public async Task<WorkItemStatus> Update(ISettings settings, Guid projectId, Guid id, WorkItemStatus status)
         {
-            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Post, status)
+            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Put, status)
                 .AddPath("Project/{projectId}/WorkItemStatus/{id}")
                 .AddPathParameter("projectId", projectId.ToString("N"))
                 .AddPathParameter("id", id.ToString("N"))
