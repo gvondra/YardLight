@@ -8,9 +8,9 @@ using YardLight.Client.ProjectSettings.ViewModel;
 
 namespace YardLight.Client.ProjectSettings.Behaviors
 {
-    public class WorkItemStatusValidator
+    public class WorkItemTypeValidator
     {
-        private readonly WorkItemStatusVM _status;
+        private readonly WorkItemTypeVM _type;
 
         private const string MSG_CD_REQUIRED = "is-required";
         private const string MSG_TX_REQUIRED = "is required";
@@ -18,27 +18,27 @@ namespace YardLight.Client.ProjectSettings.Behaviors
         private const string MSG_TX_INVALID_COLORCODE = "invalid color code";
         private static readonly ValueTuple<string, string, string>[] _messages = new ValueTuple<string, string, string>[]
         {
-            (nameof(WorkItemStatusVM.Title), MSG_CD_REQUIRED, MSG_TX_REQUIRED),
-            (nameof(WorkItemStatusVM.ColorCode), MSG_CD_REQUIRED, MSG_TX_REQUIRED),
-            (nameof(WorkItemStatusVM.ColorCode), MSG_CD_INVALID_COLORCODE, MSG_TX_INVALID_COLORCODE)
+            (nameof(WorkItemTypeVM.Title), MSG_CD_REQUIRED, MSG_TX_REQUIRED),
+            (nameof(WorkItemTypeVM.ColorCode), MSG_CD_REQUIRED, MSG_TX_REQUIRED),
+            (nameof(WorkItemTypeVM.ColorCode), MSG_CD_INVALID_COLORCODE, MSG_TX_INVALID_COLORCODE)
         };
 
-        public WorkItemStatusValidator(WorkItemStatusVM status)
+        public WorkItemTypeValidator(WorkItemTypeVM type)
         {
-            _status = status;
-            _status.PropertyChanged += _status_PropertyChanged;
+            _type = type;
+            _type.PropertyChanged += PropertyChanged;
         }
 
-        private void _status_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case nameof(WorkItemStatusVM.Title):
-                    AssertIsRequired(nameof(WorkItemStatusVM.Title), _status.Title);
+                case nameof(WorkItemTypeVM.Title):
+                    AssertIsRequired(nameof(WorkItemTypeVM.Title), _type.Title);
                     break;
-                case nameof(WorkItemStatusVM.ColorCode):
-                    AssertIsRequired(nameof(WorkItemStatusVM.ColorCode), _status.ColorCode);
-                    AssertValidColorCode(_status.ColorCode);
+                case nameof(WorkItemTypeVM.ColorCode):
+                    AssertIsRequired(nameof(WorkItemTypeVM.ColorCode), _type.ColorCode);
+                    AssertValidColorCode(_type.ColorCode);
                     break;
             }
         }
@@ -51,13 +51,13 @@ namespace YardLight.Client.ProjectSettings.Behaviors
                 if (!string.IsNullOrEmpty(value))
                 {
                     brushConverter.ConvertFromString(value);
-                    _status[nameof(WorkItemStatusVM.ColorCode)] = string.Empty;
-                }
+                    _type[nameof(WorkItemTypeVM.ColorCode)] = string.Empty;
+                }                    
             }
             catch
             {
-                _status[nameof(WorkItemStatusVM.ColorCode)] = _messages
-                    .First(m => string.Equals(nameof(WorkItemStatusVM.ColorCode), m.Item1, StringComparison.OrdinalIgnoreCase) && string.Equals(MSG_CD_INVALID_COLORCODE, m.Item2, StringComparison.OrdinalIgnoreCase))
+                _type[nameof(WorkItemTypeVM.ColorCode)] = _messages
+                    .First(m => string.Equals(nameof(WorkItemTypeVM.ColorCode), m.Item1, StringComparison.OrdinalIgnoreCase) && string.Equals(MSG_CD_INVALID_COLORCODE, m.Item2, StringComparison.OrdinalIgnoreCase))
                     .Item3;
             }
         }
@@ -65,11 +65,11 @@ namespace YardLight.Client.ProjectSettings.Behaviors
         private void AssertIsRequired(string propertyName, string value)
         {
             if (string.IsNullOrEmpty(value))
-                _status[propertyName] = _messages
+                _type[propertyName] = _messages
                     .First(m => string.Equals(propertyName, m.Item1, StringComparison.OrdinalIgnoreCase) && string.Equals(MSG_CD_REQUIRED, m.Item2, StringComparison.OrdinalIgnoreCase))
                     .Item3;
             else
-                _status[propertyName] = string.Empty;
+                _type[propertyName] = string.Empty;
 
         }
     }

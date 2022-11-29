@@ -209,6 +209,7 @@
       <DependentUpon>OpenProjectWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProjectSettings\Behaviors\ProjectSettingsValidator.cs" />
+    <Compile Include="ProjectSettings\Behaviors\WorkItemTypeValidator.cs" />
     <Compile Include="ProjectSettings\Behaviors\WorkItemStatusValidator.cs" />
     <Compile Include="ProjectSettings\Controls\SettingsNavigation.xaml.cs">
       <DependentUpon>SettingsNavigation.xaml</DependentUpon>
@@ -226,7 +227,9 @@
       <DependentUpon>ProjectSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProjectSettings\ViewModel\ProjectSettingsVM.cs" />
+    <Compile Include="ProjectSettings\ViewModel\WorkItemTypesVM.cs" />
     <Compile Include="ProjectSettings\ViewModel\WorkItemStatusesVM.cs" />
+    <Compile Include="ProjectSettings\ViewModel\WorkItemTypeVM.cs" />
     <Compile Include="ProjectSettings\ViewModel\WorkItemStatusVM.cs" />
     <Compile Include="ProjectSettings\WorkItemStatuses.xaml.cs">
       <DependentUpon>WorkItemStatuses.xaml</DependentUpon>

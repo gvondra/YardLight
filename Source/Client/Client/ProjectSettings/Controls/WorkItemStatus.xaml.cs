@@ -16,7 +16,6 @@ using System.Windows.Shapes;
 using YardLight.Client.ProjectSettings.ViewModel;
 using YardLight.Interface;
 using YardLight.Interface.Authorization;
-using YardLight.Interface.Models;
 using Models = YardLight.Interface.Models;
 
 namespace YardLight.Client.ProjectSettings.Controls

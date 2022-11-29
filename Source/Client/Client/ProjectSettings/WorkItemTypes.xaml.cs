@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YardLight.Client.ProjectSettings.ViewModel;
+using YardLight.Interface.Authorization;
+using YardLight.Interface;
+using Models = YardLight.Interface.Models;
+using YardLight.Interface.Authorization.Models;
 
 namespace YardLight.Client.ProjectSettings
 {
@@ -22,7 +28,151 @@ namespace YardLight.Client.ProjectSettings
     {
         public WorkItemTypes()
         {
+            NavigationCommands.BrowseBack.InputGestures.Clear();
+            NavigationCommands.BrowseForward.InputGestures.Clear();
             InitializeComponent();
+            this.Loaded += WorkItemTypes_Loaded;
+        }
+
+        public WorkItemTypesVM WorkItemTypesVM { get; set; }
+
+        private void WorkItemTypes_Loaded(object sender, RoutedEventArgs e)
+        {
+            WorkItemTypesVM = new WorkItemTypesVM();
+            DataContext = WorkItemTypesVM;
+            GoogleLogin.ShowLoginDialog(owner: Window.GetWindow(this));
+            UserSession userSession = UserSessionLoader.GetUserSession();
+            if (userSession?.OpenProjectId != null)
+            {
+                Task.Run(() => GetProject(userSession.OpenProjectId))
+                    .ContinueWith(GetProjectCallback, userSession.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
+                Task.Run(() => GetTypes(userSession.OpenProjectId))
+                    .ContinueWith(GetTypesCallback, userSession.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+        }
+
+        private async Task<List<WorkItemTypeVM>> GetTypes(Guid? projectId)
+        {
+            if (projectId.HasValue)
+            {
+                using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+                {
+                    ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                    IWorkItemTypeService typeService = scope.Resolve<IWorkItemTypeService>();
+                    List<WorkItemTypeVM> typeVMs = (await typeService.GetByProjectId(settingsFactory.CreateApi(), projectId.Value))
+                        .Select(t => new WorkItemTypeVM(t))
+                        .ToList();
+                    IUserService userService = scope.Resolve<IUserService>();
+                    foreach (WorkItemTypeVM workItemTypeVM in typeVMs)
+                    {
+                        workItemTypeVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemTypeVM.InnerType.CreateUserId.Value);
+                        workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemTypeVM.InnerType.UpdateUserId.Value);
+                    }
+                    return typeVMs;
+                }
+            }
+            else
+            {
+                return new List<WorkItemTypeVM>();
+            }
+        }
+
+        private async Task GetTypesCallback(Task<List<WorkItemTypeVM>> getTypes, object state)
+        {
+            try
+            {
+                WorkItemTypesVM.Types.Clear();
+                WorkItemTypesVM.SelectedType = null;
+                foreach (WorkItemTypeVM typeVM in (await getTypes))
+                {
+                    if (state == null || !((Guid?)state).HasValue || ((Guid?)state).Value.Equals(typeVM.InnerType.ProjectId.Value))
+                    {
+                        WorkItemTypesVM.Types.Add(typeVM);
+                    }
+                }
+                if (WorkItemTypesVM.Types.Count > 0)
+                    WorkItemTypesVM.SelectedType = WorkItemTypesVM.Types[0];
+            }
+            catch (System.Exception ex)
+            {
+                ErrorWindow.Open(ex, Window.GetWindow(this));
+            }
+        }
+
+        private Task<Models.Project> GetProject(Guid? projectId)
+        {
+            if (projectId.HasValue)
+            {
+                using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+                {
+                    ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                    IProjectService projectService = scope.Resolve<IProjectService>();
+                    return projectService.Get(settingsFactory.CreateApi(), projectId.Value);
+                }
+            }
+            else
+            {
+                return Task.FromResult(default(Models.Project));
+            }
+        }
+
+        private async Task GetProjectCallback(Task<Models.Project> getProject, object state)
+        {
+            try
+            {
+                Models.Project project = await getProject;
+                if (project.ProjectId == (Guid)state)
+                {
+                    WorkItemTypesVM.Project = project;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                ErrorWindow.Open(ex, Window.GetWindow(this));
+            }
+        }
+
+        private void AddHyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            if (WorkItemTypesVM.Project != null)
+            {
+                Task.Run(CreateTypeVM)
+                    .ContinueWith(CreateTypeVMCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+        }
+
+        private async Task<WorkItemTypeVM> CreateTypeVM()
+        {
+            using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+            {
+                Models.WorkItemType type = new Models.WorkItemType
+                {
+                    Title = "New Type",
+                    ColorCode = "DarkGray",
+                    ProjectId = WorkItemTypesVM.Project.ProjectId
+                };
+                WorkItemTypeVM workItemTypeVM = new WorkItemTypeVM(type);
+                ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                IUserService userService = scope.Resolve<IUserService>();
+                User user = await userService.Get(settingsFactory.CreateAuthorization());
+                workItemTypeVM.CreateUserName = user.Name;
+                workItemTypeVM.UpdateUserName = user.Name;
+                return workItemTypeVM;
+            }
+        }
+
+        private async Task CreateTypeVMCallback(Task<WorkItemTypeVM> createTypeVM, object state)
+        {
+            try
+            {
+                WorkItemTypeVM workItemTypeVM = await createTypeVM;
+                WorkItemTypesVM.Types.Add(workItemTypeVM);
+                WorkItemTypesVM.SelectedType = workItemTypeVM;
+            }
+            catch (System.Exception ex)
+            {
+                ErrorWindow.Open(ex, Window.GetWindow(this));
+            }
         }
     }
 }
