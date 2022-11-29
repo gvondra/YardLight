@@ -36,7 +36,7 @@ namespace YardLight.Data
             IDataParameter[] parameters = new IDataParameter[]
             {
                 DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId)),
-                DataUtil.CreateParameter(_providerFactory, "isActive", DbType.Guid, DataUtil.GetParameterValue(isActive))
+                DataUtil.CreateParameter(_providerFactory, "isActive", DbType.Boolean, DataUtil.GetParameterValue(isActive))
             };
             return await _dataFactory.GetData(settings, _providerFactory,
                 "[yl].[GetWorkItemStatus_by_ProjectId]",
