@@ -21,6 +21,6 @@ namespace YardLight.Core
         => _saver.Save(new TransactionHandler(settings), userId, workItemStatus.Create);
 
         public Task Update(ISettings settings, IWorkItemStatus workItemStatus, Guid userId)
-        => _saver.Save(new TransactionHandler(settings), userId, workItemStatus.Create);
+        => _saver.Save(new TransactionHandler(settings), userId, workItemStatus.Update);
     }
 }
