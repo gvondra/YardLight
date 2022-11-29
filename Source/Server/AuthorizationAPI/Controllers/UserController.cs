@@ -138,7 +138,7 @@ namespace AuthorizationAPI.Controllers
             }
             finally
             {
-                _ = WriteMetrics("get-user", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { "Id", id.ToString() } });
+                _ = WriteMetrics("get-user-name", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { "Id", id.ToString() } });
             }
             return result;
         }
