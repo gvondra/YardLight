@@ -43,6 +43,17 @@ namespace YardLight.Interface.Authorization
             return response.Value;
         }
 
+        public async Task<string> GetName(ISettings settings, Guid id)
+        {
+            UriBuilder builder = new UriBuilder(settings.BaseAddress);
+            builder.Path = _restUtil.AppendPath(builder.Path, "User", id.ToString("N"), "Name");
+            IRequest request = _service.CreateRequest(builder.Uri, HttpMethod.Get);
+            request.AddJwtAuthorizationToken(settings.GetToken);
+            IResponse<string> response = await _service.Send<string>(request);
+            _restUtil.CheckSuccess(response);
+            return response.Value;
+        }
+
         public async Task<User> GetByEmailAddress(ISettings settings, string emailAddress)
         {
             if (string.IsNullOrEmpty(emailAddress))

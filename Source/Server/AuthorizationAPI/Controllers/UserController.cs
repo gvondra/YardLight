@@ -108,6 +108,41 @@ namespace AuthorizationAPI.Controllers
             return result;
         }
 
+        [HttpGet("{id}/Name")]
+        [Authorize()]
+        [ProducesResponseType(typeof(string), 200)]
+        public async Task<IActionResult> GetName([FromRoute] Guid? id)
+        {
+            DateTime start = DateTime.UtcNow;
+            IActionResult result = null;
+            try
+            {
+                if (result == null && (!id.HasValue || id.Value.Equals(Guid.Empty)))
+                    result = BadRequest("Missing user id value");
+                if (result == null)
+                {
+                    ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                    IUser innerUser = await _userFactory.Get(settings, id.Value);
+                    if (result == null && innerUser == null)
+                        result = NotFound();
+                    if (result == null && innerUser != null)
+                    {
+                        result = Ok(innerUser.Name);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await WriteException(ex);
+                result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                _ = WriteMetrics("get-user", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { "Id", id.ToString() } });
+            }
+            return result;
+        }
+
         [NonAction]
         private async Task<User> MapUser(ISettings settings, IMapper mapper, IUser innerUser)
         {
