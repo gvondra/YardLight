@@ -15,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.ProjectSettings.ViewModel;
 using YardLight.Interface;
+using YardLight.Interface.Authorization;
+using YardLight.Interface.Authorization.Models;
 using Models = YardLight.Interface.Models;
 
 namespace YardLight.Client.ProjectSettings
@@ -49,7 +51,7 @@ namespace YardLight.Client.ProjectSettings
             }
         }
 
-        private Task<List<Models.WorkItemStatus>> GetStatuses(Guid? projectId)
+        private async Task<List<WorkItemStatusVM>> GetStatuses(Guid? projectId)
         {
             if (projectId.HasValue)
             {
@@ -57,26 +59,35 @@ namespace YardLight.Client.ProjectSettings
                 {
                     ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                     IWorkItemStatusService statusService = scope.Resolve<IWorkItemStatusService>();
-                    return statusService.GetByProjectId(settingsFactory.CreateApi(), projectId.Value);
+                    List<WorkItemStatusVM> statusVMs = (await statusService.GetByProjectId(settingsFactory.CreateApi(), projectId.Value))
+                        .Select(s => new WorkItemStatusVM(s))
+                        .ToList();
+                    IUserService userService = scope.Resolve<IUserService>();
+                    foreach (WorkItemStatusVM workItemStatusVM in statusVMs)
+                    {
+                        workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.CreateUserId.Value);
+                        workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.UpdateUserId.Value);
+                    }
+                    return statusVMs;
                 }
             }
             else
             {
-                return Task.FromResult(new List<Models.WorkItemStatus>());
+                return new List<WorkItemStatusVM>();
             }
         }
 
-        private async Task GetStatusesCallback(Task<List<Models.WorkItemStatus>> getStatuses, object state)
+        private async Task GetStatusesCallback(Task<List<WorkItemStatusVM>> getStatuses, object state)
         {
             try
             {
                 WorkItemStatusesVM.Statuses.Clear();
                 WorkItemStatusesVM.SelectedStatus = null;
-                foreach (Models.WorkItemStatus status in (await getStatuses).OrderBy(s => s.Order ?? 0))
+                foreach (WorkItemStatusVM statusVM in (await getStatuses).OrderBy(s => s.Order))
                 {
-                    if (state == null || !((Guid?)state).HasValue || ((Guid?)state).Value.Equals(status.ProjectId.Value))
+                    if (state == null || !((Guid?)state).HasValue || ((Guid?)state).Value.Equals(statusVM.InnerStatus.ProjectId.Value))
                     {
-                        WorkItemStatusesVM.Statuses.Add(new WorkItemStatusVM(status));
+                        WorkItemStatusesVM.Statuses.Add(statusVM);
                     }
                 }
                 if (WorkItemStatusesVM.Statuses.Count > 0)
@@ -125,6 +136,15 @@ namespace YardLight.Client.ProjectSettings
         {
             if (WorkItemStatusesVM.Project != null)
             {
+                Task.Run(CreateStatusVM)
+                    .ContinueWith(CreateStatusVMCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+        }
+
+        private async Task<WorkItemStatusVM> CreateStatusVM()
+        {
+            using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+            {
                 Models.WorkItemStatus status = new Models.WorkItemStatus
                 {
                     Title = "New Status",
@@ -132,8 +152,27 @@ namespace YardLight.Client.ProjectSettings
                     Order = (short)WorkItemStatusesVM.Statuses.Count,
                     ProjectId = WorkItemStatusesVM.Project.ProjectId
                 };
-                WorkItemStatusesVM.SelectedStatus = new WorkItemStatusVM(status);
-                WorkItemStatusesVM.Statuses.Add(WorkItemStatusesVM.SelectedStatus);
+                WorkItemStatusVM workItemStatusVM = new WorkItemStatusVM(status);
+                ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                IUserService userService = scope.Resolve<IUserService>();
+                User user = await userService.Get(settingsFactory.CreateAuthorization());
+                workItemStatusVM.CreateUserName = user.Name;
+                workItemStatusVM.UpdateUserName = user.Name;
+                return workItemStatusVM;
+            }
+        }
+
+        private async Task CreateStatusVMCallback(Task<WorkItemStatusVM> createStatusVM, object state)
+        {
+            try
+            {
+                WorkItemStatusVM workItemStatusVM = await createStatusVM;
+                WorkItemStatusesVM.Statuses.Add(workItemStatusVM);
+                WorkItemStatusesVM.SelectedStatus = workItemStatusVM;
+            }
+            catch(System.Exception ex)
+            {
+                ErrorWindow.Open(ex, Window.GetWindow(this));
             }
         }
     }

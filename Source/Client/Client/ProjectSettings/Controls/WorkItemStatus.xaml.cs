@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.ProjectSettings.ViewModel;
 using YardLight.Interface;
+using YardLight.Interface.Authorization;
 using YardLight.Interface.Models;
 using Models = YardLight.Interface.Models;
 
@@ -38,26 +39,34 @@ namespace YardLight.Client.ProjectSettings.Controls
                 .ContinueWith(SaveCallback, workItemStatusVM, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private Task<Models.WorkItemStatus> Save(WorkItemStatusVM workItemStatusVM)
+        private async Task<WorkItemStatusVM> Save(WorkItemStatusVM workItemStatusVM)
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
+                Models.WorkItemStatus workItemStatus;
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
-                IWorkItemStatusService workItemStatusService = scope.Resolve<IWorkItemStatusService>();
+                IWorkItemStatusService workItemStatusService = scope.Resolve<IWorkItemStatusService>();                
                 if (workItemStatusVM.InnerStatus.WorkItemStatusId.HasValue)
-                    return workItemStatusService.Update(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus);
+                    workItemStatus = await workItemStatusService.Update(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus);
                 else
-                    return workItemStatusService.Create(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus);
+                    workItemStatus = await workItemStatusService.Create(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus);
+                workItemStatusVM = new WorkItemStatusVM(workItemStatus);
+                IUserService userService = scope.Resolve<IUserService>();
+                workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatus.CreateUserId.Value);
+                workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatus.UpdateUserId.Value);
+                return workItemStatusVM;
             }
         }
 
-        private async Task SaveCallback(Task<Models.WorkItemStatus> save, object state)
+        private async Task SaveCallback(Task<WorkItemStatusVM> save, object state)
         {
             WorkItemStatusVM workItemStatusVM = (WorkItemStatusVM)state;
             try
-            {
-                Models.WorkItemStatus workItemStatus = await save;                   
-                workItemStatusVM.SetInnerWorkItemStatus(workItemStatus);
+            {                
+                WorkItemStatusVM savedStatusVM = await save;
+                workItemStatusVM.SetInnerWorkItemStatus(savedStatusVM.InnerStatus);
+                workItemStatusVM.CreateUserName = savedStatusVM.CreateUserName;
+                workItemStatusVM.UpdateUserName = savedStatusVM.UpdateUserName;
                 MessageBox.Show("Status Saved", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Exception ex)

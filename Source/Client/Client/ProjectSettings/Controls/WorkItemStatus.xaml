@@ -29,9 +29,17 @@
         <TextBlock Grid.Column="0" Grid.Row="3">Order:</TextBlock>
         <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Order}" MaxLength="3"/>
         <TextBlock Grid.Column="0" Grid.Row="4">Created:</TextBlock>
-        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding CreateTimestamp, StringFormat='yyyy-MM-dd HH:mm', Mode=OneWay}" />
+        <TextBlock Grid.Column="1" Grid.Row="4">
+            <TextBlock Text="{Binding CreateTimestamp, StringFormat='yyyy-MM-dd HH:mm', Mode=OneWay}" /> 
+            by
+            <TextBlock Text="{Binding CreateUserName}" />
+        </TextBlock>        
         <TextBlock Grid.Column="0" Grid.Row="5">Updated:</TextBlock>
-        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding UpdateTimestamp, StringFormat='yyyy-MM-dd HH:mm', Mode=OneWay}" />
+        <TextBlock Grid.Column="1" Grid.Row="5">
+            <TextBlock Text="{Binding UpdateTimestamp, StringFormat='yyyy-MM-dd HH:mm', Mode=OneWay}" />
+            by
+            <TextBlock Text="{Binding UpdateUserName}" />
+        </TextBlock>
         <Button Grid.Column="1" Grid.Row="6" Click="SaveButton_Click">
             <Button.Style>
                 <Style BasedOn="{StaticResource SaveButtonStyle}" TargetType="Button">

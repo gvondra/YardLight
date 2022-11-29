@@ -18,6 +18,8 @@ namespace YardLight.Client.ProjectSettings.ViewModel
         private readonly List<object> _behaviors = new List<object>();
         private WorkItemStatus _workItemStatus;
         private bool _saveButtonEnabled = true;
+        private string _createUserName;
+        private string _updateUserName;
 
         public WorkItemStatusVM(WorkItemStatus workItemStatus)
         {
@@ -109,6 +111,32 @@ namespace YardLight.Client.ProjectSettings.ViewModel
                 if (!_workItemStatus.IsActive.HasValue || _workItemStatus.IsActive.Value != value)
                 {
                     _workItemStatus.IsActive = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public string CreateUserName
+        {
+            get => _createUserName;
+            set
+            {
+                if (_createUserName != value)
+                {
+                    _createUserName = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public string UpdateUserName
+        {
+            get => _updateUserName;
+            set
+            {
+                if (_updateUserName != value)
+                {
+                    _updateUserName = value;
                     NotifyPropertyChanged();
                 }
             }
