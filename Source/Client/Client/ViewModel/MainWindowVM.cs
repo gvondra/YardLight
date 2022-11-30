@@ -16,6 +16,7 @@ namespace YardLight.Client.ViewModel
         private Visibility _showUserRole = Visibility.Collapsed;
         private Visibility _showLogs = Visibility.Collapsed;
         private Visibility _showProjectSettings = Visibility.Collapsed;
+        private Visibility _showProject = Visibility.Collapsed;
         //private Models.Project _project = null;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,6 +43,18 @@ namespace YardLight.Client.ViewModel
                 if (_showProjectSettings!= value)
                 {
                     _showProjectSettings= value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public Visibility ShowProject
+        {
+            get => _showProject;
+            set
+            {
+                if (_showProject != value)
+                {
+                    _showProject = value;
                     NotifyPropertyChanged();
                 }
             }

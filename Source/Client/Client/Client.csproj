@@ -182,6 +182,11 @@
     <Compile Include="Authorization\ViewModel\FindUserVM.cs" />
     <Compile Include="Authorization\ViewModel\RolesVM.cs" />
     <Compile Include="Authorization\ViewModel\RoleVM.cs" />
+    <Compile Include="Backlog\Backlog.xaml.cs">
+      <DependentUpon>Backlog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Backlog\Behaviors\BacklogVMLoader.cs" />
+    <Compile Include="Backlog\ViewModels\BacklogVM.cs" />
     <Compile Include="Behaviors\CreateProjectValidator.cs" />
     <Compile Include="CreateProjectWindow.xaml.cs">
       <DependentUpon>CreateProjectWindow.xaml</DependentUpon>
@@ -252,6 +257,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Authorization\User.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Backlog\Backlog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

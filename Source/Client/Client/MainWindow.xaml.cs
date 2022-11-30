@@ -38,6 +38,7 @@ namespace YardLight.Client
         {
             UserSession userSession = UserSessionLoader.GetUserSession();
             MainWindowVM.ShowProjectSettings = BoolToVisibility(userSession?.OpenProjectId != null);
+            MainWindowVM.ShowProject = BoolToVisibility(userSession?.OpenProjectId != null);
             //if (userSession?.OpenProjectId != null)
             //{
             //    GoogleLogin.ShowLoginDialog(true, this);
@@ -97,6 +98,7 @@ namespace YardLight.Client
             navigationService.Navigate(new Uri("NavigationPage/Home.xaml", UriKind.Relative));
             UserSession userSession = UserSessionLoader.GetUserSession();
             MainWindowVM.ShowProjectSettings = BoolToVisibility(userSession?.OpenProjectId != null);
+            MainWindowVM.ShowProject = BoolToVisibility(userSession?.OpenProjectId != null);
             //Task.Run(() => GetProject(userSession?.OpenProjectId))
             //    .ContinueWith(GetProjectCallback, userSession?.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
         }
