@@ -11,6 +11,7 @@ namespace YardLight.Framework
     public interface IWorkItemStatus
     {
         Guid WorkItemStatusId { get; }
+        Guid WorkItemTypeId { get; }
         Guid ProjectId { get; }
         string Title { get; set; }
         string ColorCode { get; set; }

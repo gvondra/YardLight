@@ -10,7 +10,6 @@
     <Border BorderBrush="DarkGray" BorderThickness="2" Padding="2,0">
         <StackPanel Orientation="Vertical">
             <TextBlock><Hyperlink Click="Hyperlink_Click" CommandParameter="ProjectSettings/ProjectSettings.xaml">Project Title</Hyperlink></TextBlock>
-            <TextBlock><Hyperlink Click="Hyperlink_Click" CommandParameter="ProjectSettings/WorkItemStatuses.xaml" >Work Item Status</Hyperlink></TextBlock>
             <TextBlock><Hyperlink Click="Hyperlink_Click" CommandParameter="ProjectSettings/WorkItemTypes.xaml">Work Item Type</Hyperlink></TextBlock>
         </StackPanel>
     </Border>

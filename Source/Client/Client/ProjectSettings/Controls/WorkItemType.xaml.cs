@@ -49,10 +49,15 @@ namespace YardLight.Client.ProjectSettings.Controls
                     workItemType = await workItemTypeService.Update(settingsFactory.CreateApi(), workItemTypeVM.InnerType);
                 else
                     workItemType = await workItemTypeService.Create(settingsFactory.CreateApi(), workItemTypeVM.InnerType);
-                workItemTypeVM = new WorkItemTypeVM(workItemType);
+                workItemTypeVM = new WorkItemTypeVM(workItemTypeVM.WorkItemTypesVM, workItemType);
                 IUserService userService = scope.Resolve<IUserService>();
                 workItemTypeVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemType.CreateUserId.Value);
                 workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemType.UpdateUserId.Value);
+                foreach (WorkItemStatusVM workItemStatusVM in workItemTypeVM.StatusesVM.Statuses)
+                {
+                    workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.CreateUserId.Value);
+                    workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.UpdateUserId.Value);
+                }
                 return workItemTypeVM;
             }
         }
@@ -60,12 +65,13 @@ namespace YardLight.Client.ProjectSettings.Controls
         private async Task SaveCallback(Task<WorkItemTypeVM> save, object state)
         {
             WorkItemTypeVM workItemTypeVM = (WorkItemTypeVM)state;
+            WorkItemTypesVM workItemTypesVM = workItemTypeVM.WorkItemTypesVM;
             try
             {
                 WorkItemTypeVM savedTypeVM = await save;
-                workItemTypeVM.SetInnerWorkItemType(savedTypeVM.InnerType);
-                workItemTypeVM.CreateUserName = savedTypeVM.CreateUserName;
-                workItemTypeVM.UpdateUserName = savedTypeVM.UpdateUserName;
+                int i = workItemTypesVM.Types.IndexOf(workItemTypeVM);
+                workItemTypesVM.Types[i] = savedTypeVM;
+                workItemTypesVM.SelectedType = savedTypeVM;
                 MessageBox.Show("Type Saved", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Exception ex)

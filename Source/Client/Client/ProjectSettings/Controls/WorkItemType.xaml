@@ -17,6 +17,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.Row="0">Title:</TextBlock>
@@ -37,7 +38,8 @@
             by
             <TextBlock Text="{Binding UpdateUserName}" />
         </TextBlock>
-        <Button Grid.Column="1" Grid.Row="5" Click="SaveButton_Click">
+        <local:WorkItemStatuses Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="99" DataContext="{Binding StatusesVM}"/>
+        <Button Grid.Column="1" Grid.Row="6" Click="SaveButton_Click">
             <Button.Style>
                 <Style BasedOn="{StaticResource SaveButtonStyle}" TargetType="Button">
                     <Style.Triggers>

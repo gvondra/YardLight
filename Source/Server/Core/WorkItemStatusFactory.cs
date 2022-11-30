@@ -22,10 +22,11 @@ namespace YardLight.Core
         }
 
         private WorkItemStatus Create(WorkItemStatusData data) => new WorkItemStatus(data, _dataSaver);
+        private WorkItemStatus Create(WorkItemStatusData data, IWorkItemType parentType) => new WorkItemStatus(data, _dataSaver, parentType);
 
-        public IWorkItemStatus Create(Guid projectId)
+        public IWorkItemStatus Create(Guid projectId, IWorkItemType parentType)
         {
-            return Create(new WorkItemStatusData() { ProjectId = projectId });
+            return Create(new WorkItemStatusData { ProjectId = projectId }, parentType);
         }
 
         public async Task<IWorkItemStatus> Get(ISettings settings, Guid id)
@@ -40,6 +41,12 @@ namespace YardLight.Core
         public async Task<IEnumerable<IWorkItemStatus>> GetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
         {
             return (await _dataFactory.GetByProjectId(new DataSettings(settings), projectId, isActive))
+                .Select<WorkItemStatusData, IWorkItemStatus>(Create);
+        }
+
+        public async Task<IEnumerable<IWorkItemStatus>> GetByWorkItemTypeId(ISettings settings, Guid workItemTypeId, bool? isActive = null)
+        {
+            return (await _dataFactory.GetByWorkItemTypeId(new DataSettings(settings), workItemTypeId, isActive))
                 .Select<WorkItemStatusData, IWorkItemStatus>(Create);
         }
     }

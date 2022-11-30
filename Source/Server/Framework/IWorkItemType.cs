@@ -22,5 +22,8 @@ namespace YardLight.Framework
 
         Task Create(ITransactionHandler transactionHandler, Guid userId);
         Task Update(ITransactionHandler transactionHandler, Guid userId);
+
+        IWorkItemStatus CreateStatus();
+        Task<IEnumerable<IWorkItemStatus>> GetStatuses(ISettings settings, bool? isActive = null);
     }
 }

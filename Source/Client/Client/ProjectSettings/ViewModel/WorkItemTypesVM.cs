@@ -16,10 +16,24 @@ namespace YardLight.Client.ProjectSettings.ViewModel
         private Project _project;
         private WorkItemTypeVM _selectedType;
         private readonly ObservableCollection<WorkItemTypeVM> _types = new ObservableCollection<WorkItemTypeVM>();
+        private bool _showInactive = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ObservableCollection<WorkItemTypeVM> Types => _types;
+
+        public bool ShowInactive
+        {
+            get => _showInactive;
+            set
+            {
+                if (_showInactive != value)
+                {
+                    _showInactive = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public WorkItemTypeVM SelectedType
         {

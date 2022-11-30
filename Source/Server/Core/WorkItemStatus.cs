@@ -14,16 +14,24 @@ namespace YardLight.Core
     {
         private readonly WorkItemStatusData _data;
         private readonly IWorkItemStatusDataSaver _dataSaver;
+        private readonly IWorkItemType _parentType;
 
         public WorkItemStatus(WorkItemStatusData data,
-            IWorkItemStatusDataSaver dataSaver)
+            IWorkItemStatusDataSaver dataSaver,
+            IWorkItemType parentType)
         {
             _data = data;
             _dataSaver = dataSaver;
+            _parentType = parentType;
         }
 
-        public Guid WorkItemStatusId => _data.WorkItemStatusId;
+        public WorkItemStatus(WorkItemStatusData data,
+            IWorkItemStatusDataSaver dataSaver)
+            : this(data, dataSaver, null)
+        {}
 
+        public Guid WorkItemStatusId => _data.WorkItemStatusId;
+        public Guid WorkItemTypeId { get => _data.WorkItemTypeId; private set => _data.WorkItemTypeId = value; }
         public Guid ProjectId => _data.ProjectId;
 
         public string Title { get => _data.Title; set => _data.Title = value; }
@@ -39,8 +47,11 @@ namespace YardLight.Core
 
         public Guid UpdateUserId => _data.UpdateUserId;
 
-        public Task Create(ITransactionHandler transactionHandler, Guid userId)
-        => _dataSaver.Create(transactionHandler, _data, userId);
+        public async Task Create(ITransactionHandler transactionHandler, Guid userId)
+        {
+            WorkItemTypeId = _parentType.WorkItemTypeId;
+            await _dataSaver.Create(transactionHandler, _data, userId);
+        }
 
         public Task Update(ITransactionHandler transactionHandler, Guid userId)
         => _dataSaver.Update(transactionHandler, _data, userId);

@@ -158,8 +158,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.21, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.21\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.22, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.22\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
     <Reference Include="YardLight.Interface.Authorization, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YardLight.Interface.Authorization.1.0.0-alpha.7\lib\net48\YardLight.Interface.Authorization.dll</HintPath>
@@ -217,6 +217,9 @@
     <Compile Include="ProjectSettings\Controls\WorkItemStatus.xaml.cs">
       <DependentUpon>WorkItemStatus.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProjectSettings\Controls\WorkItemStatuses.xaml.cs">
+      <DependentUpon>WorkItemStatuses.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProjectSettings\Controls\WorkItemType.xaml.cs">
       <DependentUpon>WorkItemType.xaml</DependentUpon>
     </Compile>
@@ -231,9 +234,6 @@
     <Compile Include="ProjectSettings\ViewModel\WorkItemStatusesVM.cs" />
     <Compile Include="ProjectSettings\ViewModel\WorkItemTypeVM.cs" />
     <Compile Include="ProjectSettings\ViewModel\WorkItemStatusVM.cs" />
-    <Compile Include="ProjectSettings\WorkItemStatuses.xaml.cs">
-      <DependentUpon>WorkItemStatuses.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ProjectSettings\WorkItemTypes.xaml.cs">
       <DependentUpon>WorkItemTypes.xaml</DependentUpon>
     </Compile>
@@ -320,6 +320,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ProjectSettings\Controls\WorkItemStatuses.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ProjectSettings\Controls\WorkItemType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -329,10 +333,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProjectSettings\ProjectSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ProjectSettings\WorkItemStatuses.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

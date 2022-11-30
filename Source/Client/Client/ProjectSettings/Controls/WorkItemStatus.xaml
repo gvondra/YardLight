@@ -18,7 +18,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.Row="0">Title:</TextBlock>
         <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxWithError}" Text="{Binding Title, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
@@ -40,19 +39,5 @@
             by
             <TextBlock Text="{Binding UpdateUserName}" />
         </TextBlock>
-        <Button Grid.Column="1" Grid.Row="6" Click="SaveButton_Click">
-            <Button.Style>
-                <Style BasedOn="{StaticResource SaveButtonStyle}" TargetType="Button">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding HasErrors}" Value="True">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding SaveButtonEnabled}" Value="False">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
     </Grid>
 </UserControl>

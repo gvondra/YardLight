@@ -14,6 +14,8 @@ namespace YardLight.Client.ProjectSettings.ViewModel
 {
     public class WorkItemTypeVM : INotifyPropertyChanged, IDataErrorInfo
     {
+        private readonly WorkItemTypesVM _workItemTypesVM;
+        private readonly WorkItemStatusesVM _statusesVM;
         private readonly ConcurrentDictionary<string, string> _errors = new ConcurrentDictionary<string, string>();
         private readonly List<object> _behaviors = new List<object>();
         private WorkItemType _workItemType;
@@ -21,15 +23,20 @@ namespace YardLight.Client.ProjectSettings.ViewModel
         private string _createUserName;
         private string _updateUserName;
 
-        public WorkItemTypeVM(WorkItemType workItemType)
+        public WorkItemTypeVM(WorkItemTypesVM workItemTypesVM, WorkItemType workItemType)
         {
+            _workItemTypesVM = workItemTypesVM;
             _workItemType = workItemType;
+            _statusesVM = new WorkItemStatusesVM(this);
+            InitializeStatuses(workItemType);
             _behaviors.Add(new WorkItemTypeValidator(this));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public WorkItemType InnerType => _workItemType;
+        public WorkItemStatusesVM StatusesVM => _statusesVM;
+        public WorkItemTypesVM WorkItemTypesVM => _workItemTypesVM;
 
         public bool SaveButtonEnabled
         {
@@ -151,6 +158,17 @@ namespace YardLight.Client.ProjectSettings.ViewModel
             _workItemType = workItemType;
             NotifyPropertyChanged(nameof(CreateTimestamp));
             NotifyPropertyChanged(nameof(UpdateTimestamp));
+        }
+
+        private void InitializeStatuses(WorkItemType workItemType)
+        {
+            _statusesVM.Statuses.Clear();
+            foreach (WorkItemStatus workItemStatus in workItemType.Statuses ?? new List<WorkItemStatus>())
+            {
+                _statusesVM.Statuses.Add(new WorkItemStatusVM(workItemStatus));
+            }
+            if (_statusesVM.Statuses.Count > 0) 
+                _statusesVM.SelectedStatus = _statusesVM.Statuses[0];
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

@@ -14,11 +14,16 @@
         <Border DockPanel.Dock="Left" BorderBrush="DarkGray" BorderThickness="1" Padding="2,0">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListView Grid.Row="0" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" DisplayMemberPath="Title" BorderBrush="{x:Null}" MinWidth="150"/>
-                <TextBlock Grid.Row="1"><Hyperlink Click="AddHyperlink_Click">Add</Hyperlink></TextBlock>
+                <WrapPanel Grid.Row="0">
+                    <TextBlock>Show Inactive: </TextBlock>
+                    <CheckBox IsChecked="{Binding ShowInactive}" Click="ShowInactiveCheckBox_Click"/>
+                </WrapPanel>                
+                <ListView Grid.Row="1" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" DisplayMemberPath="Title" BorderBrush="{x:Null}" MinWidth="150"/>
+                <TextBlock Grid.Row="2"><Hyperlink Click="AddHyperlink_Click">Add</Hyperlink></TextBlock>
             </Grid>
         </Border>
         <ctrl:WorkItemType DataContext="{Binding SelectedType}" >

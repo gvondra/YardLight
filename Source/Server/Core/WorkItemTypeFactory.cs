@@ -14,14 +14,18 @@ namespace YardLight.Core
     {
         private readonly IWorkItemTypeDataFactory _dataFactory;
         private readonly IWorkItemTypeDataSaver _dataSaver;
+        private readonly IWorkItemStatusFactory _statusFactory;
 
-        public WorkItemTypeFactory(IWorkItemTypeDataFactory dataFactory, IWorkItemTypeDataSaver dataSaver)
+        public WorkItemTypeFactory(IWorkItemTypeDataFactory dataFactory, 
+            IWorkItemTypeDataSaver dataSaver,
+            IWorkItemStatusFactory statusFactory)
         {
             _dataFactory = dataFactory;
             _dataSaver = dataSaver;
+            _statusFactory = statusFactory;
         }
 
-        private WorkItemType Create(WorkItemTypeData data) => new WorkItemType(data, _dataSaver);
+        private WorkItemType Create(WorkItemTypeData data) => new WorkItemType(data, _dataSaver, _statusFactory);
 
         public IWorkItemType Create(Guid projectId)
         {

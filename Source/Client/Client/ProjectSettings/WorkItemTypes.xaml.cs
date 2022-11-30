@@ -46,12 +46,12 @@ namespace YardLight.Client.ProjectSettings
             {
                 Task.Run(() => GetProject(userSession.OpenProjectId))
                     .ContinueWith(GetProjectCallback, userSession.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
-                Task.Run(() => GetTypes(userSession.OpenProjectId))
+                Task.Run(() => GetTypes(userSession.OpenProjectId, WorkItemTypesVM.ShowInactive))
                     .ContinueWith(GetTypesCallback, userSession.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
 
-        private async Task<List<WorkItemTypeVM>> GetTypes(Guid? projectId)
+        private async Task<List<WorkItemTypeVM>> GetTypes(Guid? projectId, bool showInactive)
         {
             if (projectId.HasValue)
             {
@@ -59,14 +59,20 @@ namespace YardLight.Client.ProjectSettings
                 {
                     ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                     IWorkItemTypeService typeService = scope.Resolve<IWorkItemTypeService>();
-                    List<WorkItemTypeVM> typeVMs = (await typeService.GetByProjectId(settingsFactory.CreateApi(), projectId.Value))
-                        .Select(t => new WorkItemTypeVM(t))
+                    bool? isAtive = showInactive ? default(bool?) : true;
+                    List<WorkItemTypeVM> typeVMs = (await typeService.GetByProjectId(settingsFactory.CreateApi(), projectId.Value, isAtive))
+                        .Select(t => new WorkItemTypeVM(WorkItemTypesVM, t))
                         .ToList();
                     IUserService userService = scope.Resolve<IUserService>();
                     foreach (WorkItemTypeVM workItemTypeVM in typeVMs)
                     {
                         workItemTypeVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemTypeVM.InnerType.CreateUserId.Value);
-                        workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemTypeVM.InnerType.UpdateUserId.Value);
+                        workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemTypeVM.InnerType.UpdateUserId.Value);                        
+                        foreach (WorkItemStatusVM workItemStatusVM in workItemTypeVM.StatusesVM.Statuses)
+                        {
+                            workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.CreateUserId.Value);
+                            workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.UpdateUserId.Value);
+                        }
                     }
                     return typeVMs;
                 }
@@ -149,9 +155,10 @@ namespace YardLight.Client.ProjectSettings
                 {
                     Title = "New Type",
                     ColorCode = "DarkGray",
-                    ProjectId = WorkItemTypesVM.Project.ProjectId
+                    ProjectId = WorkItemTypesVM.Project.ProjectId,
+                    Statuses = new List<Models.WorkItemStatus>()
                 };
-                WorkItemTypeVM workItemTypeVM = new WorkItemTypeVM(type);
+                WorkItemTypeVM workItemTypeVM = new WorkItemTypeVM(WorkItemTypesVM, type);
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IUserService userService = scope.Resolve<IUserService>();
                 User user = await userService.Get(settingsFactory.CreateAuthorization());
@@ -173,6 +180,13 @@ namespace YardLight.Client.ProjectSettings
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
+        }
+
+        private void ShowInactiveCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            WorkItemTypesVM.Types.Clear();
+            Task.Run(() => GetTypes(WorkItemTypesVM.Project.ProjectId, WorkItemTypesVM.ShowInactive))
+                .ContinueWith(GetTypesCallback, WorkItemTypesVM.Project.ProjectId, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

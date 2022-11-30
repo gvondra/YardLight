@@ -13,13 +13,20 @@ namespace YardLight.Client.ProjectSettings.ViewModel
 {
     public class WorkItemStatusesVM : INotifyPropertyChanged
     {
+        private readonly ObservableCollection<WorkItemStatusVM> _statuses = new ObservableCollection<WorkItemStatusVM>();
+        private readonly WorkItemTypeVM _workItemTypeVM;
         private Project _project;
         private WorkItemStatusVM _selectedStatus;
-        private readonly ObservableCollection<WorkItemStatusVM> _statuses = new ObservableCollection<WorkItemStatusVM>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public WorkItemStatusesVM(WorkItemTypeVM workItemTypeVM)
+        {
+            _workItemTypeVM = workItemTypeVM;
+        }
+
         public ObservableCollection<WorkItemStatusVM> Statuses => _statuses;
+        public WorkItemTypeVM WorkItemTypeVM => _workItemTypeVM;
 
         public WorkItemStatusVM SelectedStatus
         {

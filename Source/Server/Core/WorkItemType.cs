@@ -14,12 +14,15 @@ namespace YardLight.Core
     {
         private readonly WorkItemTypeData _data;
         private readonly IWorkItemTypeDataSaver _dataSaver;
+        private readonly IWorkItemStatusFactory _statusFactory;
 
         public WorkItemType(WorkItemTypeData data,
-            IWorkItemTypeDataSaver dataSaver)
+            IWorkItemTypeDataSaver dataSaver,
+            IWorkItemStatusFactory statusFactory)
         {
             _data = data;
             _dataSaver = dataSaver;
+            _statusFactory = statusFactory;
         }
 
         public Guid WorkItemTypeId => _data.WorkItemTypeId;
@@ -40,6 +43,12 @@ namespace YardLight.Core
 
         public Task Create(ITransactionHandler transactionHandler, Guid userId)
         => _dataSaver.Create(transactionHandler, _data, userId);
+
+        public IWorkItemStatus CreateStatus()
+        => _statusFactory.Create(ProjectId, this);
+
+        public Task<IEnumerable<IWorkItemStatus>> GetStatuses(ISettings settings, bool? isActive = null)
+        => _statusFactory.GetByWorkItemTypeId(settings, WorkItemTypeId, isActive);
 
         public Task Update(ITransactionHandler transactionHandler, Guid userId)
         => _dataSaver.Update(transactionHandler, _data, userId);
