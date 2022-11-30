@@ -34,3 +34,11 @@ CREATE INDEX [IX_WorkItem_StatusId] ON [yl].[WorkItem] ([StatusId])
 GO
 
 CREATE INDEX [IX_WorkItem_TypeId] ON [yl].[WorkItem] ([TypeId])
+
+GO
+
+CREATE INDEX [IX_WorkItem_Team] ON [yl].[WorkItem] ([Team])
+
+GO
+
+CREATE INDEX [IX_WorkItem_Itteration] ON [yl].[WorkItem] ([Itteration])
