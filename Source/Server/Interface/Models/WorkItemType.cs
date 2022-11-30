@@ -17,5 +17,7 @@ namespace YardLight.Interface.Models
         public DateTime? UpdateTimestamp { get; set; }
         public Guid? CreateUserId { get; set; }
         public Guid? UpdateUserId { get; set; }
+
+        public List<WorkItemStatus> Statuses { get; set; }
     }
 }

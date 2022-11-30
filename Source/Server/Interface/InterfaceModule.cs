@@ -18,7 +18,6 @@ namespace YardLight.Interface
             builder.RegisterType<ExceptionService>().As<IExceptionService>();
             builder.RegisterType<MetricService>().As<IMetricService>();
             builder.RegisterType<ProjectService>().As<IProjectService>();
-            builder.RegisterType<WorkItemStatusService>().As<IWorkItemStatusService>();
             builder.RegisterType<WorkItemTypeService>().As<IWorkItemTypeService>();
         }
     }
