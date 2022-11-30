@@ -39,6 +39,7 @@ namespace YardLight.Data
                     timestamp.Direction = ParameterDirection.Output;
                     command.Parameters.Add(timestamp);
 
+                    DataUtil.AddParameter(_providerFactory, command.Parameters, "workItemTypeId", DbType.Guid, DataUtil.GetParameterValue(data.WorkItemTypeId));
                     DataUtil.AddParameter(_providerFactory, command.Parameters, "projectId", DbType.Guid, DataUtil.GetParameterValue(data.ProjectId));
                     AddCommonParameters(command.Parameters, data, userId);
 

@@ -45,5 +45,20 @@ namespace YardLight.Data
                 parameters
                 );
         }
+
+        public async Task<IEnumerable<WorkItemStatusData>> GetByWorkItemTypeId(ISettings settings, Guid workItemTypeId, bool? isActive = null)
+        {
+            IDataParameter[] parameters = new IDataParameter[]
+            {
+                DataUtil.CreateParameter(_providerFactory, "workItemTypeId", DbType.Guid, DataUtil.GetParameterValue(workItemTypeId)),
+                DataUtil.CreateParameter(_providerFactory, "isActive", DbType.Boolean, DataUtil.GetParameterValue(isActive))
+            };
+            return await _dataFactory.GetData(settings, _providerFactory,
+                "[yl].[GetWorkItemStatus_by_WorkItemTypeId]",
+                () => new WorkItemStatusData(),
+                DataUtil.AssignDataStateManager,
+                parameters
+                );
+        }
     }
 }

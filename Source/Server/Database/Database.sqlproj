@@ -88,6 +88,7 @@
     <Build Include="Stored Procedure\yl.CreateWorkItemType.sql" />
     <Build Include="Stored Procedure\yl.GetWorkItemStatus.sql" />
     <Build Include="Stored Procedure\yl.GetWorkItemType.sql" />
+    <Build Include="Stored Procedure\yl.GetWorkItemStatus_by_WorkItemTypeId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />

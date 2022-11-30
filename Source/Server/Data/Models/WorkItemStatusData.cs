@@ -10,6 +10,7 @@ namespace YardLight.Data.Models
     public class WorkItemStatusData : DataManagedStateBase
     {
         [ColumnMapping("WorkItemStatusId")] public Guid WorkItemStatusId { get; set; }
+        [ColumnMapping("WorkItemTypeId")] public Guid WorkItemTypeId { get; set; }
         [ColumnMapping("ProjectId")] public Guid ProjectId { get; set; }
         [ColumnMapping("Title")] public string Title { get; set; }
         [ColumnMapping("ColorCode")] public string ColorCode { get; set; } = "black";
