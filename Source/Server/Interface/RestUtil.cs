@@ -21,7 +21,31 @@ namespace YardLight.Interface
         internal void CheckSuccess(IResponse response)
         {
             if (!response.IsSuccessStatusCode)
-                throw new ApplicationException($"Error {(int)response.StatusCode} {response.StatusCode}");
+            {
+                ApplicationException exception = new ApplicationException($"Error {(int)response.StatusCode} {response.StatusCode}");
+                exception.Data["RequestAddress"] = response.Message.RequestMessage.RequestUri.ToString();
+                throw exception;
+            }
+        }
+
+        internal void CheckSuccess<T>(IResponse<T> response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                ApplicationException exception = new ApplicationException($"Error {(int)response.StatusCode} {response.StatusCode}");
+                exception.Data["RequestAddress"] = response.Message.RequestMessage.RequestUri.ToString();
+                if (!string.IsNullOrEmpty(response.Text))
+                    exception.Data["Text"] = response.Text;
+                throw exception;
+            }
+        }
+
+        public string AppendPath(string basePath, params string[] segments)
+        {
+            List<string> path = basePath.Split('/').Where(p => !string.IsNullOrEmpty(p)).ToList();
+            return string.Join("/",
+                path.Concat(segments.Where(s => !string.IsNullOrEmpty(s)))
+                );
         }
     }
 }

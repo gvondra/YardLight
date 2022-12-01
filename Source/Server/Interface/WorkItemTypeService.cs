@@ -34,9 +34,7 @@ namespace YardLight.Interface
                 .AddPathParameter("projectId", projectId.ToString("N"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
-            IResponse<WorkItemType> response = await _service.Send<WorkItemType>(request);
-            _restUtil.CheckSuccess(response);
-            return response.Value;
+            return await _restUtil.Send<WorkItemType>(_service, request);
         }
 
         public async Task<List<WorkItemType>> GetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
@@ -48,9 +46,7 @@ namespace YardLight.Interface
                 ;
             if (isActive.HasValue)
                 request.AddQueryParameter("isActive", isActive.Value.ToString());
-            IResponse<List<WorkItemType>> response = await _service.Send<List<WorkItemType>>(request);
-            _restUtil.CheckSuccess(response);
-            return response.Value;
+            return await _restUtil.Send<List<WorkItemType>>(_service, request);
         }
 
         public Task<WorkItemType> Update(ISettings settings, WorkItemType type)
@@ -70,9 +66,7 @@ namespace YardLight.Interface
                 .AddPathParameter("id", id.ToString("N"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
-            IResponse<WorkItemType> response = await _service.Send<WorkItemType>(request);
-            _restUtil.CheckSuccess(response);
-            return response.Value;
+            return await _restUtil.Send<WorkItemType>(_service, request);
         }
     }
 }

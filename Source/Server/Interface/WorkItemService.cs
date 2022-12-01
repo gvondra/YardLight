@@ -27,9 +27,7 @@ namespace YardLight.Interface
                 .AddPathParameter("projectId", projectId.ToString("N"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
-            IResponse<WorkItem> response = await _service.Send<WorkItem>(request);
-            _restUtil.CheckSuccess(response);
-            return response.Value;
+            return await _restUtil.Send<WorkItem>(_service, request);
         }
 
         public Task<WorkItem> Create(ISettings settings, WorkItem workItem)
@@ -46,9 +44,7 @@ namespace YardLight.Interface
                 .AddPathParameter("projectId", projectId.ToString("N"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
-            IResponse<List<WorkItem>> response = await _service.Send<List<WorkItem>>(request);
-            _restUtil.CheckSuccess(response);
-            return response.Value;
+            return await _restUtil.Send<List<WorkItem>>(_service, request);
         }
 
         public async Task<WorkItem> Update(ISettings settings, Guid projectId, Guid id, WorkItem workItem)
@@ -59,9 +55,7 @@ namespace YardLight.Interface
                 .AddPathParameter("id", id.ToString("N"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
-            IResponse<WorkItem> response = await _service.Send<WorkItem>(request);
-            _restUtil.CheckSuccess(response);
-            return response.Value;
+            return await _restUtil.Send<WorkItem>(_service, request);
         }
 
         public Task<WorkItem> Update(ISettings settings, WorkItem workItem)
