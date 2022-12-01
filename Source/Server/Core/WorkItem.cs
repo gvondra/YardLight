@@ -65,6 +65,7 @@ namespace YardLight.Core
 
         private Guid StatusId { get => _data.StatusId; set => _data.StatusId = value; }
         private Guid TypeId { get => _data.TypeId; set => _data.TypeId = value; }
+        public Guid? ParentWorkItemId { get => _data.ParentWorkItemId; set => _data.ParentWorkItemId = value; }
 
         public async Task Create(ITransactionHandler transactionHandler, Guid userId)
         {

@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YardLight.Client.Backlog.Behaviors;
 using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface;
 using YardLight.Interface.Models;
@@ -54,6 +55,7 @@ namespace YardLight.Client.Backlog.Controls
                     throw new ApplicationException($"Active status not found for type {workItemType.Title}. Verify that the type is configured with at least 1 active status.");
                 WorkItem workItem = new WorkItem
                 {
+                    ParentWorkItemId = createWorkItemVM?.ParentWorkItem?.WorkItemId,
                     ProjectId = createWorkItemVM.BacklogVM.Project.ProjectId,
                     Title = createWorkItemVM.NewItemTitle,
                     Type = workItemType,
@@ -69,6 +71,24 @@ namespace YardLight.Client.Backlog.Controls
             try
             {                
                 WorkItem workItem = await createWorkItem;
+                WorkItemVM workItemVM = new WorkItemVM(createWorkItemVM.BacklogVM, workItem);
+                workItemVM.AddBehavior(new CreateWorkItemLoader(workItemVM.CreateWorkItemVM));
+                WorkItemVM parent = null;
+                if (workItemVM.ParentWorkItemId.HasValue)
+                {
+                    parent = Find(createWorkItemVM.BacklogVM.RootWorkItems, workItemVM.ParentWorkItemId.Value);
+                }
+                if (parent == null)
+                {
+                    createWorkItemVM.BacklogVM.RootWorkItems.Add(workItemVM);
+                    createWorkItemVM.BacklogVM.AddBehavior(new WorkItemLoader(workItemVM));
+                }
+                else
+                {
+                    parent.Children.Add(workItemVM);
+                    parent.AddBehavior(new WorkItemLoader(workItemVM));
+                }
+                createWorkItemVM.CreateWorkItemVisible = Visibility.Collapsed;
             }
             catch (System.Exception ex)
             {
@@ -79,6 +99,20 @@ namespace YardLight.Client.Backlog.Controls
                 createWorkItemVM.CreateButtonText = "Create";
                 createWorkItemVM.NewItemTitle = string.Empty;
             }
+        }
+
+        private WorkItemVM Find(IEnumerable<WorkItemVM> workItems, Guid id)
+        {
+            WorkItemVM workItemVM = null;
+            IEnumerator<WorkItemVM> enumerator = workItems.GetEnumerator();
+            while (workItemVM == null && enumerator.MoveNext())
+            {
+                if (id.Equals(enumerator.Current.WorkItemId))
+                    workItemVM = enumerator.Current;
+                else 
+                    workItemVM = Find(enumerator.Current.Children, id);
+            }
+            return workItemVM;
         }
     }
 }

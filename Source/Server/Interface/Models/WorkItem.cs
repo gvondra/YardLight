@@ -10,6 +10,7 @@ namespace YardLight.Interface.Models
     {
         public Guid? WorkItemId { get; set; }
         public Guid? ProjectId { get; set; }
+        public Guid? ParentWorkItemId { get; set; }
         public string Title { get; set; }
         public WorkItemType Type { get; set; }
         public WorkItemStatus Status { get; set; }

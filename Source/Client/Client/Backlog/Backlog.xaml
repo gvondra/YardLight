@@ -9,8 +9,30 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Yard Light: Backlog" Style="{StaticResource DefaultPageStyle}">
 
+    <Page.Resources>
+        <HierarchicalDataTemplate x:Key="TreeItemTemplate" ItemsSource="{Binding Children}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0">
+                    <TextBlock Foreground="{Binding BulletColor}" FontSize="16">•</TextBlock>
+                    <TextBlock Text="{Binding Title}" TextDecorations="Underline" FontSize="14" />
+                    <TextBlock Text="{Binding StatusTitle}"/>
+                </TextBlock>
+                <WrapPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock><Hyperlink Click="AddChildHyperlink_Click">Add</Hyperlink></TextBlock>
+                    <ctrl:AddWorkItem Margin="5,0" DataContext="{Binding CreateWorkItemVM}" Visibility="{Binding CreateWorkItemVisible}" />
+                </WrapPanel>
+            </Grid>
+        </HierarchicalDataTemplate>
+    </Page.Resources>
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" Style="{StaticResource PageTitle}" >Backlog: <TextBlock Text="{Binding Project.Title}"/></TextBlock>
         <ctrl:AddWorkItem DockPanel.Dock="Bottom" HorizontalAlignment="Left" VerticalAlignment="Bottom" DataContext="{Binding CreateWorkItemVM}" />
+        <TreeView ItemsSource="{Binding RootWorkItems}" 
+                  ItemTemplate="{StaticResource TreeItemTemplate}"/>
+
     </DockPanel>
 </Page>

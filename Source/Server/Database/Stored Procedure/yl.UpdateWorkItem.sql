@@ -1,5 +1,6 @@
 ﻿CREATE PROCEDURE [yl].[UpdateWorkItem]
 	@id UNIQUEIDENTIFIER,
+	@parentWorkItemId UNIQUEIDENTIFIER,
 	@title NVARCHAR(512),
 	@typeId UNIQUEIDENTIFIER,
 	@statusId UNIQUEIDENTIFIER,
@@ -18,6 +19,7 @@ BEGIN
 SET @timestamp = SYSUTCDATETIME();
 UPDATE [yl].[WorkItem]
 SET 
+	[ParentWorkItemId] = @parentWorkItemId,
 	[Title] = @title,
 	[TypeId] = @typeId,
 	[StatusId] = @statusId,

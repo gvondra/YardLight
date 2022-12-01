@@ -10,21 +10,22 @@ namespace YardLight.Framework
 {
     public interface IWorkItem
     {
-        public Guid WorkItemId { get; }
-        public Guid ProjectId { get; }
-        public string Title { get; set; }
-        public string Team { get; set; }
-        public string Itteration { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? TargetDate { get; set; }
-        public DateTime? CloseDate { get; set; }
-        public string Priority { get; set; }
-        public string Effort { get; set; }
-        public string Value { get; set; }
-        public DateTime CreateTimestamp { get; }
-        public DateTime UpdateTimestamp { get; }
-        public Guid CreateUserId { get; }
-        public Guid UpdateUserId { get; }
+        Guid WorkItemId { get; }
+        Guid ProjectId { get; }
+        Guid? ParentWorkItemId { get; set; }
+        string Title { get; set; }
+        string Team { get; set; }
+        string Itteration { get; set; }
+        DateTime? StartDate { get; set; }
+        DateTime? TargetDate { get; set; }
+        DateTime? CloseDate { get; set; }
+        string Priority { get; set; }
+        string Effort { get; set; }
+        string Value { get; set; }
+        DateTime CreateTimestamp { get; }
+        DateTime UpdateTimestamp { get; }
+        Guid CreateUserId { get; }
+        Guid UpdateUserId { get; }
 
         Task Create(ITransactionHandler transactionHandler, Guid userId);
         Task Update(ITransactionHandler transactionHandler, Guid userId);

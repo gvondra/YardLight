@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [yl].[WorkItem]
 (
 	[WorkItemId] UNIQUEIDENTIFIER NOT NULL,
+	[ParentWorkItemId] UNIQUEIDENTIFIER NULL,
 	[ProjectId] UNIQUEIDENTIFIER NOT NULL,
 	[Title] NVARCHAR(512) NOT NULL,
 	[TypeId] UNIQUEIDENTIFIER NOT NULL,
@@ -20,7 +21,8 @@
 	CONSTRAINT [PK_WorkItem] PRIMARY KEY CLUSTERED ([WorkItemId]), 
     CONSTRAINT [FK_WorkItem_To_Project] FOREIGN KEY ([ProjectId]) REFERENCES [yl].[Project]([ProjectId]), 
     CONSTRAINT [FK_WorkItem_To_Status] FOREIGN KEY ([StatusId]) REFERENCES [yl].[WorkItemStatus]([WorkItemStatusId]), 
-    CONSTRAINT [FK_WorkItem_To_Type] FOREIGN KEY ([TypeId]) REFERENCES [yl].[WorkItemType]([WorkItemTypeId])
+    CONSTRAINT [FK_WorkItem_To_Type] FOREIGN KEY ([TypeId]) REFERENCES [yl].[WorkItemType]([WorkItemTypeId]), 
+    CONSTRAINT [FK_WorkItem_To_ParentWorkItem] FOREIGN KEY ([ParentWorkItemId]) REFERENCES [yl].[WorkItem]([WorkItemId]) 
 )
 
 GO
@@ -42,3 +44,7 @@ CREATE INDEX [IX_WorkItem_Team] ON [yl].[WorkItem] ([Team])
 GO
 
 CREATE INDEX [IX_WorkItem_Itteration] ON [yl].[WorkItem] ([Itteration])
+
+GO
+
+CREATE INDEX [IX_WorkItem_ParentWorkItemId] ON [yl].[WorkItem] ([ParentWorkItemId])

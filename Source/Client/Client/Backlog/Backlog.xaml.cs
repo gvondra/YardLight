@@ -42,5 +42,11 @@ namespace YardLight.Client.Backlog
             _backlogVMLoader = new BacklogVMLoader(BacklogVM);
             _backlogVMLoader.Load();
         }
+
+        private void AddChildHyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            WorkItemVM workItemVM = (WorkItemVM)((dynamic)e.Source).DataContext;
+            workItemVM.CreateWorkItemVM.CreateWorkItemVisible = workItemVM.CreateWorkItemVM.CreateWorkItemVisible == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 }

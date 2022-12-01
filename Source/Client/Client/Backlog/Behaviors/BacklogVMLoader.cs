@@ -25,9 +25,47 @@ namespace YardLight.Client.Backlog.Behaviors
             UserSession userSession = UserSessionLoader.GetUserSession();
             Task.Run(() => LoadProject(userSession.OpenProjectId.Value))
                 .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());
-            Task.Run(() => LoadAvailableWorkItemTypes(userSession.OpenProjectId.Value))
-                .ContinueWith(LoadAvailableWorkItemTypesCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());
             _backlogVM.AddBehavior(new CreateWorkItemLoader(_backlogVM.CreateWorkItemVM));
+        }
+
+        private Task<List<WorkItem>> LoadAllWorkItems(Guid projectId)
+        {
+            using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+            {
+                ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                IWorkItemService workItemService = scope.Resolve<IWorkItemService>();
+                return workItemService.GetByProjectId(settingsFactory.CreateApi(), projectId);
+            }
+        }
+
+        private async Task LoadAllWorkItemsCallback(Task<List<WorkItem>> loadAllWorkItems, object state)
+        {
+            try
+            {
+                _backlogVM.RootWorkItems.Clear();
+                List<WorkItemVM> items = new List<WorkItemVM>();
+                foreach (WorkItem workItem in await loadAllWorkItems)
+                {
+                    WorkItemVM workItemVM = new WorkItemVM(_backlogVM, workItem);
+                    workItemVM.AddBehavior(new CreateWorkItemLoader(workItemVM.CreateWorkItemVM));
+                    items.Add(workItemVM);
+                    if (!workItemVM.ParentWorkItemId.HasValue)
+                    {
+                        _backlogVM.RootWorkItems.Add(workItemVM);
+                        _backlogVM.AddBehavior(new WorkItemLoader(workItemVM));
+                    }
+                }
+                foreach (WorkItemVM item in items.Where(i => i.ParentWorkItemId.HasValue))
+                {
+                    WorkItemVM parent = items.FirstOrDefault(i => item.ParentWorkItemId.Value.Equals(i.WorkItemId.Value));
+                    parent.AddBehavior(new WorkItemLoader(item));
+                    parent.Children.Add(item);
+                }
+            }
+            catch(System.Exception ex)
+            {
+                ErrorWindow.Open(ex, null);
+            }
         }
 
         private Task<List<WorkItemType>> LoadAvailableWorkItemTypes(Guid projectId)
@@ -49,8 +87,10 @@ namespace YardLight.Client.Backlog.Behaviors
                 {
                     _backlogVM.AvailableTypes.Add(new WorkItemTypeVM(workItemType));
                 }
-                if (_backlogVM.AvailableTypes.Count > 0) 
+                if (_backlogVM.AvailableTypes.Count > 0)
                     _backlogVM.CreateWorkItemVM.SelectedNewItemType = _backlogVM.AvailableTypes[0];
+                _ = Task.Run(() => LoadAllWorkItems(_backlogVM.Project.ProjectId))
+                    .ContinueWith(LoadAllWorkItemsCallback, _backlogVM.Project.ProjectId, TaskScheduler.FromCurrentSynchronizationContext());
             }
             catch (System.Exception ex)
             {
@@ -78,6 +118,8 @@ namespace YardLight.Client.Backlog.Behaviors
                 if (((Guid)state).Equals(project.ProjectId))
                 {
                     _backlogVM.Project = project;
+                    _ = Task.Run(() => LoadAvailableWorkItemTypes(project.ProjectId))
+                    .ContinueWith(LoadAvailableWorkItemTypesCallback, project.ProjectId, TaskScheduler.FromCurrentSynchronizationContext());
                 }
             }
             catch (System.Exception ex)

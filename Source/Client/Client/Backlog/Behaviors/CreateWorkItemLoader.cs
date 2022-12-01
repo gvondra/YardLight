@@ -15,6 +15,7 @@ namespace YardLight.Client.Backlog.Behaviors
         public CreateWorkItemLoader(CreateWorkItemVM createWorkItemVM)
         {
             _createWorkItemVM = createWorkItemVM;
+            SetNewWorkItemBackgroundBrush();
             _createWorkItemVM.PropertyChanged += CreateWorkItemVM_PropertyChanged;
         }
 

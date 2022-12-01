@@ -15,8 +15,9 @@ namespace YardLight.Client.Backlog.ViewModels
     public class BacklogVM : ViewModelBase
     {
         private readonly CreateWorkItemVM _createWorkItemVM;
+        private readonly ObservableCollection<WorkItemTypeVM> _availableTypes = new ObservableCollection<WorkItemTypeVM>();
+        private readonly ObservableCollection<WorkItemVM> _rootWorkItems = new ObservableCollection<WorkItemVM>();
         private Project _project;
-        private ObservableCollection<WorkItemTypeVM> _availableTypes = new ObservableCollection<WorkItemTypeVM>();
 
         public BacklogVM()
         {
@@ -25,6 +26,7 @@ namespace YardLight.Client.Backlog.ViewModels
 
         public CreateWorkItemVM CreateWorkItemVM => _createWorkItemVM;
         public ObservableCollection<WorkItemTypeVM> AvailableTypes => _availableTypes;
+        public ObservableCollection<WorkItemVM> RootWorkItems => _rootWorkItems;
         
         public Project Project
         {

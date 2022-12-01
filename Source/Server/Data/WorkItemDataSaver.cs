@@ -80,6 +80,7 @@ namespace YardLight.Data
         private void AddCommonParameters(DbParameterCollection parameters, WorkItemData data, Guid userId)
         {
             DataUtil.AddParameter(_providerFactory, parameters, "userId", DbType.Guid, DataUtil.GetParameterValue(userId));
+            DataUtil.AddParameter(_providerFactory, parameters, "parentWorkItemId", DbType.Guid, DataUtil.GetParameterValue(data.ParentWorkItemId));
             DataUtil.AddParameter(_providerFactory, parameters, "title", DbType.String, DataUtil.GetParameterValue(data.Title));
             DataUtil.AddParameter(_providerFactory, parameters, "typeId", DbType.Guid, DataUtil.GetParameterValue(data.TypeId));
             DataUtil.AddParameter(_providerFactory, parameters, "statusId", DbType.Guid, DataUtil.GetParameterValue(data.StatusId));

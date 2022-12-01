@@ -1,5 +1,6 @@
 ﻿CREATE PROCEDURE [yl].[CreateWorkItem]
 	@id UNIQUEIDENTIFIER OUT,
+	@parentWorkItemId UNIQUEIDENTIFIER,
 	@projectId UNIQUEIDENTIFIER,
 	@title NVARCHAR(512),
 	@typeId UNIQUEIDENTIFIER,
@@ -18,8 +19,8 @@ AS
 BEGIN
 SET @id = NEWID();
 SET @timestamp = SYSUTCDATETIME();
-INSERT INTO [yl].[WorkItem] ([WorkItemId],[ProjectId],[Title],[TypeId],[StatusId],[Team],[Itteration],[StartDate],[TargetDate],[CloseDate],[Priority],[Effort],[Value],
+INSERT INTO [yl].[WorkItem] ([WorkItemId],[ParentWorkItemId],[ProjectId],[Title],[TypeId],[StatusId],[Team],[Itteration],[StartDate],[TargetDate],[CloseDate],[Priority],[Effort],[Value],
 	[CreateTimestamp],[UpdateTimestamp],[CreateUserId],[UpdateUserId])
-VALUES (@id, @projectId, @title, @typeId, @statusId, @team, @itteration, @startDate, @targetDate, @closeDate, @priority, @effort, @value,
+VALUES (@id, @parentWorkItemId, @projectId, @title, @typeId, @statusId, @team, @itteration, @startDate, @targetDate, @closeDate, @priority, @effort, @value,
 	@timestamp, @timestamp, @userId, @userId);
 END

@@ -59,7 +59,7 @@ namespace API.Controllers
                 {
                     ISettings settings = _settingsFactory.CreateCore(_settings.Value);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
-                    result = Ok(Task.WhenAll(
+                    result = Ok(await Task.WhenAll(
                         (await _workItemFactory.GetByProjectId(settings, projectId.Value))
                         .Select<IWorkItem, Task<WorkItem>>(i => Map(settings, mapper, i))
                         ));
