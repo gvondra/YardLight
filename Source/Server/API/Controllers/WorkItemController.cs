@@ -59,10 +59,10 @@ namespace API.Controllers
                 {
                     ISettings settings = _settingsFactory.CreateCore(_settings.Value);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
-                    result = Ok(
+                    result = Ok(Task.WhenAll(
                         (await _workItemFactory.GetByProjectId(settings, projectId.Value))
-                        .Select<IWorkItem, WorkItem>(i => Map(settings, mapper, i))
-                        );
+                        .Select<IWorkItem, Task<WorkItem>>(i => Map(settings, mapper, i))
+                        ));
                 }
             }
             catch (System.Exception ex)
@@ -83,11 +83,11 @@ namespace API.Controllers
         }
 
         [NonAction]
-        private WorkItem Map(ISettings settings, IMapper mapper, IWorkItem innerWorkItem)
+        private async Task<WorkItem> Map(ISettings settings, IMapper mapper, IWorkItem innerWorkItem)
         {
             WorkItem workItem = mapper.Map<WorkItem>(innerWorkItem);
-            workItem.Type = mapper.Map<WorkItemType>(innerWorkItem.GetType(settings));
-            workItem.Status = mapper.Map<WorkItemStatus>(innerWorkItem.GetStatus(settings));
+            workItem.Type = mapper.Map<WorkItemType>(await innerWorkItem.GetType(settings));
+            workItem.Status = mapper.Map<WorkItemStatus>(await innerWorkItem.GetStatus(settings));
             return workItem;
         }
 
@@ -151,7 +151,7 @@ namespace API.Controllers
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     mapper.Map(workItem, innerWorkItem);
                     await _workItemSaver.Create(settings, innerWorkItem, currentUserId.Value);
-                    result = Ok(Map(settings, mapper, innerWorkItem));
+                    result = Ok(await Map(settings, mapper, innerWorkItem));
                 }
             }
             catch (System.Exception ex)
@@ -218,7 +218,7 @@ namespace API.Controllers
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     mapper.Map(workItem, innerWorkItem);
                     await _workItemSaver.Update(settings, innerWorkItem, currentUserId.Value);
-                    result = Ok(Map(settings, mapper, innerWorkItem));
+                    result = Ok(await Map(settings, mapper, innerWorkItem));
                 }
             }
             catch (System.Exception ex)
