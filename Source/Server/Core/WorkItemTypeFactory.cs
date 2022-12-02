@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Polly;
+using Polly.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +15,7 @@ namespace YardLight.Core
 {
     public class WorkItemTypeFactory : IWorkItemTypeFactory
     {
+        private readonly static Policy _cacheByProjectId = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(3));
         private readonly IWorkItemTypeDataFactory _dataFactory;
         private readonly IWorkItemTypeDataSaver _dataSaver;
         private readonly IWorkItemStatusFactory _statusFactory;
@@ -41,7 +45,13 @@ namespace YardLight.Core
             return result;
         }
 
-        public async Task<IEnumerable<IWorkItemType>> GetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
+        public Task<IEnumerable<IWorkItemType>> GetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
+        {
+            return _cacheByProjectId.Execute((context) => InnerGetByProjectId(settings, projectId, isActive),
+                new Context($"{projectId.ToString("N")};{isActive}"));
+        }
+
+        private async Task<IEnumerable<IWorkItemType>> InnerGetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
         {
             return (await _dataFactory.GetByProjectId(new DataSettings(settings), projectId, isActive))
                 .Select<WorkItemTypeData, IWorkItemType>(Create);

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Polly.Caching.Memory;
+using Polly;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +15,8 @@ namespace YardLight.Core
 {
     public class WorkItemStatusFactory : IWorkItemStatusFactory
     {
+        private readonly static Policy _cacheByProjectId = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(3));
+        private readonly static Policy _cacheByWorkItemTypeId = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(3));
         private readonly IWorkItemStatusDataFactory _dataFactory;
         private readonly IWorkItemStatusDataSaver _dataSaver;
 
@@ -38,13 +43,25 @@ namespace YardLight.Core
             return result;
         }
 
-        public async Task<IEnumerable<IWorkItemStatus>> GetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
+        public Task<IEnumerable<IWorkItemStatus>> GetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
+        {
+            return _cacheByProjectId.Execute((context) => InnerGetByProjectId(settings, projectId, isActive),
+                new Context($"{projectId.ToString("N")};{isActive}"));
+        }
+
+        private async Task<IEnumerable<IWorkItemStatus>> InnerGetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
         {
             return (await _dataFactory.GetByProjectId(new DataSettings(settings), projectId, isActive))
                 .Select<WorkItemStatusData, IWorkItemStatus>(Create);
         }
 
-        public async Task<IEnumerable<IWorkItemStatus>> GetByWorkItemTypeId(ISettings settings, Guid workItemTypeId, bool? isActive = null)
+        public Task<IEnumerable<IWorkItemStatus>> GetByWorkItemTypeId(ISettings settings, Guid workItemTypeId, bool? isActive = null)
+        {
+            return _cacheByWorkItemTypeId.Execute((context) => InnerGetByWorkItemTypeId(settings, workItemTypeId, isActive),
+                new Context($"{workItemTypeId.ToString("N")};{isActive}"));
+        }
+
+        private async Task<IEnumerable<IWorkItemStatus>> InnerGetByWorkItemTypeId(ISettings settings, Guid workItemTypeId, bool? isActive = null)
         {
             return (await _dataFactory.GetByWorkItemTypeId(new DataSettings(settings), workItemTypeId, isActive))
                 .Select<WorkItemStatusData, IWorkItemStatus>(Create);
