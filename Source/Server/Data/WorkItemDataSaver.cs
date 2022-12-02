@@ -54,7 +54,7 @@ namespace YardLight.Data
 
         public async Task Update(ISqlTransactionHandler transactionHandler, WorkItemData data, Guid userId)
         {
-            if (data.Manager.GetState(data) == DataState.New)
+            if (data.Manager.GetState(data) == DataState.Updated)
             {
                 await _providerFactory.EstablishTransaction(transactionHandler, data);
                 using (DbCommand command = transactionHandler.Connection.CreateCommand())

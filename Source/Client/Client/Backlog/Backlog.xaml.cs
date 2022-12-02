@@ -36,17 +36,33 @@ namespace YardLight.Client.Backlog
 
         private void Backlog_Loaded(object sender, RoutedEventArgs e)
         {
-            BacklogVM = new BacklogVM();
-            DataContext = BacklogVM;
+            if (BacklogVM == null || DataContext == null)
+            {
+                BacklogVM = new BacklogVM();
+                DataContext = BacklogVM;
+            }
             GoogleLogin.ShowLoginDialog(owner: Window.GetWindow(this));
-            _backlogVMLoader = new BacklogVMLoader(BacklogVM);
-            _backlogVMLoader.Load();
+            if (_backlogVMLoader == null)
+            {
+                _backlogVMLoader = new BacklogVMLoader(BacklogVM);
+                _backlogVMLoader.Load();
+            }
         }
 
         private void AddChildHyperlink_Click(object sender, RoutedEventArgs e)
         {
             WorkItemVM workItemVM = (WorkItemVM)((dynamic)e.Source).DataContext;
             workItemVM.CreateWorkItemVM.CreateWorkItemVisible = workItemVM.CreateWorkItemVM.CreateWorkItemVisible == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService navigationService = NavigationService.GetNavigationService(this);
+            EditWorkItem editWorkItem = new EditWorkItem()
+            {
+                DataContext = ((dynamic)e.Source).DataContext
+            };
+            navigationService.Navigate(editWorkItem);
         }
     }
 }

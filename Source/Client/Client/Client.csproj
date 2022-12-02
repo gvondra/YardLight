@@ -188,9 +188,17 @@
     <Compile Include="Backlog\Behaviors\BacklogVMLoader.cs" />
     <Compile Include="Backlog\Behaviors\CreateWorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\CreateWorkItemValidator.cs" />
+    <Compile Include="Backlog\Behaviors\RefreshBackLogCommand.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemLoader.cs" />
+    <Compile Include="Backlog\Behaviors\WorkItemValidator.cs" />
     <Compile Include="Backlog\Controls\AddWorkItem.xaml.cs">
       <DependentUpon>AddWorkItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Backlog\Controls\EditWorkItem.xaml.cs">
+      <DependentUpon>EditWorkItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Backlog\EditWorkItem.xaml.cs">
+      <DependentUpon>EditWorkItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Backlog\ViewModels\BacklogVM.cs" />
     <Compile Include="Backlog\ViewModels\CreateWorkItemVM.cs" />
@@ -275,6 +283,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Backlog\Controls\AddWorkItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Backlog\Controls\EditWorkItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Backlog\EditWorkItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

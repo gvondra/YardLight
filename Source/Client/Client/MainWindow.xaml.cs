@@ -55,6 +55,9 @@ namespace YardLight.Client
         private void GoToPageCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             NavigationService navigationService = navigationFrame.NavigationService;
+            JournalEntry journalEntry = navigationService.RemoveBackEntry();
+            while (journalEntry != null)
+                journalEntry = navigationService.RemoveBackEntry();
             //NavigationService navigationService = NavigationService.GetNavigationService(navigationFrame);
             navigationService.Navigate(new Uri((string)e.Parameter, UriKind.Relative));
         }

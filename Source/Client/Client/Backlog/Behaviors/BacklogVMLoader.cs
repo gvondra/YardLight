@@ -22,10 +22,14 @@ namespace YardLight.Client.Backlog.Behaviors
 
         public void Load()
         {
+            _backlogVM.CanRefresh = false;
             UserSession userSession = UserSessionLoader.GetUserSession();
             Task.Run(() => LoadProject(userSession.OpenProjectId.Value))
                 .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());
-            _backlogVM.AddBehavior(new CreateWorkItemLoader(_backlogVM.CreateWorkItemVM));
+            if (!_backlogVM.ContainsBehavior<CreateWorkItemLoader>())
+                _backlogVM.AddBehavior(new CreateWorkItemLoader(_backlogVM.CreateWorkItemVM));
+            if (_backlogVM.RefreshBackLogCommand == null)
+                _backlogVM.RefreshBackLogCommand = new RefreshBackLogCommand(_backlogVM, this);
         }
 
         private Task<List<WorkItem>> LoadAllWorkItems(Guid projectId)
@@ -61,6 +65,7 @@ namespace YardLight.Client.Backlog.Behaviors
                     parent.AddBehavior(new WorkItemLoader(item));
                     parent.Children.Add(item);
                 }
+                _backlogVM.CanRefresh = true;
             }
             catch(System.Exception ex)
             {

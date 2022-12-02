@@ -34,5 +34,11 @@ namespace YardLight.Client
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public bool ContainsBehavior<T>()
+        {
+            List<object> behaviors = _behaviors ?? new List<object>();
+            return behaviors.Any(b => b.GetType().Equals(typeof(T)));  
+        }
     }
 }

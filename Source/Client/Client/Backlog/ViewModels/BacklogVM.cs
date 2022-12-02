@@ -18,6 +18,8 @@ namespace YardLight.Client.Backlog.ViewModels
         private readonly ObservableCollection<WorkItemTypeVM> _availableTypes = new ObservableCollection<WorkItemTypeVM>();
         private readonly ObservableCollection<WorkItemVM> _rootWorkItems = new ObservableCollection<WorkItemVM>();
         private Project _project;
+        private RefreshBackLogCommand _refreshBackLogCommand;
+        private bool _canRefresh = false;
 
         public BacklogVM()
         {
@@ -28,6 +30,32 @@ namespace YardLight.Client.Backlog.ViewModels
         public ObservableCollection<WorkItemTypeVM> AvailableTypes => _availableTypes;
         public ObservableCollection<WorkItemVM> RootWorkItems => _rootWorkItems;
         
+        public bool CanRefresh
+        {
+            get => _canRefresh;
+            set
+            {
+                if (_canRefresh != value)
+                {
+                    _canRefresh = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public RefreshBackLogCommand RefreshBackLogCommand
+        {
+            get => _refreshBackLogCommand;
+            set
+            {
+                if (_refreshBackLogCommand != value)
+                {
+                    _refreshBackLogCommand = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public Project Project
         {
             get => _project;

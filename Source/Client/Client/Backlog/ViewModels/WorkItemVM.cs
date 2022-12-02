@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using YardLight.Client.Backlog.Behaviors;
 using YardLight.Interface.Models;
 
 namespace YardLight.Client.Backlog.ViewModels
@@ -26,16 +27,30 @@ namespace YardLight.Client.Backlog.ViewModels
             {
                 CreateWorkItemVisible = Visibility.Collapsed
             };
+            AddBehavior(new WorkItemValidator(this));
         }
 
+        public WorkItem InnerWorkItem => _innerWorkItem;
         public Guid? WorkItemId => _innerWorkItem.WorkItemId;
         public Guid? ParentWorkItemId => _innerWorkItem.ParentWorkItemId;
-        public string Title => _innerWorkItem.Title;
         public CreateWorkItemVM CreateWorkItemVM => _createWorkItemVM;
         public ObservableCollection<WorkItemVM> Children => _children;
         public string ColorCode => _innerWorkItem.Type.ColorCode;
         public string StatusTitle => _innerWorkItem.Status?.Title;
 
+        public string Title
+        { 
+            get => _innerWorkItem.Title;
+            set
+            {
+                if (_innerWorkItem.Title != value)
+                {
+                    _innerWorkItem.Title = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        
         public Brush BulletColor
         {
             get => _bulletColor;
