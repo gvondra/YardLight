@@ -86,7 +86,12 @@ namespace API.Controllers
         private async Task<WorkItem> Map(ISettings settings, IMapper mapper, IWorkItem innerWorkItem)
         {
             WorkItem workItem = mapper.Map<WorkItem>(innerWorkItem);
-            workItem.Type = mapper.Map<WorkItemType>(await innerWorkItem.GetType(settings));
+            IWorkItemType workItemType = await innerWorkItem.GetType(settings);
+            workItem.Type = mapper.Map<WorkItemType>(workItemType);
+            workItem.Type.Statuses = (await workItemType.GetStatuses(settings))
+                .Select<IWorkItemStatus, WorkItemStatus>(s => mapper.Map<WorkItemStatus>(s))
+                .ToList()
+                ;
             workItem.Status = mapper.Map<WorkItemStatus>(await innerWorkItem.GetStatus(settings));
             return workItem;
         }
