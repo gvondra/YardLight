@@ -211,6 +211,32 @@ namespace YardLight.Client.Backlog.ViewModels
             }
         }
 
+        public string Description
+        {
+            get => _innerWorkItem.Description;
+            set
+            {
+                if (_innerWorkItem.Description != value)
+                {
+                    _innerWorkItem.Description = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public string Criteria
+        {
+            get => _innerWorkItem.Criteria;
+            set
+            {
+                if (_innerWorkItem.Criteria != value)
+                {
+                    _innerWorkItem.Criteria = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public List<WorkItemStatusVM> AvailableStatuses
         {
             get

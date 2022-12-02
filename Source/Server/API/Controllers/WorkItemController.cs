@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using YardLight.CommonCore;
 using YardLight.Framework;
+using YardLight.Framework.Enumerations;
 using YardLight.Interface.Models;
 using AuthorizationAPI = YardLight.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
@@ -105,6 +106,8 @@ namespace API.Controllers
                 .ToList()
                 ;
             workItem.Status = mapper.Map<WorkItemStatus>(await innerWorkItem.GetStatus(settings));
+            workItem.Description = await innerWorkItem.GetComment(settings, WorkItemCommentType.Description);
+            workItem.Criteria = await innerWorkItem.GetComment(settings, WorkItemCommentType.Criteria);
             return workItem;
         }
 
@@ -167,6 +170,8 @@ namespace API.Controllers
                     IWorkItem innerWorkItem = _workItemFactory.Create(project.ProjectId, innerType, innerStatus);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     mapper.Map(workItem, innerWorkItem);
+                    await innerWorkItem.SetComment(settings, WorkItemCommentType.Description, workItem.Description ?? string.Empty);
+                    await innerWorkItem.SetComment(settings, WorkItemCommentType.Criteria, workItem.Criteria ?? string.Empty);
                     await _workItemSaver.Create(settings, innerWorkItem, currentUserId.Value);
                     result = Ok(await Map(settings, mapper, innerWorkItem));
                 }
@@ -234,6 +239,8 @@ namespace API.Controllers
                     innerWorkItem.SetStatus(innerStatus);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     mapper.Map(workItem, innerWorkItem);
+                    await innerWorkItem.SetComment(settings, WorkItemCommentType.Description, workItem.Description ?? string.Empty);
+                    await innerWorkItem.SetComment(settings, WorkItemCommentType.Criteria, workItem.Criteria ?? string.Empty);
                     await _workItemSaver.Update(settings, innerWorkItem, currentUserId.Value);
                     result = Ok(await Map(settings, mapper, innerWorkItem));
                 }

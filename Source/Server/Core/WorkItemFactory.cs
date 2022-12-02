@@ -21,20 +21,23 @@ namespace YardLight.Core
         private readonly IWorkItemDataSaver _dataSaver;
         private readonly IWorkItemStatusFactory _statusFactory;
         private readonly IWorkItemTypeFactory _typeFatory;
+        private readonly IWorkItemCommentFactory _commentFactory;
 
         public WorkItemFactory(IWorkItemDataFactory dataFactory, 
             IWorkItemDataSaver dataSaver,
             IWorkItemStatusFactory statusFactory,
-            IWorkItemTypeFactory typeFactory)
+            IWorkItemTypeFactory typeFactory,
+            IWorkItemCommentFactory commentFactory)
         {
             _dataFactory = dataFactory;
             _dataSaver = dataSaver;
             _statusFactory = statusFactory;
             _typeFatory = typeFactory;
+            _commentFactory = commentFactory;
         }
 
-        private WorkItem Create(WorkItemData data, IWorkItemType workItemType, IWorkItemStatus workItemStatus) => new WorkItem(data, _dataSaver, _statusFactory, _typeFatory, workItemStatus, workItemType);
-        private WorkItem Create(WorkItemData data) => new WorkItem(data, _dataSaver, _statusFactory, _typeFatory);
+        private WorkItem Create(WorkItemData data, IWorkItemType workItemType, IWorkItemStatus workItemStatus) => new WorkItem(data, _dataSaver, _statusFactory, _typeFatory, _commentFactory, workItemStatus, workItemType);
+        private WorkItem Create(WorkItemData data) => new WorkItem(data, _dataSaver, _statusFactory, _typeFatory, _commentFactory);
 
         public IWorkItem Create(Guid projectId, IWorkItemType workItemType, IWorkItemStatus workItemStatus)
         {

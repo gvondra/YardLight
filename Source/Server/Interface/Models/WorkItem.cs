@@ -26,5 +26,7 @@ namespace YardLight.Interface.Models
         public DateTime? UpdateTimestamp { get; set; }
         public Guid? CreateUserId { get; set; }
         public Guid? UpdateUserId { get; set; }
+        public string Description { get; set; }
+        public string Criteria { get; set; }
     }
 }

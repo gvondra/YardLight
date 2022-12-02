@@ -7,6 +7,7 @@ using YardLight.CommonCore;
 using YardLight.Data.Framework;
 using YardLight.Data.Models;
 using YardLight.Framework;
+using YardLight.Framework.Enumerations;
 
 namespace YardLight.Core
 {
@@ -16,13 +17,16 @@ namespace YardLight.Core
         private readonly IWorkItemDataSaver _dataSaver;
         private readonly IWorkItemStatusFactory _statusFactory;
         private readonly IWorkItemTypeFactory _typeFactory;
+        private readonly Dictionary<WorkItemCommentType, IWorkItemComment> _comments = new Dictionary<WorkItemCommentType, IWorkItemComment>();
+        private readonly IWorkItemCommentFactory _commentFactory;
         private IWorkItemStatus _status;
         private IWorkItemType _type;
-
+        
         public WorkItem(WorkItemData data,
             IWorkItemDataSaver dataSaver,
             IWorkItemStatusFactory statusFactory,
             IWorkItemTypeFactory typeFactory,
+            IWorkItemCommentFactory commentFactory,
             IWorkItemStatus status,
             IWorkItemType type)
         {
@@ -30,6 +34,7 @@ namespace YardLight.Core
             _dataSaver = dataSaver;
             _statusFactory = statusFactory;
             _typeFactory = typeFactory;
+            _commentFactory = commentFactory;
             _status = status;
             _type = type;
         }
@@ -37,8 +42,9 @@ namespace YardLight.Core
         public WorkItem(WorkItemData data,
             IWorkItemDataSaver dataSaver,
             IWorkItemStatusFactory statusFactory,
-            IWorkItemTypeFactory typeFactory)
-            : this(data, dataSaver, statusFactory, typeFactory, null, null)
+            IWorkItemTypeFactory typeFactory,
+            IWorkItemCommentFactory commentFactory)
+            : this(data, dataSaver, statusFactory, typeFactory, commentFactory, null, null)
         { }
 
         public Guid WorkItemId => _data.WorkItemId;
@@ -72,6 +78,7 @@ namespace YardLight.Core
             TypeId = _type.WorkItemTypeId;
             StatusId = _status.WorkItemStatusId;
             await _dataSaver.Create(transactionHandler, _data, userId);
+            await SaveComments(transactionHandler, userId);
         }
 
         public async Task<IWorkItemStatus> GetStatus(ISettings settings)
@@ -98,6 +105,47 @@ namespace YardLight.Core
             if (_status != null)
                 StatusId = _status.WorkItemStatusId;
             await _dataSaver.Update(transactionHandler, _data, userId);
+            await SaveComments(transactionHandler, userId);
+        }
+
+        private async Task SaveComments(ITransactionHandler transactionHandler, Guid userId)
+        {
+            foreach(KeyValuePair<WorkItemCommentType, IWorkItemComment> pair in _comments)
+            {
+                await pair.Value.Create(transactionHandler, userId);
+            }
+        }
+
+        private async Task<IWorkItemComment> InnerGetComment(ISettings settings, WorkItemCommentType workItemCommentType)
+        {
+            IWorkItemComment result = null;
+            if (!_comments.ContainsKey(workItemCommentType))
+            {
+                IWorkItemComment comment = (await _commentFactory.GetByWorkItemId(settings, WorkItemId)).FirstOrDefault(c => c.Type == workItemCommentType);
+                if (comment != null)
+                    _comments[workItemCommentType] = comment;
+            }
+            if (_comments.ContainsKey(workItemCommentType))
+                result = _comments[workItemCommentType];
+            return result;
+        }
+
+        public async Task<string> GetComment(ISettings settings, WorkItemCommentType workItemCommentType)
+        {
+            IWorkItemComment comment = await InnerGetComment(settings, workItemCommentType);
+            string description = string.Empty;
+            if (comment != null)
+                description = comment.Text;
+            return description;
+        }
+
+        public async Task SetComment(ISettings settings, WorkItemCommentType workItemCommentType, string text)
+        {
+            IWorkItemComment comment = await InnerGetComment(settings, workItemCommentType);
+            if (comment == null || text != comment.Text)
+            {
+                _comments[workItemCommentType] = _commentFactory.Create(WorkItemId, text, workItemCommentType);
+            }
         }
     }
 }

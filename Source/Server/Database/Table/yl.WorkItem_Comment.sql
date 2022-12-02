@@ -4,5 +4,6 @@
 	[CommentId] UNIQUEIDENTIFIER NOT NULL,
 	[Type] SMALLINT NOT NULL,
 	[CreateTimestamp] DATETIME2(4) CONSTRAINT [DF_WorkItem_Comment_CreateTimestamp] DEFAULT (SYSUTCDATETIME()) NOT NULL,
+	[CreateUserId] UNIQUEIDENTIFIER NOT NULL,
 	CONSTRAINT [PK_WorkItem_Comment] PRIMARY KEY CLUSTERED ([WorkItemId], [CommentId])
 )

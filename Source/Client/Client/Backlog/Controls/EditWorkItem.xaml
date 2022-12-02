@@ -55,6 +55,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.Row="0">Status:</Label>
                 <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AvailableStatuses}" SelectedItem="{Binding Status}" HorizontalAlignment="Left" MinWidth="150" >
@@ -71,7 +72,15 @@
                          HorizontalAlignment="Stretch" VerticalAlignment="Top"
                          AcceptsReturn="True" AcceptsTab="True" 
                          MinHeight="150" MaxHeight="250" 
-                         HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"/>
+                         HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
+                         Text="{Binding Description}"/>
+                <Label Grid.Column="0" Grid.Row="2">Criteria</Label>
+                <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="99" 
+                         HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                         AcceptsReturn="True" AcceptsTab="True" 
+                         MinHeight="150" MaxHeight="250" 
+                         HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
+                         Text="{Binding Criteria}"/>
             </Grid>
             <Grid Grid.Column="1" Style="{StaticResource LayoutGridStyle}">
                 <Grid.ColumnDefinitions>

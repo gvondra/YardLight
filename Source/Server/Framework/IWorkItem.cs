@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YardLight.CommonCore;
+using YardLight.Framework.Enumerations;
 
 namespace YardLight.Framework
 {
@@ -33,5 +34,7 @@ namespace YardLight.Framework
         Task<IWorkItemStatus> GetStatus(ISettings settings);
         void SetStatus(IWorkItemStatus status);
         Task<IWorkItemType> GetType(ISettings settings);
+        Task<string> GetComment(ISettings settings, WorkItemCommentType workItemCommentType);
+        Task SetComment(ISettings settings, WorkItemCommentType workItemCommentType, string text);
     }
 }

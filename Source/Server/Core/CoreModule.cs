@@ -17,8 +17,9 @@ namespace YardLight.Core
             builder.RegisterModule(new YardLight.Data.DataModule());
             builder.RegisterType<ProjectFactory>().As<IProjectFactory>();
             builder.RegisterType<ProjectSaver>().As<IProjectSaver>();
-            builder.RegisterType<WorkItemStatusFactory>().As<IWorkItemStatusFactory>();
+            builder.RegisterType<WorkItemCommentFactory>().As<IWorkItemCommentFactory>();
             builder.RegisterType<WorkItemFactory>().As<IWorkItemFactory>();
+            builder.RegisterType<WorkItemStatusFactory>().As<IWorkItemStatusFactory>();
             builder.RegisterType<WorkItemSaver>().As<IWorkItemSaver>();
             builder.RegisterType<WorkItemTypeFactory>().As<IWorkItemTypeFactory>();
             builder.RegisterType<WorkItemTypeSaver>().As<IWorkItemTypeSaver>();

@@ -95,6 +95,9 @@
     <Build Include="Stored Procedure\yl.GetWorkItem.sql" />
     <Build Include="Stored Procedure\yl.GetTeamByProjectId.sql" />
     <Build Include="Stored Procedure\yl.GetItterationByProjectId.sql" />
+    <Build Include="Stored Procedure\yl.CreateComment.sql" />
+    <Build Include="Stored Procedure\yl.CreateWorkItemComment.sql" />
+    <Build Include="Stored Procedure\yl.GetWorkItemTypeComment_by_WorkItemId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />
