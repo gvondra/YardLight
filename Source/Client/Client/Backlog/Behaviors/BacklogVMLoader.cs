@@ -48,6 +48,7 @@ namespace YardLight.Client.Backlog.Behaviors
             {
                 _backlogVM.RootWorkItems.Clear();
                 List<WorkItemVM> items = new List<WorkItemVM>();
+                WorkItemLoader workItemLoader;
                 foreach (WorkItem workItem in await loadAllWorkItems)
                 {
                     WorkItemVM workItemVM = new WorkItemVM(_backlogVM, workItem);
@@ -56,13 +57,17 @@ namespace YardLight.Client.Backlog.Behaviors
                     if (!workItemVM.ParentWorkItemId.HasValue)
                     {
                         _backlogVM.RootWorkItems.Add(workItemVM);
-                        _backlogVM.AddBehavior(new WorkItemLoader(workItemVM));
+                        workItemLoader = new WorkItemLoader(workItemVM);
+                        _backlogVM.AddBehavior(workItemLoader);
+                        workItemLoader.Load();
                     }
                 }
                 foreach (WorkItemVM item in items.Where(i => i.ParentWorkItemId.HasValue))
                 {
                     WorkItemVM parent = items.FirstOrDefault(i => item.ParentWorkItemId.Value.Equals(i.WorkItemId.Value));
-                    parent.AddBehavior(new WorkItemLoader(item));
+                    workItemLoader = new WorkItemLoader(item);
+                    parent.AddBehavior(workItemLoader);
+                    workItemLoader.Load();
                     parent.Children.Add(item);
                 }
                 _backlogVM.CanRefresh = true;

@@ -53,11 +53,23 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
+                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                Guid? currentUserId = null;
+                IProject project = null;
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                if (result == null && !currentUserId.HasValue)
+                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
+                if (result == null)
                 {
-                    ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
+                    if (project == null)
+                        result = NotFound();
+                }
+                if (result == null && project != null)
+                {
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     result = Ok(await Task.WhenAll(
                         (await _workItemFactory.GetByProjectId(settings, projectId.Value))
@@ -234,6 +246,76 @@ namespace API.Controllers
             finally
             {
                 await WriteMetrics("update-project-item", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                    new Dictionary<string, string>
+                    {
+                        { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty }
+                    }
+                    );
+            }
+            return result;
+        }
+
+        [HttpGet("/api/Project/{projectId}/Itteration")]
+        [Authorize()]
+        public async Task<IActionResult> GetItterations([FromRoute] Guid? projectId)
+        {
+            DateTime start = DateTime.UtcNow;
+            IActionResult result = null;
+            try
+            {
+                if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
+                    result = BadRequest("Missing or invalid projectId route parameter value");
+                if (result == null)
+                {
+                    ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                    result = Ok(
+                        await _workItemFactory.GetItterationsByProjectId(settings, projectId.Value)
+                        );
+                }
+            }
+            catch (System.Exception ex)
+            {
+                await WriteException(ex);
+                result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                await WriteMetrics("get-project-itterations", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                    new Dictionary<string, string>
+                    {
+                        { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty }
+                    }
+                    );
+            }
+            return result;
+        }
+
+        [HttpGet("/api/Project/{projectId}/Team")]
+        [Authorize()]
+        public async Task<IActionResult> GetTeams([FromRoute] Guid? projectId)
+        {
+            DateTime start = DateTime.UtcNow;
+            IActionResult result = null;
+            try
+            {
+                if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
+                    result = BadRequest("Missing or invalid projectId route parameter value");
+                if (result == null)
+                {
+                    ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                    result = Ok(
+                        await _workItemFactory.GetTeamsByProjectId(settings, projectId.Value)
+                        );
+                }
+            }
+            catch (System.Exception ex)
+            {
+                await WriteException(ex);
+                result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                await WriteMetrics("get-project-teams", DateTime.UtcNow.Subtract(start).TotalSeconds,
                     new Dictionary<string, string>
                     {
                         { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty }

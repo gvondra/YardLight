@@ -1,4 +1,7 @@
 ﻿using BrassLoon.RestClient;
+using Microsoft.Extensions.Caching.Memory;
+using Polly;
+using Polly.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +14,8 @@ namespace YardLight.Interface
 {
     public class WorkItemService : IWorkItemService
     {
+        private readonly static Policy _cacheItteration = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(12));
+        private readonly static Policy _cacheTeam = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(12));
         private readonly RestUtil _restUtil;
         private readonly IService _service;
 
@@ -45,6 +50,38 @@ namespace YardLight.Interface
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
             return await _restUtil.Send<List<WorkItem>>(_service, request);
+        }
+
+        public Task<List<string>> GetItterationsByProjectId(ISettings settings, Guid projectId)
+        {
+            return _cacheItteration.Execute((context) => InnerGetItterationsByProjectId(settings, projectId),
+                new Context(projectId.ToString("N")));
+        }
+        
+        private Task<List<string>> InnerGetItterationsByProjectId(ISettings settings, Guid projectId)
+        {
+            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
+                .AddPath("Project/{projectId}/Itteration")
+                .AddPathParameter("projectId", projectId.ToString("N"))
+                .AddJwtAuthorizationToken(settings.GetToken)
+                ;
+            return _restUtil.Send<List<string>>(_service, request);
+        }
+
+        public Task<List<string>> GetTeamsByProjectId(ISettings settings, Guid projectId)
+        {
+            return _cacheTeam.Execute((context) => InnerGetTeamsByProjectId(settings, projectId),
+                new Context(projectId.ToString("N")));
+        }
+
+        private Task<List<string>> InnerGetTeamsByProjectId(ISettings settings, Guid projectId)
+        {
+            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
+                .AddPath("Project/{projectId}/Team")
+                .AddPathParameter("projectId", projectId.ToString("N"))
+                .AddJwtAuthorizationToken(settings.GetToken)
+                ;
+            return _restUtil.Send<List<string>>(_service, request);
         }
 
         public async Task<WorkItem> Update(ISettings settings, Guid projectId, Guid id, WorkItem workItem)

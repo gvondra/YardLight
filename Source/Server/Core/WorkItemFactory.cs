@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Polly.Caching.Memory;
+using Polly;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +15,8 @@ namespace YardLight.Core
 {
     public class WorkItemFactory : IWorkItemFactory
     {
+        private readonly static Policy _cacheItteration = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(12));
+        private readonly static Policy _cacheTeam = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(12));
         private readonly IWorkItemDataFactory _dataFactory;
         private readonly IWorkItemDataSaver _dataSaver;
         private readonly IWorkItemStatusFactory _statusFactory;
@@ -50,6 +55,29 @@ namespace YardLight.Core
             if (data != null) 
                 result = Create(data);
             return result;
+        }
+
+        public Task<IEnumerable<string>> GetTeamsByProjectId(ISettings settings, Guid projectId)
+        {
+            return _cacheTeam.Execute((context) => InnerGetTeamsByProjectId(settings, projectId),
+                new Context(projectId.ToString("N")));
+        }
+
+        private Task<IEnumerable<string>> InnerGetTeamsByProjectId(ISettings settings, Guid projectId)
+        {
+            return _dataFactory.GetTeamsByProjectId(new DataSettings(settings), projectId);
+        }
+
+        public Task<IEnumerable<string>> GetItterationsByProjectId(ISettings settings, Guid projectId)
+        {
+            return _cacheItteration.Execute((context) => InnerGetItterationsByProjectId(settings, projectId),
+                new Context(projectId.ToString("N")));
+        }
+
+        private Task<IEnumerable<string>> InnerGetItterationsByProjectId(ISettings settings, Guid projectId)
+        {
+            return _dataFactory.GetItterationsByProjectId(new DataSettings(settings), projectId);
+                
         }
     }
 }

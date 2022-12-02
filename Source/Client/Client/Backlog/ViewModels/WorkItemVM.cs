@@ -18,6 +18,9 @@ namespace YardLight.Client.Backlog.ViewModels
         private readonly CreateWorkItemVM _createWorkItemVM;
         private readonly ObservableCollection<WorkItemVM> _children = new ObservableCollection<WorkItemVM>();
         private Brush _bulletColor = Brushes.Black;
+        private List<WorkItemStatusVM> _availableStatuses;
+        private List<string> _itterations = new List<string>();
+        private List<string> _teams = new List<string>();
 
         public WorkItemVM(BacklogVM backlog, WorkItem innerWorkItem)
         {
@@ -38,14 +41,40 @@ namespace YardLight.Client.Backlog.ViewModels
         public string ColorCode => _innerWorkItem.Type.ColorCode;
         public string StatusTitle => _innerWorkItem.Status?.Title;
         
-        public WorkItemStatus Status
+        public List<string> Itterations
         {
-            get => _innerWorkItem.Status;
+            get => _itterations;
             set
             {
-                if (_innerWorkItem.Status != value)
+                if (_itterations != value)
                 {
-                    _innerWorkItem.Status = value;
+                    _itterations = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public List<string> Teams
+        {
+            get => _teams;
+            set
+            {
+                if (_teams != value)
+                {
+                    _teams = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public WorkItemStatusVM Status
+        {
+            get => AvailableStatuses.First(s => s.WorkItemStatusId.Equals(_innerWorkItem.Status.WorkItemStatusId.Value));
+            set
+            {
+                if (!AvailableStatuses.First(s => s.WorkItemStatusId.Equals(_innerWorkItem.Status.WorkItemStatusId.Value)).WorkItemStatusId.Equals(value.WorkItemStatusId))
+                {
+                    _innerWorkItem.Status = value.InnerWorkItemStatus;
                     NotifyPropertyChanged();
                     NotifyPropertyChanged(nameof(StatusTitle));
                 }
@@ -182,15 +211,19 @@ namespace YardLight.Client.Backlog.ViewModels
             }
         }
 
-        public List<WorkItemStatus> AvailableStatuses
+        public List<WorkItemStatusVM> AvailableStatuses
         {
             get
             {
-                return _innerWorkItem.Type.Statuses
-                    .Where(s => s.WorkItemStatusId.Equals(_innerWorkItem.Status.WorkItemStatusId.Value) || (s.IsActive ?? false))                    
+                if (_availableStatuses == null)
+                {
+                    _availableStatuses = _innerWorkItem.Type.Statuses
+                    .Where(s => s.WorkItemStatusId.Equals(_innerWorkItem.Status.WorkItemStatusId.Value) || (s.IsActive ?? false))
                     .OrderBy(s => s.Order)
-                    .Select(s => s.WorkItemStatusId.Value.Equals(Status.WorkItemStatusId.Value) ? Status : s)
+                    .Select(s => s.WorkItemStatusId.Value.Equals(_innerWorkItem.Status.WorkItemStatusId.Value) ? new WorkItemStatusVM(_innerWorkItem.Status) : new WorkItemStatusVM(s))
                     .ToList();
+                }
+                return _availableStatuses;
             }
         }
 

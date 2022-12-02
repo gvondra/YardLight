@@ -74,6 +74,7 @@ namespace YardLight.Client.Backlog.Controls
                 WorkItemVM workItemVM = new WorkItemVM(createWorkItemVM.BacklogVM, workItem);
                 workItemVM.AddBehavior(new CreateWorkItemLoader(workItemVM.CreateWorkItemVM));
                 WorkItemVM parent = null;
+                WorkItemLoader workItemLoader;
                 if (workItemVM.ParentWorkItemId.HasValue)
                 {
                     parent = Find(createWorkItemVM.BacklogVM.RootWorkItems, workItemVM.ParentWorkItemId.Value);
@@ -81,13 +82,16 @@ namespace YardLight.Client.Backlog.Controls
                 if (parent == null)
                 {
                     createWorkItemVM.BacklogVM.RootWorkItems.Add(workItemVM);
-                    createWorkItemVM.BacklogVM.AddBehavior(new WorkItemLoader(workItemVM));
+                    workItemLoader = new WorkItemLoader(workItemVM);
+                    createWorkItemVM.BacklogVM.AddBehavior(workItemLoader);
                 }
                 else
                 {
                     parent.Children.Add(workItemVM);
-                    parent.AddBehavior(new WorkItemLoader(workItemVM));
+                    workItemLoader = new WorkItemLoader(workItemVM);
+                    parent.AddBehavior(workItemLoader);
                 }
+                workItemLoader.Load();
                 createWorkItemVM.CreateWorkItemVisible = Visibility.Collapsed;
             }
             catch (System.Exception ex)

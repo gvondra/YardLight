@@ -12,5 +12,7 @@ namespace YardLight.Framework
         IWorkItem Create(Guid projectId, IWorkItemType workItemType, IWorkItemStatus workItemStatus);
         Task<IWorkItem> Get(ISettings settings, Guid id);
         Task<IEnumerable<IWorkItem>> GetByProjectId(ISettings settings, Guid projectId);
+        Task<IEnumerable<string>> GetTeamsByProjectId(ISettings settings, Guid projectId);
+        Task<IEnumerable<string>> GetItterationsByProjectId(ISettings settings, Guid projectId);
     }
 }

@@ -37,9 +37,9 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label Grid.Column="0" Grid.Row="0">Team: </Label>
-            <ComboBox Grid.Column="1" Grid.Row="0" IsEditable="True" Text="{Binding Team}"/>
+            <ComboBox Grid.Column="1" Grid.Row="0" IsEditable="True" ItemsSource="{Binding Teams}" Text="{Binding Team}"/>
             <Label Grid.Column="2" Grid.Row="0">Itteration: </Label>
-            <ComboBox Grid.Column="3" Grid.Row="0" IsEditable="True" Text="{Binding Itteration}"/>
+            <ComboBox Grid.Column="3" Grid.Row="0" IsEditable="True" ItemsSource="{Binding Itterations}" Text="{Binding Itteration}"/>
         </Grid>
         <Grid Style="{StaticResource LayoutGridStyle}">
             <Grid.ColumnDefinitions>
@@ -60,7 +60,10 @@
                 <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AvailableStatuses}" SelectedItem="{Binding Status}" HorizontalAlignment="Left" MinWidth="150" >
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Title}" />
+                            <TextBlock>
+                                <TextBlock Foreground="{Binding BulletBrush}" FontSize="16">•</TextBlock>
+                                <TextBlock Text="{Binding Title}" />
+                             </TextBlock>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>

@@ -93,6 +93,8 @@
     <Build Include="Stored Procedure\yl.UpdateWorkItem.sql" />
     <Build Include="Stored Procedure\yl.GetWorkItem_by_ProjectId.sql" />
     <Build Include="Stored Procedure\yl.GetWorkItem.sql" />
+    <Build Include="Stored Procedure\yl.GetTeamByProjectId.sql" />
+    <Build Include="Stored Procedure\yl.GetItterationByProjectId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />

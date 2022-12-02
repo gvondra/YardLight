@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,47 @@ namespace YardLight.Data
                 DataUtil.AssignDataStateManager,
                 new IDataParameter[] { parameter }
                 );
+        }
+
+        public Task<IEnumerable<string>> GetItterationsByProjectId(ISettings settings, Guid projectId)
+        {
+            return GetList<string>(settings,
+                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId)),
+                "[yl].[GetItterationByProjectId]"
+                );
+        }
+
+        public Task<IEnumerable<string>> GetTeamsByProjectId(ISettings settings, Guid projectId)
+        {
+            return GetList<string>(settings,
+                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId)),
+                "[yl].[GetTeamByProjectId]"
+                );
+        }
+
+        private async Task<IEnumerable<T>> GetList<T>(
+            ISettings settings, 
+            IDataParameter dataParameter,
+            string storedProcedureName)
+        {
+            List<T> items = new List<T>();
+            using (DbConnection connection = await _providerFactory.OpenConnection(settings))
+            {
+                using (DbCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = storedProcedureName;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(dataParameter);
+                    using (DbDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            items.Add(await reader.GetFieldValueAsync<T>(0));
+                        }
+                    }
+                }
+            }
+            return items;
         }
     }
 }

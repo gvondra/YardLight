@@ -158,8 +158,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.28, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.28\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.29, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.29\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
     <Reference Include="YardLight.Interface.Authorization, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YardLight.Interface.Authorization.1.0.0-alpha.12\lib\net48\YardLight.Interface.Authorization.dll</HintPath>
@@ -202,6 +202,7 @@
     </Compile>
     <Compile Include="Backlog\ViewModels\BacklogVM.cs" />
     <Compile Include="Backlog\ViewModels\CreateWorkItemVM.cs" />
+    <Compile Include="Backlog\ViewModels\WorkItemStatusVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemTypeVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemVM.cs" />
     <Compile Include="Behaviors\CreateProjectValidator.cs" />
