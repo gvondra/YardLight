@@ -6,14 +6,96 @@
              xmlns:local="clr-namespace:YardLight.Client.Backlog.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="Label">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="LayoutGridStyle" TargetType="Grid">
+            <Setter Property="Margin" Value="0,0,10,10"/>
+        </Style>
+    </UserControl.Resources>
     <DockPanel>
-        <Grid DockPanel.Dock="Top">
+        <Grid DockPanel.Dock="Top" Style="{StaticResource LayoutGridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Style="{StaticResource TextBoxWithError}" Text="{Binding Title, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
-            <Button Grid.Column="1" Style="{StaticResource SaveButtonStyle}" Click="SaveButton_Click"/>
-        </Grid>        
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBox Grid.Column="0" Grid.Row="0" Style="{StaticResource TextBoxWithError}" Text="{Binding Title, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+            <Button Grid.Column="1" Grid.Row="0" Style="{StaticResource SaveButtonStyle}" Margin="0" Click="SaveButton_Click"/>
+        </Grid>
+        <Grid DockPanel.Dock="Top" Style="{StaticResource LayoutGridStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0">Team: </Label>
+            <ComboBox Grid.Column="1" Grid.Row="0" IsEditable="True" Text="{Binding Team}"/>
+            <Label Grid.Column="2" Grid.Row="0">Itteration: </Label>
+            <ComboBox Grid.Column="3" Grid.Row="0" IsEditable="True" Text="{Binding Itteration}"/>
+        </Grid>
+        <Grid Style="{StaticResource LayoutGridStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Style="{StaticResource LayoutGridStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0">Status:</Label>
+                <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AvailableStatuses}" SelectedItem="{Binding Status}" HorizontalAlignment="Left" MinWidth="150" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="99" 
+                         HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                         AcceptsReturn="True" AcceptsTab="True" 
+                         MinHeight="150" MaxHeight="250" 
+                         HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"/>
+            </Grid>
+            <Grid Grid.Column="1" Style="{StaticResource LayoutGridStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0">Effort:</Label>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Effort}"/>
+                <Label Grid.Column="0" Grid.Row="1">Priority:</Label>
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Priority}"/>
+                <Label Grid.Column="0" Grid.Row="2">Value:</Label>
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Value}"/>
+                <Label Grid.Column="2" Grid.Row="0">Target:</Label>
+                <DatePicker Grid.Column="3" Grid.Row="0" SelectedDate="{Binding TargetDate}"/>
+                <Label Grid.Column="2" Grid.Row="1">Start:</Label>
+                <DatePicker Grid.Column="3" Grid.Row="1"  SelectedDate="{Binding StartDate}"/>
+                <Label Grid.Column="2" Grid.Row="2">Close:</Label>
+                <DatePicker Grid.Column="3" Grid.Row="2"  SelectedDate="{Binding CloseDate}"/>
+            </Grid>
+        </Grid> 
     </DockPanel>
 </UserControl>
