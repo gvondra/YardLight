@@ -36,6 +36,12 @@ namespace YardLight.Client.Backlog.Controls
             WorkItemVM workItemVM = WorkItemVM;
             Task.Run(() => Update(workItemVM.InnerWorkItem))
                 .ContinueWith(UpdateCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+            if (workItemVM.CreateWorkIemCommentCommand != null 
+                && workItemVM.CreateWorkIemCommentCommand.CanExecute(null)
+                && !string.IsNullOrEmpty(workItemVM.NewCommentText))
+            {
+                workItemVM.CreateWorkIemCommentCommand.Execute(workItemVM);
+            }
         }
 
         private Task<WorkItem> Update(WorkItem workItem)

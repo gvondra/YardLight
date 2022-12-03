@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:YardLight.Client.Backlog.Controls"
+             xmlns:local="clr-namespace:YardLight.Client.Backlog.Controls"             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -92,6 +92,7 @@
                              AcceptsReturn="True" AcceptsTab="True" 
                              MinHeight="50" 
                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                             BorderBrush="{x:Null}" Background="AntiqueWhite"
                              Text="{Binding NewCommentText}"/>
                     <ItemsControl Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="99" ItemsSource="{Binding Comments}">
                         <ItemsControl.ItemsPanel>
@@ -101,7 +102,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}"/>
+                                <local:WorkItemComment Margin="0,0,2,2" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

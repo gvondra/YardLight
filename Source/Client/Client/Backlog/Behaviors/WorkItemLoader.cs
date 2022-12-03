@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface;
+using YardLight.Interface.Authorization;
 using YardLight.Interface.Models;
 
 namespace YardLight.Client.Backlog.Behaviors
@@ -113,24 +114,32 @@ namespace YardLight.Client.Backlog.Behaviors
             }
         }
 
-        private Task<List<Comment>> LoadComments(Guid projectId, Guid workItemId)
+        private async Task<List<CommentVM>> LoadComments(Guid projectId, Guid workItemId)
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IWorkItemCommentService workItemCommentService = scope.Resolve<IWorkItemCommentService>();
-                return workItemCommentService.GetByWorkItemId(settingsFactory.CreateApi(), projectId, workItemId);
+                IUserService userService = scope.Resolve<IUserService>();
+                List<CommentVM> comments = (await workItemCommentService.GetByWorkItemId(settingsFactory.CreateApi(), projectId, workItemId))
+                    .Select(c => new CommentVM(c))
+                    .ToList();
+                foreach (CommentVM comment in comments)
+                {
+                    comment.CreateUser = await userService.GetName(settingsFactory.CreateAuthorization(), comment.CreateUserId.Value);
+                }
+                return comments;
             }
         }
 
-        private async Task LoadCommentsCallback(Task<List<Comment>> loadComments, object state)
+        private async Task LoadCommentsCallback(Task<List<CommentVM>> loadComments, object state)
         {
             try
             {
                 _workItemVM.Comments.Clear();
-                foreach (Comment comment in await loadComments)
+                foreach (CommentVM comment in await loadComments)
                 {
-                    _workItemVM.Comments.Add(new CommentVM(comment));
+                    _workItemVM.Comments.Add(comment);
                 }
             }
             catch (System.Exception ex)

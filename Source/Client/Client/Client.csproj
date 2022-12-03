@@ -199,6 +199,9 @@
     <Compile Include="Backlog\Controls\EditWorkItem.xaml.cs">
       <DependentUpon>EditWorkItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Backlog\Controls\WorkItemComment.xaml.cs">
+      <DependentUpon>WorkItemComment.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Backlog\EditWorkItem.xaml.cs">
       <DependentUpon>EditWorkItem.xaml</DependentUpon>
     </Compile>
@@ -291,6 +294,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Backlog\Controls\EditWorkItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Backlog\Controls\WorkItemComment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
