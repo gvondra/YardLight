@@ -45,43 +45,16 @@ namespace YardLight.Data
 
         public Task<IEnumerable<string>> GetItterationsByProjectId(ISettings settings, Guid projectId)
         {
-            return GetList<string>(settings,
-                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId)),
-                "[yl].[GetItterationByProjectId]"
+            return DataUtil.ReadList<string>(_providerFactory, settings, "[yl].[GetItterationByProjectId]",
+                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId))
                 );
         }
 
         public Task<IEnumerable<string>> GetTeamsByProjectId(ISettings settings, Guid projectId)
         {
-            return GetList<string>(settings,
-                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId)),
-                "[yl].[GetTeamByProjectId]"
+            return DataUtil.ReadList<string>(_providerFactory, settings, "[yl].[GetTeamByProjectId]",
+                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId))
                 );
-        }
-
-        private async Task<IEnumerable<T>> GetList<T>(
-            ISettings settings, 
-            IDataParameter dataParameter,
-            string storedProcedureName)
-        {
-            List<T> items = new List<T>();
-            using (DbConnection connection = await _providerFactory.OpenConnection(settings))
-            {
-                using (DbCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = storedProcedureName;
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(dataParameter);
-                    using (DbDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            items.Add(await reader.GetFieldValueAsync<T>(0));
-                        }
-                    }
-                }
-            }
-            return items;
         }
     }
 }
