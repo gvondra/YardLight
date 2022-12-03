@@ -191,6 +191,7 @@
     <Compile Include="Backlog\Behaviors\CreateWorkItemValidator.cs" />
     <Compile Include="Backlog\Behaviors\LoadWorkItemCommentCommand.cs" />
     <Compile Include="Backlog\Behaviors\RefreshBackLogCommand.cs" />
+    <Compile Include="Backlog\Behaviors\BacklogFilter.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemValidator.cs" />
     <Compile Include="Backlog\Controls\AddWorkItem.xaml.cs">
@@ -208,6 +209,7 @@
     <Compile Include="Backlog\ViewModels\BacklogVM.cs" />
     <Compile Include="Backlog\ViewModels\CommentVM.cs" />
     <Compile Include="Backlog\ViewModels\CreateWorkItemVM.cs" />
+    <Compile Include="Backlog\ViewModels\WorkItemFilterVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemStatusVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemTypeVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemVM.cs" />

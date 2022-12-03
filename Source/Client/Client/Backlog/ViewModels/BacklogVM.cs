@@ -16,7 +16,9 @@ namespace YardLight.Client.Backlog.ViewModels
     {
         private readonly CreateWorkItemVM _createWorkItemVM;
         private readonly ObservableCollection<WorkItemTypeVM> _availableTypes = new ObservableCollection<WorkItemTypeVM>();
-        private readonly ObservableCollection<WorkItemVM> _rootWorkItems = new ObservableCollection<WorkItemVM>();
+        private readonly ObservableCollection<WorkItemVM> _filteredChildren = new ObservableCollection<WorkItemVM>();
+        private readonly WorkItemFilterVM _filter = new WorkItemFilterVM();
+        private ReadOnlyCollection<WorkItemVM> _rootWorkItems = new ReadOnlyCollection<WorkItemVM>(new List<WorkItemVM>());
         private Project _project;
         private RefreshBackLogCommand _refreshBackLogCommand;
         private bool _canRefresh = false;
@@ -28,7 +30,21 @@ namespace YardLight.Client.Backlog.ViewModels
 
         public CreateWorkItemVM CreateWorkItemVM => _createWorkItemVM;
         public ObservableCollection<WorkItemTypeVM> AvailableTypes => _availableTypes;
-        public ObservableCollection<WorkItemVM> RootWorkItems => _rootWorkItems;
+        public WorkItemFilterVM Filter => _filter;
+        public ObservableCollection<WorkItemVM> FilteredChildren => _filteredChildren;
+
+        public ReadOnlyCollection<WorkItemVM> RootWorkItems
+        {
+            get => _rootWorkItems;
+            set
+            {
+                if (_rootWorkItems != value)
+                {
+                    _rootWorkItems = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
         
         public bool CanRefresh
         {
@@ -67,6 +83,14 @@ namespace YardLight.Client.Backlog.ViewModels
                     NotifyPropertyChanged();
                 }
             }
+        }
+
+        public void AppendWorkItem(WorkItemVM workItemVM)
+        {
+            RootWorkItems = new ReadOnlyCollection<WorkItemVM>(
+                RootWorkItems.Concat(new WorkItemVM[] { workItemVM })
+                .ToList()
+                );
         }
 
     }

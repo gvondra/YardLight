@@ -39,6 +39,7 @@ namespace YardLight.Client.Backlog
             if (BacklogVM == null || DataContext == null)
             {
                 BacklogVM = new BacklogVM();
+                BacklogVM.AddBehavior(new WorkItemFilter(BacklogVM));
                 DataContext = BacklogVM;
             }
             GoogleLogin.ShowLoginDialog(owner: Window.GetWindow(this));

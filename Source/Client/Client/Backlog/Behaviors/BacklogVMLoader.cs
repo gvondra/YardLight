@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,21 +47,15 @@ namespace YardLight.Client.Backlog.Behaviors
         {
             try
             {
-                _backlogVM.RootWorkItems.Clear();
                 List<WorkItemVM> items = new List<WorkItemVM>();
+                items = (await loadAllWorkItems)
+                    .Select(i => WorkItemVM.Create(_backlogVM, i)).ToList();
                 WorkItemLoader workItemLoader;
-                foreach (WorkItem workItem in await loadAllWorkItems)
+                foreach (WorkItemVM item in items.Where(i => !i.ParentWorkItemId.HasValue))
                 {
-                    WorkItemVM workItemVM = new WorkItemVM(_backlogVM, workItem);
-                    workItemVM.AddBehavior(new CreateWorkItemLoader(workItemVM.CreateWorkItemVM));
-                    items.Add(workItemVM);
-                    if (!workItemVM.ParentWorkItemId.HasValue)
-                    {
-                        _backlogVM.RootWorkItems.Add(workItemVM);
-                        workItemLoader = new WorkItemLoader(workItemVM);
-                        _backlogVM.AddBehavior(workItemLoader);
-                        workItemLoader.Load();
-                    }
+                    workItemLoader = new WorkItemLoader(item);
+                    _backlogVM.AddBehavior(workItemLoader);
+                    workItemLoader.Load();
                 }
                 foreach (WorkItemVM item in items.Where(i => i.ParentWorkItemId.HasValue))
                 {
@@ -68,8 +63,11 @@ namespace YardLight.Client.Backlog.Behaviors
                     workItemLoader = new WorkItemLoader(item);
                     parent.AddBehavior(workItemLoader);
                     workItemLoader.Load();
-                    parent.Children.Add(item);
+                    parent.AppendChild(item);
                 }
+                _backlogVM.RootWorkItems = new ReadOnlyCollection<WorkItemVM>(
+                    items.Where(i => !i.ParentWorkItemId.HasValue).ToList()
+                    );
                 _backlogVM.CanRefresh = true;
             }
             catch(System.Exception ex)

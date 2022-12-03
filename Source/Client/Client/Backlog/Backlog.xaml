@@ -14,7 +14,7 @@
         <KeyBinding Key="F5" Command="{Binding RefreshBackLogCommand}" />
     </Page.InputBindings>
     <Page.Resources>
-        <HierarchicalDataTemplate x:Key="TreeItemTemplate" ItemsSource="{Binding Children}">
+        <HierarchicalDataTemplate x:Key="TreeItemTemplate" ItemsSource="{Binding FilteredChildren}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -45,7 +45,18 @@
             <TextBlock Grid.Column="2"><Hyperlink Command="{Binding RefreshBackLogCommand}">Refresh (F5)</Hyperlink></TextBlock>
         </Grid>        
         <ctrl:AddWorkItem DockPanel.Dock="Bottom" HorizontalAlignment="Left" VerticalAlignment="Bottom" DataContext="{Binding CreateWorkItemVM}" />
-        <TreeView ItemsSource="{Binding RootWorkItems}" 
+        <Border DockPanel.Dock="Right" BorderThickness="1" BorderBrush="DarkGray" Padding="2,0">
+            <StackPanel Orientation="Vertical" MinWidth="50">
+                <Label VerticalAlignment="Top">
+                    <TextBlock TextDecorations="Underline">Filter</TextBlock>
+                </Label>
+                <WrapPanel Orientation="Horizontal">
+                    <Label>Title</Label>
+                    <TextBox Text="{Binding Filter.Title}" Width="100" />
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+        <TreeView ItemsSource="{Binding FilteredChildren}" 
                   ItemTemplate="{StaticResource TreeItemTemplate}"/>
 
     </DockPanel>

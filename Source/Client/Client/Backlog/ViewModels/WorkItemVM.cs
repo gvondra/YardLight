@@ -16,7 +16,8 @@ namespace YardLight.Client.Backlog.ViewModels
         private readonly BacklogVM _backlog;
         private readonly WorkItem _innerWorkItem;
         private readonly CreateWorkItemVM _createWorkItemVM;
-        private readonly ObservableCollection<WorkItemVM> _children = new ObservableCollection<WorkItemVM>();
+        private readonly ObservableCollection<WorkItemVM> _filteredChildren = new ObservableCollection<WorkItemVM>();
+        private ReadOnlyCollection<WorkItemVM> _children = new ReadOnlyCollection<WorkItemVM>(new List<WorkItemVM>());
         private Brush _bulletColor = Brushes.Black;
         private List<WorkItemStatusVM> _availableStatuses;
         private List<string> _itterations = new List<string>();
@@ -41,11 +42,24 @@ namespace YardLight.Client.Backlog.ViewModels
         public Guid? WorkItemId => _innerWorkItem.WorkItemId;
         public Guid? ParentWorkItemId => _innerWorkItem.ParentWorkItemId;
         public CreateWorkItemVM CreateWorkItemVM => _createWorkItemVM;
-        public ObservableCollection<WorkItemVM> Children => _children;
         public string ColorCode => _innerWorkItem.Type.ColorCode;
         public string StatusTitle => _innerWorkItem.Status?.Title;
         public ObservableCollection<CommentVM> Comments => _comments;
+        public ObservableCollection<WorkItemVM> FilteredChildren => _filteredChildren;
         public Guid? ProjectId => _innerWorkItem.ProjectId;
+
+        public ReadOnlyCollection<WorkItemVM> Children
+        { 
+            get => _children; 
+            set
+            {
+                if (_children != value)
+                {
+                    _children = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public CreateWorkIemCommentCommand CreateWorkIemCommentCommand
         {
@@ -298,5 +312,20 @@ namespace YardLight.Client.Backlog.ViewModels
             }
         }
 
+        // default create method attaches a "create work item loader"
+        public static WorkItemVM Create(BacklogVM backlog, WorkItem innerWorkItem)
+        {
+            WorkItemVM workItemVM = new WorkItemVM(backlog, innerWorkItem);
+            workItemVM.AddBehavior(new CreateWorkItemLoader(workItemVM.CreateWorkItemVM));
+            return workItemVM;
+        }
+
+        public void AppendChild(WorkItemVM workItemVM)
+        {
+            Children = new ReadOnlyCollection<WorkItemVM>(
+                Children.Concat(new WorkItemVM[] { workItemVM })
+                .ToList()
+                );
+        }
     }
 }

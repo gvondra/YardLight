@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,24 +72,22 @@ namespace YardLight.Client.Backlog.Controls
             try
             {                
                 WorkItem workItem = await createWorkItem;
-                WorkItemVM workItemVM = new WorkItemVM(createWorkItemVM.BacklogVM, workItem);
-                workItemVM.AddBehavior(new CreateWorkItemLoader(workItemVM.CreateWorkItemVM));
+                WorkItemVM workItemVM = WorkItemVM.Create(createWorkItemVM.BacklogVM, workItem);
                 WorkItemVM parent = null;
                 WorkItemLoader workItemLoader;
                 if (workItemVM.ParentWorkItemId.HasValue)
                 {
                     parent = Find(createWorkItemVM.BacklogVM.RootWorkItems, workItemVM.ParentWorkItemId.Value);
                 }
+                workItemLoader = new WorkItemLoader(workItemVM);
                 if (parent == null)
                 {
-                    createWorkItemVM.BacklogVM.RootWorkItems.Add(workItemVM);
-                    workItemLoader = new WorkItemLoader(workItemVM);
+                    createWorkItemVM.BacklogVM.AppendWorkItem(workItemVM);                    
                     createWorkItemVM.BacklogVM.AddBehavior(workItemLoader);
                 }
                 else
                 {
-                    parent.Children.Add(workItemVM);
-                    workItemLoader = new WorkItemLoader(workItemVM);
+                    parent.AppendChild(workItemVM);
                     parent.AddBehavior(workItemLoader);
                 }
                 workItemLoader.Load();
