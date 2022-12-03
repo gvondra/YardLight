@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface;
+using YardLight.Interface.Models;
 
 namespace YardLight.Client.Backlog.Behaviors
 {
@@ -43,6 +44,11 @@ namespace YardLight.Client.Backlog.Behaviors
                 .ContinueWith(LoadItterationsCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
             Task.Run(() => LoadTeams(userSession.OpenProjectId))
                 .ContinueWith(LoadTeamsCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+            if (_workItemVM.LoadWorkItemCommentCommand == null)
+                _workItemVM.LoadWorkItemCommentCommand = new LoadWorkItemCommentCommand(this);
+            if (_workItemVM.CreateWorkIemCommentCommand == null)
+                _workItemVM.CreateWorkIemCommentCommand = new CreateWorkIemCommentCommand();
+
         }
 
         private Task<List<string>> LoadItterations(Guid? projectId)
@@ -88,6 +94,44 @@ namespace YardLight.Client.Backlog.Behaviors
             try
             {
                 _workItemVM.Teams = await loadTeams;
+            }
+            catch (System.Exception ex)
+            {
+                ErrorWindow.Open(ex, null);
+            }
+        }
+
+        public void LoadComments()
+        {
+            Guid? projectId = _workItemVM.ProjectId;
+            Guid? workItemId = _workItemVM.WorkItemId;
+            if (projectId.HasValue && workItemId.HasValue)
+            {
+                Task.Run(() => LoadComments(projectId.Value, workItemId.Value))
+                    .ContinueWith(LoadCommentsCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+
+            }
+        }
+
+        private Task<List<Comment>> LoadComments(Guid projectId, Guid workItemId)
+        {
+            using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+            {
+                ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                IWorkItemCommentService workItemCommentService = scope.Resolve<IWorkItemCommentService>();
+                return workItemCommentService.GetByWorkItemId(settingsFactory.CreateApi(), projectId, workItemId);
+            }
+        }
+
+        private async Task LoadCommentsCallback(Task<List<Comment>> loadComments, object state)
+        {
+            try
+            {
+                _workItemVM.Comments.Clear();
+                foreach (Comment comment in await loadComments)
+                {
+                    _workItemVM.Comments.Add(new CommentVM(comment));
+                }
             }
             catch (System.Exception ex)
             {

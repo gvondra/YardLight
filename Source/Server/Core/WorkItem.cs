@@ -20,7 +20,7 @@ namespace YardLight.Core
         private readonly Dictionary<WorkItemCommentType, IWorkItemComment> _comments = new Dictionary<WorkItemCommentType, IWorkItemComment>();
         private readonly IWorkItemCommentFactory _commentFactory;
         private IWorkItemStatus _status;
-        private IWorkItemType _type;
+        private IWorkItemType _type;       
         
         public WorkItem(WorkItemData data,
             IWorkItemDataSaver dataSaver,
@@ -121,9 +121,11 @@ namespace YardLight.Core
             IWorkItemComment result = null;
             if (!_comments.ContainsKey(workItemCommentType))
             {
-                IWorkItemComment comment = (await _commentFactory.GetByWorkItemId(settings, WorkItemId)).FirstOrDefault(c => c.Type == workItemCommentType);
-                if (comment != null)
-                    _comments[workItemCommentType] = comment;
+                foreach (IWorkItemComment comment in await _commentFactory.GetByWorkItemId(settings, WorkItemId))
+                {
+                    if (!_comments.ContainsKey(comment.Type))
+                        _comments.Add(comment.Type, comment);
+                }
             }
             if (_comments.ContainsKey(workItemCommentType))
                 result = _comments[workItemCommentType];
@@ -146,6 +148,17 @@ namespace YardLight.Core
             {
                 _comments[workItemCommentType] = _commentFactory.Create(WorkItemId, text, workItemCommentType);
             }
+        }
+
+        public async Task<IEnumerable<IWorkItemComment>> GetComments(ISettings settings, WorkItemCommentType workItemCommentType)
+        {
+            return (await _commentFactory.GetByWorkItemId(settings, WorkItemId))
+                .Where(c => c.Type == workItemCommentType);
+        }
+
+        public IWorkItemComment CreateComment(string text, WorkItemCommentType workItemCommentType)
+        {
+            return _commentFactory.Create(WorkItemId, text, workItemCommentType);
         }
     }
 }

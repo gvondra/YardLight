@@ -69,6 +69,5 @@ namespace YardLight.Client.Backlog.ViewModels
             }
         }
 
-        public void AddBehavior(object behavior) => _behaviors.Add(behavior);
     }
 }

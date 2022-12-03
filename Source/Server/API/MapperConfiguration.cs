@@ -18,6 +18,7 @@ namespace API
                 c.CreateMap<IProject, Project>();
                 c.CreateMap<WorkItem, IWorkItem>();
                 c.CreateMap<IWorkItem, WorkItem>();
+                c.CreateMap<IWorkItemComment, Comment>();
                 c.CreateMap<WorkItemStatus, IWorkItemStatus>()
                 .ForMember(s => s.Order, config => config.MapFrom(source => source.Order ?? 0))
                 .ForMember(s => s.IsActive, config => config.MapFrom(source => source.IsActive ?? true))

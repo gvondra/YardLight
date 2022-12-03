@@ -18,6 +18,7 @@ namespace YardLight.Core
             builder.RegisterType<ProjectFactory>().As<IProjectFactory>();
             builder.RegisterType<ProjectSaver>().As<IProjectSaver>();
             builder.RegisterType<WorkItemCommentFactory>().As<IWorkItemCommentFactory>();
+            builder.RegisterType<WorkItemCommentSaver>().As<IWorkItemCommentSaver>();
             builder.RegisterType<WorkItemFactory>().As<IWorkItemFactory>();
             builder.RegisterType<WorkItemStatusFactory>().As<IWorkItemStatusFactory>();
             builder.RegisterType<WorkItemSaver>().As<IWorkItemSaver>();

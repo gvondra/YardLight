@@ -21,6 +21,10 @@ namespace YardLight.Client.Backlog.ViewModels
         private List<WorkItemStatusVM> _availableStatuses;
         private List<string> _itterations = new List<string>();
         private List<string> _teams = new List<string>();
+        private string _newCommentText;
+        private ObservableCollection<CommentVM> _comments = new ObservableCollection<CommentVM>();
+        private LoadWorkItemCommentCommand _loadWorkItemCommentCommand;
+        private CreateWorkIemCommentCommand _createWorkIemCommentCommand;
 
         public WorkItemVM(BacklogVM backlog, WorkItem innerWorkItem)
         {
@@ -40,7 +44,48 @@ namespace YardLight.Client.Backlog.ViewModels
         public ObservableCollection<WorkItemVM> Children => _children;
         public string ColorCode => _innerWorkItem.Type.ColorCode;
         public string StatusTitle => _innerWorkItem.Status?.Title;
-        
+        public ObservableCollection<CommentVM> Comments => _comments;
+        public Guid? ProjectId => _innerWorkItem.ProjectId;
+
+        public CreateWorkIemCommentCommand CreateWorkIemCommentCommand
+        {
+            get => _createWorkIemCommentCommand;
+            set
+            {
+                if (_createWorkIemCommentCommand != value)
+                {
+                    _createWorkIemCommentCommand = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public LoadWorkItemCommentCommand LoadWorkItemCommentCommand
+        {
+            get => _loadWorkItemCommentCommand;
+            set
+            {
+                if (_loadWorkItemCommentCommand != value)
+                {
+                    _loadWorkItemCommentCommand = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public string NewCommentText
+        {
+            get => _newCommentText;
+            set
+            {
+                if (_newCommentText != value)
+                {
+                    _newCommentText = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public List<string> Itterations
         {
             get => _itterations;
@@ -253,6 +298,5 @@ namespace YardLight.Client.Backlog.ViewModels
             }
         }
 
-        public void AddBehavior(object behavior) => _behaviors.Add(behavior);
     }
 }

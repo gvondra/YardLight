@@ -58,11 +58,14 @@ namespace YardLight.Client.Backlog
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             NavigationService navigationService = NavigationService.GetNavigationService(this);
+            WorkItemVM workItemVM = (WorkItemVM)((dynamic)e.Source).DataContext;
             EditWorkItem editWorkItem = new EditWorkItem()
             {
-                DataContext = ((dynamic)e.Source).DataContext
+                DataContext = workItemVM
             };
             navigationService.Navigate(editWorkItem);
+            if (workItemVM.LoadWorkItemCommentCommand != null && workItemVM.LoadWorkItemCommentCommand.CanExecute(null))
+                workItemVM.LoadWorkItemCommentCommand.Execute(null);
         }
     }
 }

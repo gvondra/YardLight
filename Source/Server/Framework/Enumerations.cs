@@ -10,6 +10,7 @@ namespace YardLight.Framework.Enumerations
     {
         NotSet = 0x00,
         Description = 0x01,
-        Criteria = 0x02
+        Criteria = 0x02,
+        Comment = 0x03
     }
 }

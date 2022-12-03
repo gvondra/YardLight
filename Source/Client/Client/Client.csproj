@@ -158,8 +158,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.30, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.30\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.31, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.31\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
     <Reference Include="YardLight.Interface.Authorization, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YardLight.Interface.Authorization.1.0.0-alpha.12\lib\net48\YardLight.Interface.Authorization.dll</HintPath>
@@ -186,8 +186,10 @@
       <DependentUpon>Backlog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Backlog\Behaviors\BacklogVMLoader.cs" />
+    <Compile Include="Backlog\Behaviors\CreateWorkIemCommentCommand.cs" />
     <Compile Include="Backlog\Behaviors\CreateWorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\CreateWorkItemValidator.cs" />
+    <Compile Include="Backlog\Behaviors\LoadWorkItemCommentCommand.cs" />
     <Compile Include="Backlog\Behaviors\RefreshBackLogCommand.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemValidator.cs" />
@@ -201,6 +203,7 @@
       <DependentUpon>EditWorkItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Backlog\ViewModels\BacklogVM.cs" />
+    <Compile Include="Backlog\ViewModels\CommentVM.cs" />
     <Compile Include="Backlog\ViewModels\CreateWorkItemVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemStatusVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemTypeVM.cs" />

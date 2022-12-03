@@ -40,5 +40,7 @@ namespace YardLight.Client
             List<object> behaviors = _behaviors ?? new List<object>();
             return behaviors.Any(b => b.GetType().Equals(typeof(T)));  
         }
+
+        public void AddBehavior(object behavior) => _behaviors.Add(behavior);
     }
 }

@@ -41,73 +41,99 @@
             <Label Grid.Column="2" Grid.Row="0">Itteration: </Label>
             <ComboBox Grid.Column="3" Grid.Row="0" IsEditable="True" ItemsSource="{Binding Itterations}" Text="{Binding Itteration}"/>
         </Grid>
-        <Grid Style="{StaticResource LayoutGridStyle}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Style="{StaticResource LayoutGridStyle}">
+        <!--Dock Pannel Body-->
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+            <Grid Style="{StaticResource LayoutGridStyle}" MinWidth="800" MinHeight="600">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.Row="0">Status:</Label>
-                <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AvailableStatuses}" SelectedItem="{Binding Status}" HorizontalAlignment="Left" MinWidth="150" >
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock>
-                                <TextBlock Foreground="{Binding BulletBrush}" FontSize="16">•</TextBlock>
-                                <TextBlock Text="{Binding Title}" />
-                             </TextBlock>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="99" 
-                         HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                         AcceptsReturn="True" AcceptsTab="True" 
-                         MinHeight="150" MaxHeight="250" 
-                         HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
-                         Text="{Binding Description}"/>
-                <Label Grid.Column="0" Grid.Row="2">Criteria</Label>
-                <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="99" 
-                         HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                         AcceptsReturn="True" AcceptsTab="True" 
-                         MinHeight="150" MaxHeight="250" 
-                         HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
-                         Text="{Binding Criteria}"/>
+                <!--Left Column-->
+                <Grid Grid.Column="0" Style="{StaticResource LayoutGridStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0">Status:</Label>
+                    <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AvailableStatuses}" SelectedItem="{Binding Status}" HorizontalAlignment="Left" MinWidth="150" >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock Foreground="{Binding BulletBrush}" FontSize="16">•</TextBlock>
+                                    <TextBlock Text="{Binding Title}" />
+                                 </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="99" 
+                             HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                             AcceptsReturn="True" AcceptsTab="True" 
+                             MinHeight="150" MaxHeight="250" 
+                             HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
+                             Text="{Binding Description}"/>
+                    <Label Grid.Column="0" Grid.Row="2">Criteria</Label>
+                    <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="99" 
+                             HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                             AcceptsReturn="True" AcceptsTab="True" 
+                             MinHeight="150" MaxHeight="250" 
+                             HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
+                             Text="{Binding Criteria}"/>
+                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" Command="{Binding CreateWorkIemCommentCommand}" CommandParameter="{Binding .}">Add Comment</Button>
+                    <TextBox Grid.Column="1" Grid.Row="4" 
+                             HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                             AcceptsReturn="True" AcceptsTab="True" 
+                             MinHeight="50" 
+                             HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                             Text="{Binding NewCommentText}"/>
+                    <ItemsControl Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="99" ItemsSource="{Binding Comments}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Text}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+                <!--Right Column-->
+                <Grid Grid.Column="1" Style="{StaticResource LayoutGridStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0">Effort:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Effort}"/>
+                    <Label Grid.Column="0" Grid.Row="1">Priority:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Priority}"/>
+                    <Label Grid.Column="0" Grid.Row="2">Value:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Value}"/>
+                    <Label Grid.Column="2" Grid.Row="0">Target:</Label>
+                    <DatePicker Grid.Column="3" Grid.Row="0" SelectedDate="{Binding TargetDate}"/>
+                    <Label Grid.Column="2" Grid.Row="1">Start:</Label>
+                    <DatePicker Grid.Column="3" Grid.Row="1"  SelectedDate="{Binding StartDate}"/>
+                    <Label Grid.Column="2" Grid.Row="2">Close:</Label>
+                    <DatePicker Grid.Column="3" Grid.Row="2"  SelectedDate="{Binding CloseDate}"/>
+                </Grid>
             </Grid>
-            <Grid Grid.Column="1" Style="{StaticResource LayoutGridStyle}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.Row="0">Effort:</Label>
-                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Effort}"/>
-                <Label Grid.Column="0" Grid.Row="1">Priority:</Label>
-                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Priority}"/>
-                <Label Grid.Column="0" Grid.Row="2">Value:</Label>
-                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Value}"/>
-                <Label Grid.Column="2" Grid.Row="0">Target:</Label>
-                <DatePicker Grid.Column="3" Grid.Row="0" SelectedDate="{Binding TargetDate}"/>
-                <Label Grid.Column="2" Grid.Row="1">Start:</Label>
-                <DatePicker Grid.Column="3" Grid.Row="1"  SelectedDate="{Binding StartDate}"/>
-                <Label Grid.Column="2" Grid.Row="2">Close:</Label>
-                <DatePicker Grid.Column="3" Grid.Row="2"  SelectedDate="{Binding CloseDate}"/>
-            </Grid>
-        </Grid> 
+        </ScrollViewer>
     </DockPanel>
 </UserControl>

@@ -36,5 +36,7 @@ namespace YardLight.Framework
         Task<IWorkItemType> GetType(ISettings settings);
         Task<string> GetComment(ISettings settings, WorkItemCommentType workItemCommentType);
         Task SetComment(ISettings settings, WorkItemCommentType workItemCommentType, string text);
+        Task<IEnumerable<IWorkItemComment>> GetComments(ISettings settings, WorkItemCommentType workItemCommentType);
+        IWorkItemComment CreateComment(string text, WorkItemCommentType workItemCommentType);
     }
 }
