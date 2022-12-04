@@ -39,6 +39,8 @@ namespace YardLight.Client
             set
             {
                 _openProjectId = value;
+                _backlogFilterTeam = string.Empty;
+                _backlogFilterItteration = string.Empty;
                 Save();
             }
         }
