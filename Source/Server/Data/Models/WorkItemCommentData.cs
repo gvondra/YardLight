@@ -9,7 +9,7 @@ namespace YardLight.Data.Models
 {
     public class WorkItemCommentData : CommentData
     {
-        [ColumnMapping("WorkItemId", IsPrimaryKey = true)] public Guid WorkItemId { get; set; }
-        [ColumnMapping("Type")] public short Type { get; set; }
+        [ColumnMapping(IsPrimaryKey = true)] public Guid WorkItemId { get; set; }
+        [ColumnMapping()] public short Type { get; set; }
     }
 }

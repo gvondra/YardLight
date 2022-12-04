@@ -9,16 +9,16 @@ namespace YardLight.Data.Models
 {
     public class WorkItemStatusData : DataManagedStateBase
     {
-        [ColumnMapping("WorkItemStatusId", IsPrimaryKey = true)] public Guid WorkItemStatusId { get; set; }
-        [ColumnMapping("WorkItemTypeId")] public Guid WorkItemTypeId { get; set; }
-        [ColumnMapping("ProjectId")] public Guid ProjectId { get; set; }
-        [ColumnMapping("Title")] public string Title { get; set; }
-        [ColumnMapping("ColorCode")] public string ColorCode { get; set; } = "black";
-        [ColumnMapping("Order")] public short Order { get; set; } = 0;
-        [ColumnMapping("IsActive")] public bool IsActive { get; set; } = true;
-	    [ColumnMapping("CreateTimestamp", IsUtc = true)] public DateTime CreateTimestamp { get; set; }
-        [ColumnMapping("UpdateTimestamp", IsUtc = true)] public DateTime UpdateTimestamp { get; set; }
-        [ColumnMapping("CreateUserId")] public Guid CreateUserId { get; set; }
-        [ColumnMapping("UpdateUserId")] public Guid UpdateUserId { get; set; }
+        [ColumnMapping(IsPrimaryKey = true)] public Guid WorkItemStatusId { get; set; }
+        [ColumnMapping()] public Guid WorkItemTypeId { get; set; }
+        [ColumnMapping()] public Guid ProjectId { get; set; }
+        [ColumnMapping()] public string Title { get; set; }
+        [ColumnMapping()] public string ColorCode { get; set; } = "black";
+        [ColumnMapping()] public short Order { get; set; } = 0;
+        [ColumnMapping()] public bool IsActive { get; set; } = true;
+	    [ColumnMapping(IsUtc = true)] public DateTime CreateTimestamp { get; set; }
+        [ColumnMapping(IsUtc = true)] public DateTime UpdateTimestamp { get; set; }
+        [ColumnMapping()] public Guid CreateUserId { get; set; }
+        [ColumnMapping()] public Guid UpdateUserId { get; set; }
     }
 }
