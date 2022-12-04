@@ -17,7 +17,7 @@ namespace YardLight.Client.Backlog.ViewModels
         private readonly CreateWorkItemVM _createWorkItemVM;
         private readonly ObservableCollection<WorkItemTypeVM> _availableTypes = new ObservableCollection<WorkItemTypeVM>();
         private readonly ObservableCollection<WorkItemVM> _filteredChildren = new ObservableCollection<WorkItemVM>();
-        private readonly WorkItemFilterVM _filter = new WorkItemFilterVM();
+        private readonly WorkItemFilterVM _filter;
         private ReadOnlyCollection<WorkItemVM> _rootWorkItems = new ReadOnlyCollection<WorkItemVM>(new List<WorkItemVM>());
         private Project _project;
         private RefreshBackLogCommand _refreshBackLogCommand;
@@ -26,6 +26,7 @@ namespace YardLight.Client.Backlog.ViewModels
         public BacklogVM()
         {
             _createWorkItemVM = new CreateWorkItemVM(this);
+            _filter = new WorkItemFilterVM(UserSessionLoader.GetUserSession());
         }
 
         public CreateWorkItemVM CreateWorkItemVM => _createWorkItemVM;

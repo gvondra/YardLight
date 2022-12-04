@@ -27,10 +27,64 @@ namespace YardLight.Client.Backlog.Behaviors
             UserSession userSession = UserSessionLoader.GetUserSession();
             Task.Run(() => LoadProject(userSession.OpenProjectId.Value))
                 .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());
+            Task.Run(() => LoadItterations(userSession.OpenProjectId))
+                .ContinueWith(LoadItterationsCallback, userSession.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
+            Task.Run(() => LoadTeams(userSession.OpenProjectId))
+                .ContinueWith(LoadTeamsCallback, userSession.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
             if (!_backlogVM.ContainsBehavior<CreateWorkItemLoader>())
                 _backlogVM.AddBehavior(new CreateWorkItemLoader(_backlogVM.CreateWorkItemVM));
             if (_backlogVM.RefreshBackLogCommand == null)
                 _backlogVM.RefreshBackLogCommand = new RefreshBackLogCommand(_backlogVM, this);
+        }
+
+        private Task<List<string>> LoadItterations(Guid? projectId)
+        {
+            using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+            {
+                ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                IWorkItemService workItemService = scope.Resolve<IWorkItemService>();
+                if (projectId.HasValue)
+                    return workItemService.GetItterationsByProjectId(settingsFactory.CreateApi(), projectId.Value);
+                else
+                    return Task.FromResult(new List<string>());
+            }
+        }
+
+        private async Task LoadItterationsCallback(Task<List<string>> loadItterations, object state)
+        {
+            try
+            {
+                _backlogVM.Filter.Itterations = await loadItterations;
+            }
+            catch (System.Exception ex)
+            {
+                ErrorWindow.Open(ex, null);
+            }
+        }
+
+        private Task<List<string>> LoadTeams(Guid? projectId)
+        {
+            using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+            {
+                ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                IWorkItemService workItemService = scope.Resolve<IWorkItemService>();
+                if (projectId.HasValue)
+                    return workItemService.GetTeamsByProjectId(settingsFactory.CreateApi(), projectId.Value);
+                else
+                    return Task.FromResult(new List<string>());
+            }
+        }
+
+        private async Task LoadTeamsCallback(Task<List<string>> loadTeams, object state)
+        {
+            try
+            {
+                _backlogVM.Filter.Teams = await loadTeams;
+            }
+            catch (System.Exception ex)
+            {
+                ErrorWindow.Open(ex, null);
+            }
         }
 
         private Task<List<WorkItem>> LoadAllWorkItems(Guid projectId)

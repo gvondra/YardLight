@@ -10,6 +10,28 @@ namespace YardLight.Client
     {
         private bool _enableSave = false;
         private Guid? _openProjectId;
+        private string _backlogFilterTeam;
+        private string _backlogFilterItteration;
+
+        public string BacklogFilterTeam
+        {
+            get => _backlogFilterTeam;
+            set
+            {
+                _backlogFilterTeam = value;
+                Save();
+            }
+        }
+
+        public string BacklogFilterItteration
+        {
+            get => _backlogFilterItteration;
+            set
+            {
+                _backlogFilterItteration = value;
+                Save();
+            }
+        }
 
         public Guid? OpenProjectId 
         { 

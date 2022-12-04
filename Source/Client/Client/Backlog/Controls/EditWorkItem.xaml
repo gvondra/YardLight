@@ -14,6 +14,12 @@
             <Setter Property="Margin" Value="0,0,10,10"/>
         </Style>
     </UserControl.Resources>
+    <UserControl.Background>
+        <LinearGradientBrush EndPoint="0.5,2.5" StartPoint="0.5,0">
+            <GradientStop Color="White"/>
+            <GradientStop Color="LightGray" Offset="1"/>
+        </LinearGradientBrush>
+    </UserControl.Background>
     <DockPanel>
         <Grid DockPanel.Dock="Top" Style="{StaticResource LayoutGridStyle}">
             <Grid.ColumnDefinitions>
@@ -36,9 +42,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Label Grid.Column="0" Grid.Row="0">Team: </Label>
+            <Label Grid.Column="0" Grid.Row="0">Team:</Label>
             <ComboBox Grid.Column="1" Grid.Row="0" IsEditable="True" ItemsSource="{Binding Teams}" Text="{Binding Team}"/>
-            <Label Grid.Column="2" Grid.Row="0">Itteration: </Label>
+            <Label Grid.Column="2" Grid.Row="0">Itteration:</Label>
             <ComboBox Grid.Column="3" Grid.Row="0" IsEditable="True" ItemsSource="{Binding Itterations}" Text="{Binding Itteration}"/>
         </Grid>
         <!--Dock Pannel Body-->

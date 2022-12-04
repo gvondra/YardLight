@@ -75,6 +75,10 @@ namespace YardLight.Client.Backlog.Behaviors
             IEnumerable<WorkItemVM> filteredItems = allItems;
             if (!string.IsNullOrEmpty(filter.Title))
                 filteredItems = filteredItems.Where(i => i.FilteredChildren.Count > 0 || StringMatch(i.Title, filter.Title));
+            if (!string.IsNullOrEmpty(filter.Team))
+                filteredItems = filteredItems.Where(i => i.FilteredChildren.Count > 0 || StringMatch(i.Team, filter.Team));
+            if (!string.IsNullOrEmpty(filter.Itteration))
+                filteredItems = filteredItems.Where(i => i.FilteredChildren.Count > 0 || StringMatch(i.Itteration, filter.Itteration));
             return filteredItems;
         }
 
