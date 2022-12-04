@@ -9,8 +9,8 @@ namespace YardLight.Authorization.Data.Models
 {
     public class EmailAddressData : DataManagedStateBase
     {
-        [ColumnMapping("EmailAddressId", IsPrimaryKey = true)] public Guid EmailAddressId { get; set; }
-        [ColumnMapping("Address")] public string Address { get; set; }
-        [ColumnMapping("CreateTimestamp", IsUtc = true)] public DateTime CreateTimestamp { get; set; }
+        [ColumnMapping(IsPrimaryKey = true)] public Guid EmailAddressId { get; set; }
+        [ColumnMapping()] public string Address { get; set; }
+        [ColumnMapping(IsUtc = true)] public DateTime CreateTimestamp { get; set; }
     }
 }

@@ -9,11 +9,11 @@ namespace YardLight.Authorization.Data.Models
 {
     public class UserData : DataManagedStateBase
     {
-        [ColumnMapping("UserId", IsPrimaryKey = true)] public Guid UserId { get; set; }
-        [ColumnMapping("ReferenceId")] public string ReferenceId { get; set; }
-        [ColumnMapping("EmailAddressId")] public Guid EmailAddressId { get; set; }
-        [ColumnMapping("Name")] public string Name { get; set; }
-        [ColumnMapping("CreateTimestamp", IsUtc = true)] public DateTime CreateTimestamp { get; set; }
-        [ColumnMapping("UpdateTimestamp", IsUtc =true)] public DateTime UpdateTimestamp { get; set; }
+        [ColumnMapping(IsPrimaryKey = true)] public Guid UserId { get; set; }
+        [ColumnMapping()] public string ReferenceId { get; set; }
+        [ColumnMapping()] public Guid EmailAddressId { get; set; }
+        [ColumnMapping()] public string Name { get; set; }
+        [ColumnMapping(IsUtc = true)] public DateTime CreateTimestamp { get; set; }
+        [ColumnMapping(IsUtc =true)] public DateTime UpdateTimestamp { get; set; }
     }
 }

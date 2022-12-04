@@ -33,7 +33,7 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
 		<PackageReference Include="YardLight.Interface.Authorization" Version="1.0.0-alpha.*" />
 	</ItemGroup>
 

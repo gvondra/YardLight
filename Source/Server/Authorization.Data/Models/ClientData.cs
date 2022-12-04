@@ -9,9 +9,9 @@ namespace YardLight.Authorization.Data.Models
 {
     public class ClientData : DataManagedStateBase
     {
-        [ColumnMapping("ClientId", IsPrimaryKey = true)] public Guid ClientId { get; set; }
-        [ColumnMapping("Name")] public string Name { get; set; }
-        [ColumnMapping("CreateTimestamp", IsUtc = true)] public DateTime CreateTimestamp { get; set; }
-        [ColumnMapping("UpdateTimestamp", IsUtc = true)] public DateTime UpdateTimestamp { get; set; }
+        [ColumnMapping(IsPrimaryKey = true)] public Guid ClientId { get; set; }
+        [ColumnMapping()] public string Name { get; set; }
+        [ColumnMapping(IsUtc = true)] public DateTime CreateTimestamp { get; set; }
+        [ColumnMapping(IsUtc = true)] public DateTime UpdateTimestamp { get; set; }
     }
 }
