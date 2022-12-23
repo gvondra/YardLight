@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using YardLight.Interface.Models;
-using AuthorizationAPI = YardLight.Interface.Authorization;
+using AuthorizationAPI = BrassLoon.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
@@ -85,7 +85,7 @@ namespace API.Controllers
                     {
                         if (!userCache.ContainsKey(id))
                         {
-                            user = await _userService.Get(settings, id);
+                            user = await _userService.Get(settings, _settings.Value.AuthorizationDomainId.Value, id);
                             if (user != null)
                                 userCache.Add(id, user);
                         }

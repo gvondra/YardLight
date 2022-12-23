@@ -13,9 +13,18 @@ namespace API
             _tokenService = tokenService;
         }
 
-        public YardLight.Interface.Authorization.ISettings CreateAuthorization(Settings settings, string token)
+        public BrassLoon.Interface.Authorization.ISettings CreateAuthorization(Settings settings, string token)
         {
-            return new YardLightAuthorizationSettings(settings.AuthorizationApiBaseAddress, token);
+            return new AuthorizationSettings(settings.AuthorizationApiBaseAddress, token);
+        }
+
+        public BrassLoon.Interface.Authorization.ISettings CreateAuthorization(Settings settings)
+        {
+            return new AuthorizationSettings(_tokenService, 
+                settings.AuthorizationApiBaseAddress, 
+                settings.BrassLoonAccountApiBaseAddress, 
+                settings.BrassLoonLogClientId,
+                settings.BrassLoonLogClientSecret);
         }
 
         public YardLight.CommonCore.ISettings CreateCore(Settings settings)

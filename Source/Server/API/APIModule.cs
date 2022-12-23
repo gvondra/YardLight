@@ -9,7 +9,7 @@ namespace API
             builder.RegisterModule(new BrassLoon.Interface.Account.AccountInterfaceModule());
             builder.RegisterModule(new BrassLoon.Interface.Log.LogInterfaceModule());
             builder.RegisterModule(new YardLight.Core.CoreModule());
-            builder.RegisterModule(new YardLight.Interface.Authorization.InterfaceAuthorizationModule());
+            builder.RegisterModule(new BrassLoon.Interface.Authorization.AuthorizationInterfaceModule());
             builder.RegisterType<SettingsFactory>().As<ISettingsFactory>().InstancePerLifetimeScope();
         }
     }

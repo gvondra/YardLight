@@ -5,8 +5,8 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "BrassLoonLogClientId": "5123679e-9b0f-4e72-b2c3-3e1c725cb860",
-        "BrassLoonLogClientSecret": "4935f9ddcbe34dbebb22648f79c3935205ba7370fedd4b26b341c56c6a726ca7"
+        "BrassLoonLogClientId": "41790b58-c57e-4448-b893-64fda93c6a5f",
+        "BrassLoonLogClientSecret": "aa887650a750408e9750056d66a0ddfeb782c80a9f8649fc83eefd6cda35cd62"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5001"

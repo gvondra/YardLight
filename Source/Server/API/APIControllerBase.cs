@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using YardLight.CommonAPI;
-using AuthorizationAPI = YardLight.Interface.Authorization;
+using AuthorizationAPI = BrassLoon.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
 namespace API
 {
@@ -30,7 +30,8 @@ namespace API
                 await base.WriteMetrics(
                     _settingsFactory.CreateLog(_settings.Value),                     
                     _settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()),
-                    _settings.Value.LogDomainId.Value, 
+                    _settings.Value.AuthorizationDomainId.Value,
+                    _settings.Value.LogDomainId.Value,
                     eventCode, 
                     magnitude,
                     data
@@ -43,6 +44,11 @@ namespace API
                 await base.WriteException(_settingsFactory.CreateLog(_settings.Value), _settings.Value.LogDomainId.Value, exception);
             else
                 Console.WriteLine(exception.ToString());
+        }
+
+        protected Task<Guid?> GetCurrentUserId(AuthorizationAPI.ISettings settings)
+        {
+            return GetCurrentUserId(settings, _settings.Value.AuthorizationDomainId.Value);
         }
     }
 }

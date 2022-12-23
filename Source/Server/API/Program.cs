@@ -1,5 +1,6 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,7 +59,13 @@ namespace API
                 }
                 });
             });
-            builder.Services.AddAuthentication(builder.Configuration);
+            builder.Services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddAuthentication(builder.Configuration)
+            .AddGoogleAuthentication(builder.Configuration);
             builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
             builder.Services.AddAuthorization(builder.Configuration);
 

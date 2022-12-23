@@ -25,6 +25,7 @@
     <PackageReference Include="Autofac" Version="6.5.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="BrassLoon.Interface.Authorization" Version="1.0.0-prerelease.*" />
     <PackageReference Include="BrassLoon.Interface.Log" Version="2.0.0" />
     <PackageReference Include="BrassLoon.RestClient" Version="3.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
-using AuthorizationAPI = YardLight.Interface.Authorization;
+using AuthorizationAPI = BrassLoon.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
 using Models = YardLight.Interface.Models;
 

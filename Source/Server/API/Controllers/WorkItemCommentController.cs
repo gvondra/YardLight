@@ -11,7 +11,7 @@ using YardLight.CommonCore;
 using YardLight.Framework;
 using YardLight.Framework.Enumerations;
 using YardLight.Interface.Models;
-using AuthorizationAPI = YardLight.Interface.Authorization;
+using AuthorizationAPI = BrassLoon.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
