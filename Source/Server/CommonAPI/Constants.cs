@@ -8,8 +8,8 @@ namespace YardLight.CommonAPI
 {
     public static class Constants
     {
-        public const string AUTH_SCHEMA_EXTERNAL = "External";
-        public const string AUTH_SCHEMA_YARD_LIGHT = "YardLight";
+        public const string AUTH_SCHEME_GOOGLE = "GoogleAuthentication";
+        public const string AUTH_SCHEMA_YARD_LIGHT = "YardLightAuthentication";
         public const string POLICY_CLIENT_EDIT = "CLIENT:EDIT";
         public const string POLICY_CLIENT_READ = "CLIENT:READ";
         public const string POLICY_TOKEN_CREATE = "TOKEN:CREATE";

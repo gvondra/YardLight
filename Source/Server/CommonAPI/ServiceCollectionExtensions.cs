@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,26 +36,26 @@ namespace YardLight.CommonAPI
 
         public static IServiceCollection AddAuthorization(this IServiceCollection services, IConfiguration configuration)
         {
+            string googleIdIssuer = configuration["GoogleIdIssuer"];
+            string idIssuer = configuration["IdIssuer"];
+            List<string> authenticationSchemes = new List<string>();
+            authenticationSchemes.Add(Constants.AUTH_SCHEMA_YARD_LIGHT);
+            if (!string.IsNullOrEmpty(googleIdIssuer))
+                authenticationSchemes.Add(Constants.AUTH_SCHEME_GOOGLE);
             services.AddAuthorization(o =>
-            {
-                string externalIdIssuer = configuration["ExternalIdIssuer"];
-                string idIssuer = configuration["IdIssuer"];
-                List<string> authenticationSchemes = new List<string>();
-                authenticationSchemes.Add(Constants.AUTH_SCHEMA_YARD_LIGHT);
-                if (!string.IsNullOrEmpty(externalIdIssuer))
-                    authenticationSchemes.Add(Constants.AUTH_SCHEMA_EXTERNAL);
+            {                
                 o.DefaultPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .AddAuthenticationSchemes(authenticationSchemes.ToArray())
                 .Build();
-                Console.WriteLine($"ExternalIdIssuer={externalIdIssuer}");
-                if (!string.IsNullOrEmpty(externalIdIssuer))
+                Console.WriteLine($"GoogleIdIssuer={googleIdIssuer}");
+                if (!string.IsNullOrEmpty(googleIdIssuer))
                 {
                     o.AddPolicy(Constants.POLICY_TOKEN_CREATE,
                         configure =>
                         {
-                            configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_TOKEN_CREATE, externalIdIssuer))
-                            .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_EXTERNAL)
+                            configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_TOKEN_CREATE, googleIdIssuer))
+                            .AddAuthenticationSchemes(Constants.AUTH_SCHEME_GOOGLE)
                             .Build();
                         });
                 }
@@ -113,18 +113,13 @@ namespace YardLight.CommonAPI
                     });
         }
 
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static AuthenticationBuilder AddAuthentication(this AuthenticationBuilder builder, IConfiguration configuration)
         {
             HttpDocumentRetriever documentRetriever = new HttpDocumentRetriever() { RequireHttps = false };
             JsonWebKeySet keySet = JsonWebKeySet.Create(
                 documentRetriever.GetDocumentAsync(configuration["JwkAddress"], new System.Threading.CancellationToken()).Result
                 );
-            services.AddAuthentication(o =>
-            {
-                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(Constants.AUTH_SCHEMA_YARD_LIGHT, o =>
+            builder.AddJwtBearer(Constants.AUTH_SCHEMA_YARD_LIGHT, o =>
             {
                 o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
@@ -139,12 +134,43 @@ namespace YardLight.CommonAPI
                     RequireSignedTokens = true,
                     ValidAudience = configuration["IdIssuer"],
                     ValidIssuer = configuration["IdIssuer"],
-                    IssuerSigningKey = keySet.Keys[0]
+                    IssuerSigningKeys = keySet.GetSigningKeys(),
+                    TryAllIssuerSigningKeys = true
                 };
                 o.IncludeErrorDetails = true;
             })
             ;
-            return services;
+            return builder;
+        }
+
+        public static AuthenticationBuilder AddGoogleAuthentication(this AuthenticationBuilder builder, IConfiguration configuration)
+        {
+            HttpDocumentRetriever documentRetriever = new HttpDocumentRetriever() { RequireHttps = false };
+            JsonWebKeySet keySet = JsonWebKeySet.Create(
+                documentRetriever.GetDocumentAsync(configuration["GoogleJwksUrl"], new System.Threading.CancellationToken()).Result
+                );
+            builder.AddJwtBearer(Constants.AUTH_SCHEME_GOOGLE, o =>
+            {
+                o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                    ValidateActor = false,
+                    ValidateTokenReplay = false,
+                    RequireAudience = false,
+                    RequireExpirationTime = true,
+                    RequireSignedTokens = true,
+                    ValidAudience = configuration["GoogleIdAudience"],
+                    ValidIssuer = configuration["GoogleIdIssuer"],
+                    IssuerSigningKeys = keySet.GetSigningKeys(),
+                    TryAllIssuerSigningKeys = true
+                };
+                o.IncludeErrorDetails = true;
+            })
+            ;
+            return builder;
         }
     }
 }

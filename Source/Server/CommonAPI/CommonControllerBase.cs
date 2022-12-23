@@ -10,7 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AuthAPI = YardLight.Interface.Authorization;
+using AuthorizationAPI = BrassLoon.Interface.Authorization;
 using LogAPI = BrassLoon.Interface.Log;
 
 namespace YardLight.CommonAPI
@@ -20,7 +20,7 @@ namespace YardLight.CommonAPI
         private readonly static Polly.Policy _currentUserCache = Polly.Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), new SlidingTtl(TimeSpan.FromMinutes(3)));
         private readonly LogAPI.IMetricService _metricService;
         private readonly LogAPI.IExceptionService _exceptionService;
-        private readonly AuthAPI.IUserService _userService;
+        private readonly AuthorizationAPI.IUserService _userService;
 
         protected CommonControllerBase(LogAPI.IMetricService metricService,
             LogAPI.IExceptionService exceptionService) : this(metricService, exceptionService, null)
@@ -28,7 +28,7 @@ namespace YardLight.CommonAPI
 
         protected CommonControllerBase(LogAPI.IMetricService metricService,
             LogAPI.IExceptionService exceptionService,
-            AuthAPI.IUserService userService)
+            AuthorizationAPI.IUserService userService)
         {
             _metricService = metricService;
             _exceptionService = exceptionService;
@@ -41,21 +41,21 @@ namespace YardLight.CommonAPI
         protected string GetCurrentUserEmailAddress()
             => User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-        protected async Task<AuthAPI.Models.User> GetCurrentUser(AuthAPI.ISettings settings)
+        protected async Task<AuthorizationAPI.Models.User> GetCurrentUser(AuthorizationAPI.ISettings settings, Guid domainId)
         {
-            AuthAPI.Models.User user = null;
+            AuthorizationAPI.Models.User user = null;
             if (_userService != null)
                 user = await _currentUserCache.Execute(
-                    (context) => _userService.Get(settings),
+                    (context) => _userService.Get(settings, domainId),
                     new Context(GetCurrentUserReferenceId())
                     );
             return user;
         }
 
-        protected async Task<Guid?> GetCurrentUserId(AuthAPI.ISettings settings)
+        protected async Task<Guid?> GetCurrentUserId(AuthorizationAPI.ISettings settings, Guid domainId)
         {
             Guid? id = null;
-            AuthAPI.Models.User user = await GetCurrentUser(settings);
+            AuthorizationAPI.Models.User user = await GetCurrentUser(settings, domainId);
             if (user != null)
                 id = user.UserId;
             return id;
@@ -80,15 +80,21 @@ namespace YardLight.CommonAPI
         protected Task WriteMetrics(LogAPI.ISettings settings, Guid domainId, string eventCode, double? magnitude, Dictionary<string, string> data = null)
             => WriteMetrics(settings, domainId, eventCode, magnitude, userId: null, data: data);
 
-        protected async Task WriteMetrics(LogAPI.ISettings logSettings, AuthAPI.ISettings authSettings, Guid domainId, string eventCode, double? magnitude, Dictionary<string, string> data = null)
+        protected async Task WriteMetrics(LogAPI.ISettings logSettings, 
+            AuthorizationAPI.ISettings authSettings, 
+            Guid authorizationDomainId,
+            Guid loggingDomainId,
+            string eventCode, 
+            double? magnitude, 
+            Dictionary<string, string> data = null)
         {
             try
             {
-                await WriteMetrics(logSettings, domainId, eventCode, magnitude, userId: await GetCurrentUserId(authSettings), data: data);
+                await WriteMetrics(logSettings, loggingDomainId, eventCode, magnitude, userId: await GetCurrentUserId(authSettings, authorizationDomainId), data: data);
             }
             catch (Exception ex)
             {
-                await WriteException(logSettings, domainId, ex);
+                await WriteException(logSettings, loggingDomainId, ex);
             }
         }
 

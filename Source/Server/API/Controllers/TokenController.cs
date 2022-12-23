@@ -44,7 +44,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                await WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
             return result;

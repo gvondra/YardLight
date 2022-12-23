@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using YardLight.Framework;
+﻿using YardLight.Framework;
 using YardLight.Interface.Models;
+using AuthorizationAPI = BrassLoon.Interface.Authorization.Models;
 using LogAPI = BrassLoon.Interface.Log.Models;
 namespace API
 {
@@ -10,8 +10,10 @@ namespace API
 
         static MapperConfiguration()
         {
-            _mapperConfiguration= new AutoMapper.MapperConfiguration((c) =>
+            _mapperConfiguration = new AutoMapper.MapperConfiguration((c) =>
             {
+                c.CreateMap<AuthorizationAPI.Role, Role>();
+                c.CreateMap<Role, AuthorizationAPI.Role>();
                 c.CreateMap<LogAPI.Exception, YardLight.Interface.Models.Exception>();
                 c.CreateMap<LogAPI.Metric, Metric>();
                 c.CreateMap<Project, IProject>();
