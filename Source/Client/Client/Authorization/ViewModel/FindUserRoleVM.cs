@@ -5,16 +5,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using AuthModels = YardLight.Interface.Authorization.Models;
+using YardLight.Interface.Models;
 
 namespace YardLight.Client.Authorization.ViewModel
 {
     public class FindUserRoleVM : INotifyPropertyChanged
     {
         private bool _isActive = false;
-        private AuthModels.Role _innerRole;
+        private Role _innerRole;
 
-        public FindUserRoleVM(AuthModels.Role role)
+        public FindUserRoleVM(Role role)
         {
             _innerRole = role;
         }

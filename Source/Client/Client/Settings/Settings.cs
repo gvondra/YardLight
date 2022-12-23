@@ -14,6 +14,5 @@ namespace YardLight.Client
         public static string GoogleClientId => ConfigurationManager.AppSettings["GoogleClientId"];
         public static string GoogleClientSecret => ConfigurationManager.AppSettings["GoogleClientSecret"];
         public static string GoogleTokenEndpoint => ConfigurationManager.AppSettings["GoogleTokenEndpoint"];
-        public static string AuthorizationApiBaseAddress => ConfigurationManager.AppSettings["AuthorizationApiBaseAddress"];
     }
 }

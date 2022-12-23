@@ -18,7 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using YardLight.Client.DependencyInjection;
-using YardLight.Interface.Authorization;
+using YardLight.Interface;
 
 namespace YardLight.Client
 {
@@ -194,7 +194,7 @@ namespace YardLight.Client
                 {
                     ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                     ITokenService tokenService = scope.Resolve<ITokenService>();
-                    AccessToken.Token = await tokenService.Create(settingsFactory.CreateAuthorization(AccessToken.GetGoogleIdToken()));
+                    AccessToken.Token = await tokenService.Create(settingsFactory.CreateApi(AccessToken.GetGoogleIdToken()));
                     NotifyOwner();
                     Output("Token received");                    
                 }

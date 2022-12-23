@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface;
-using YardLight.Interface.Authorization;
 using YardLight.Interface.Models;
 
 namespace YardLight.Client.Backlog.Behaviors
@@ -126,7 +125,7 @@ namespace YardLight.Client.Backlog.Behaviors
                     .ToList();
                 foreach (CommentVM comment in comments)
                 {
-                    comment.CreateUser = await userService.GetName(settingsFactory.CreateAuthorization(), comment.CreateUserId.Value);
+                    comment.CreateUser = await userService.GetName(settingsFactory.CreateApi(), comment.CreateUserId.Value);
                 }
                 return comments;
             }

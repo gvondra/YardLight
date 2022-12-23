@@ -14,8 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.Authorization.ViewModel;
-using YardLight.Interface.Authorization;
-using YardLight.Interface.Authorization.Models;
+using YardLight.Interface;
+using YardLight.Interface.Models;
 
 namespace YardLight.Client.Authorization
 {
@@ -43,17 +43,17 @@ namespace YardLight.Client.Authorization
                 .ContinueWith(GetRolesCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private Task<IEnumerable<Role>> GetRoles()
+        private Task<List<Role>> GetRoles()
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 IRoleService roleService = scope.Resolve<IRoleService>();
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
-                return roleService.GetAll(settingsFactory.CreateAuthorization());
+                return roleService.Get(settingsFactory.CreateApi());
             }
         }
 
-        private async Task GetRolesCallback(Task<IEnumerable<Role>> getRoles, object state)
+        private async Task GetRolesCallback(Task<List<Role>> getRoles, object state)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace YardLight.Client.Authorization
                 }
                 RolesVM.SelectedRole = RolesVM.Roles[0];
             }
-            catch(Exception ex)
+            catch(System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
@@ -83,7 +83,7 @@ namespace YardLight.Client.Authorization
                     RolesVM.SelectedRole = (RoleVM)e.AddedItems[0];
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
@@ -97,7 +97,7 @@ namespace YardLight.Client.Authorization
                 RolesVM.Roles.Add(role);
                 RolesVM.SelectedRole = role;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
@@ -125,7 +125,7 @@ namespace YardLight.Client.Authorization
                             .ContinueWith(SaveRoleCallback, RolesVM.SelectedRole, TaskScheduler.FromCurrentSynchronizationContext());
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
@@ -137,7 +137,7 @@ namespace YardLight.Client.Authorization
             {
                 IRoleService roleService = scope.Resolve<IRoleService>();
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
-                return roleService.Create(settingsFactory.CreateAuthorization(), roleVM.InnerRole);
+                return roleService.Create(settingsFactory.CreateApi(), roleVM.InnerRole);
             }
         }
 
@@ -147,7 +147,7 @@ namespace YardLight.Client.Authorization
             {
                 IRoleService roleService = scope.Resolve<IRoleService>();
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
-                return roleService.Update(settingsFactory.CreateAuthorization(), roleVM.InnerRole);
+                return roleService.Update(settingsFactory.CreateApi(), roleVM.InnerRole);
             }
         }
 
@@ -158,7 +158,7 @@ namespace YardLight.Client.Authorization
                 int index = RolesVM.Roles.IndexOf((RoleVM)roleVM);
                 RolesVM.Roles[index] = new RoleVM(await saveRole);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }

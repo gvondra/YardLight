@@ -14,10 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.ProjectSettings.ViewModel;
-using YardLight.Interface.Authorization;
 using YardLight.Interface;
 using Models = YardLight.Interface.Models;
-using YardLight.Interface.Authorization.Models;
 
 namespace YardLight.Client.ProjectSettings
 {
@@ -66,12 +64,12 @@ namespace YardLight.Client.ProjectSettings
                     IUserService userService = scope.Resolve<IUserService>();
                     foreach (WorkItemTypeVM workItemTypeVM in typeVMs)
                     {
-                        workItemTypeVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemTypeVM.InnerType.CreateUserId.Value);
-                        workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemTypeVM.InnerType.UpdateUserId.Value);                        
+                        workItemTypeVM.CreateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemTypeVM.InnerType.CreateUserId.Value);
+                        workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemTypeVM.InnerType.UpdateUserId.Value);                        
                         foreach (WorkItemStatusVM workItemStatusVM in workItemTypeVM.StatusesVM.Statuses)
                         {
-                            workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.CreateUserId.Value);
-                            workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.UpdateUserId.Value);
+                            workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus.CreateUserId.Value);
+                            workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus.UpdateUserId.Value);
                         }
                     }
                     return typeVMs;
@@ -161,7 +159,7 @@ namespace YardLight.Client.ProjectSettings
                 WorkItemTypeVM workItemTypeVM = new WorkItemTypeVM(WorkItemTypesVM, type);
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IUserService userService = scope.Resolve<IUserService>();
-                User user = await userService.Get(settingsFactory.CreateAuthorization());
+                User user = await userService.Get(settingsFactory.CreateApi());
                 workItemTypeVM.CreateUserName = user.Name;
                 workItemTypeVM.UpdateUserName = user.Name;
                 return workItemTypeVM;

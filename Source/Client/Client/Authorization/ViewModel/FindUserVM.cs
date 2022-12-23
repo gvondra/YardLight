@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using AuthModels = YardLight.Interface.Authorization.Models;
+using YardLight.Interface.Models;
 
 namespace YardLight.Client.Authorization.ViewModel
 {
@@ -14,7 +14,7 @@ namespace YardLight.Client.Authorization.ViewModel
     {
         private string _findAddress;
         private AuthModels.User _user;
-        private List<AuthModels.Role> _allRoles;
+        private List<Role> _allRoles;
         private ObservableCollection<FindUserRoleVM> _roles = new ObservableCollection<FindUserRoleVM>();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -44,7 +44,7 @@ namespace YardLight.Client.Authorization.ViewModel
             }
         }
 
-        public List<AuthModels.Role> AllRoles
+        public List<Role> AllRoles
         {
             get => _allRoles;
             set

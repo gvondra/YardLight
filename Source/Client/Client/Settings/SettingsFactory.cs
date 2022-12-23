@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YardLight.Interface.Authorization;
 
 namespace YardLight.Client
 {
@@ -13,23 +12,14 @@ namespace YardLight.Client
         {
             if (string.IsNullOrEmpty(AccessToken.Token))
                 throw new ArgumentNullException(nameof(AccessToken.Token));
-            return new APISettings(Settings.ApiBaseAddress, AccessToken.Token);
+            return CreateApi(AccessToken.Token);
         }
 
-        public ISettings CreateAuthorization()
-        {
-            return CreateAuthorization(AccessToken.Token);
-        }
-
-        public ISettings CreateAuthorization(string token)
+        public Interface.ISettings CreateApi(string token)
         {
             if (string.IsNullOrEmpty(token))
                 throw new ArgumentNullException(nameof(token));
-            return new AuthorizationSettings()
-            {
-                BaseAddress = Settings.AuthorizationApiBaseAddress,
-                Token = token
-            };
+            return new APISettings(Settings.ApiBaseAddress, token);
         }
     }
 }

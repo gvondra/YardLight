@@ -14,8 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.Authorization.ViewModel;
-using YardLight.Interface.Authorization;
-using AuthModels = YardLight.Interface.Authorization.Models;
+using YardLight.Interface;
+using YardLight.Interface.Models;
 
 namespace YardLight.Client.Authorization
 {
@@ -43,24 +43,24 @@ namespace YardLight.Client.Authorization
                 .ContinueWith(GetAllRolesCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private Task<IEnumerable<AuthModels.Role>> GetAllRoles()
+        private Task<List<Role>> GetAllRoles()
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IRoleService roleService = scope.Resolve<IRoleService>();
-                return roleService.GetAll(settingsFactory.CreateAuthorization());
+                return roleService.Get(settingsFactory.CreateApi());
             }
         }
 
-        private async Task GetAllRolesCallback(Task<IEnumerable<AuthModels.Role>> task, object state)
+        private async Task GetAllRolesCallback(Task<List<Role>> task, object state)
         {
             try
             {
-                UserVM.AllRoles = (await task).ToList();
+                UserVM.AllRoles = await task;
                 LoadUserRoles();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
@@ -72,7 +72,7 @@ namespace YardLight.Client.Authorization
             if (UserVM.User != null && UserVM.AllRoles != null)
             {
                 List<string> activeRoles = (UserVM.User.Roles ?? new Dictionary<string, string>()).Keys.ToList();
-                foreach (AuthModels.Role role in UserVM.AllRoles)
+                foreach (Role role in UserVM.AllRoles)
                 {
                     UserVM.Roles.Add(
                         new FindUserRoleVM(role)
@@ -94,7 +94,7 @@ namespace YardLight.Client.Authorization
                         .ContinueWith(GetUserCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
@@ -106,7 +106,7 @@ namespace YardLight.Client.Authorization
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IUserService userService = scope.Resolve<IUserService>();
-                return await userService.GetByEmailAddress(settingsFactory.CreateAuthorization(), emailAddress);
+                return await userService.GetByEmailAddress(settingsFactory.CreateApi(), emailAddress);
             }
         }
 
@@ -117,7 +117,7 @@ namespace YardLight.Client.Authorization
                 UserVM.User = await task;
                 LoadUserRoles();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
@@ -136,7 +136,7 @@ namespace YardLight.Client.Authorization
                         .ContinueWith(SaverUserCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }
@@ -148,7 +148,7 @@ namespace YardLight.Client.Authorization
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IUserService userService = scope.Resolve<IUserService>();
-                return await userService.Update(settingsFactory.CreateAuthorization(), user);
+                return await userService.Update(settingsFactory.CreateApi(), user);
             }
         }
 
@@ -160,7 +160,7 @@ namespace YardLight.Client.Authorization
                 UserVM.User = user;
                 MessageBox.Show(Window.GetWindow(this), "Save Complete", "Save", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
             }

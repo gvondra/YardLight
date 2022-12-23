@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using YardLight.Interface.Authorization.Models;
+using YardLight.Interface.Models;
 
 namespace YardLight.Client.Authorization.ViewModel
 {
@@ -42,7 +42,7 @@ namespace YardLight.Client.Authorization.ViewModel
             }
         }
 
-        public int? RoleId
+        public Guid? RoleId
         {
             get => _innerRole.RoleId;
             set

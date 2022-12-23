@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.ProjectSettings.ViewModel;
-using YardLight.Interface.Authorization;
 using YardLight.Interface;
 using Models = YardLight.Interface.Models;
 
@@ -51,12 +50,12 @@ namespace YardLight.Client.ProjectSettings.Controls
                     workItemType = await workItemTypeService.Create(settingsFactory.CreateApi(), workItemTypeVM.InnerType);
                 workItemTypeVM = new WorkItemTypeVM(workItemTypeVM.WorkItemTypesVM, workItemType);
                 IUserService userService = scope.Resolve<IUserService>();
-                workItemTypeVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemType.CreateUserId.Value);
-                workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemType.UpdateUserId.Value);
+                workItemTypeVM.CreateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemType.CreateUserId.Value);
+                workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemType.UpdateUserId.Value);
                 foreach (WorkItemStatusVM workItemStatusVM in workItemTypeVM.StatusesVM.Statuses)
                 {
-                    workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.CreateUserId.Value);
-                    workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateAuthorization(), workItemStatusVM.InnerStatus.UpdateUserId.Value);
+                    workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus.CreateUserId.Value);
+                    workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus.UpdateUserId.Value);
                 }
                 return workItemTypeVM;
             }
