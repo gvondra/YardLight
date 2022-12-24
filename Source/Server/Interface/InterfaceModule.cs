@@ -20,6 +20,7 @@ namespace YardLight.Interface
             builder.RegisterType<ProjectService>().As<IProjectService>();
             builder.RegisterType<RoleService>().As<IRoleService>();
             builder.RegisterType<TokenService>().As<ITokenService>();
+            builder.RegisterType<UserService>().As<IUserService>();
             builder.RegisterType<WorkItemCommentService>().As<IWorkItemCommentService>();
             builder.RegisterType<WorkItemService>().As<IWorkItemService>();
             builder.RegisterType<WorkItemTypeService>().As<IWorkItemTypeService>();
