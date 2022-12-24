@@ -9,7 +9,7 @@ namespace YardLight.Client
 {
     public static class AccessToken
     {
-        private const string Issuer = "urn:yardlight";
+        private const string Issuer = "urn:brassloon-derived";
         private static string _token;
         private static JwtSecurityToken _jwtSecurityToken;
         public static Dictionary<string, string> GoogleToken { get; set; }
