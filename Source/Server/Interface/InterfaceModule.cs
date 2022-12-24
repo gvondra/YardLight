@@ -13,8 +13,8 @@ namespace YardLight.Interface
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
-            builder.RegisterInstance(new RestUtil());
             builder.RegisterType<Service>().As<IService>().SingleInstance();
+            builder.RegisterType<RestUtil>().SingleInstance();
             builder.RegisterType<ExceptionService>().As<IExceptionService>();
             builder.RegisterType<MetricService>().As<IMetricService>();
             builder.RegisterType<ProjectService>().As<IProjectService>();
