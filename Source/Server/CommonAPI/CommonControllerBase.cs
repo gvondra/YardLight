@@ -53,10 +53,14 @@ namespace YardLight.CommonAPI
         {
             AuthorizationAPI.Models.User user = null;
             if (_userService != null)
-                user = await _currentUserCache.Execute(
-                    (context) => _userService.Get(settings, domainId),
-                    new Context(GetCurrentUserReferenceId())
-                    );
+            {
+                string referenceId = GetCurrentUserReferenceId();
+                List<AuthorizationAPI.Models.User> users = await _currentUserCache.Execute(
+                    (context) => _userService.Search(settings, domainId, referenceId: referenceId),
+                    new Context(referenceId)
+                    ) ?? new List<AuthorizationAPI.Models.User>();
+                user = users.FirstOrDefault();
+            }                
             return user;
         }
 

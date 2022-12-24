@@ -57,7 +57,7 @@ namespace API.Controllers
                 if (result == null && (!workItemId.HasValue || Guid.Empty.Equals(workItemId.Value)))
                     result = BadRequest("Missing or invalid workItemId route parameter value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
                 if (result == null)
@@ -117,7 +117,7 @@ namespace API.Controllers
                 if (result == null && string.IsNullOrEmpty(comment?.Text))
                     result = BadRequest("Missing comment text");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
                 if (result == null)

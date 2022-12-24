@@ -45,7 +45,7 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                Guid? currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                Guid? currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
                 if (result == null)
@@ -82,7 +82,7 @@ namespace API.Controllers
                 if (result == null && !id.HasValue || id.Value.Equals(Guid.Empty))
                     result = BadRequest("Missing id parameter value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");                
                 if (result == null)
@@ -125,7 +125,7 @@ namespace API.Controllers
                 if (result == null && string.IsNullOrEmpty(project.Title))
                     result = BadRequest("Missing project title value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
                 if (result == null)
@@ -167,7 +167,7 @@ namespace API.Controllers
                 if (result == null && string.IsNullOrEmpty(project.Title))
                     result = BadRequest("Missing project title value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
                 if (result == null)

@@ -60,7 +60,7 @@ namespace API.Controllers
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
                 if (result == null)
@@ -144,7 +144,7 @@ namespace API.Controllers
                 if (result == null)
                     result = Validate(workItem);
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
                 if (result == null)
@@ -213,7 +213,7 @@ namespace API.Controllers
                 if (result == null)
                     result = Validate(workItem);
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()));
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
                 if (result == null && !currentUserId.HasValue)
                     result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
                 if (result == null)

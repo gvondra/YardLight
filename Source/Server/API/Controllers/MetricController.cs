@@ -78,7 +78,7 @@ namespace API.Controllers
                 Guid id;
                 Dictionary<Guid, AuthorizationAPI.Models.User> userCache = new Dictionary<Guid, AuthorizationAPI.Models.User>();
                 AuthorizationAPI.Models.User user;
-                AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value, GetUserToken());
+                AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
                 foreach (Metric metric in metrics.Where(m => !string.IsNullOrEmpty(m.Requestor)))
                 {
                     if (Guid.TryParse(metric.Requestor.Trim(), out id))

@@ -29,7 +29,7 @@ namespace API
             if (!string.IsNullOrEmpty(_settings.Value.BrassLoonLogApiBaseAddress))
                 await base.WriteMetrics(
                     _settingsFactory.CreateLog(_settings.Value),                     
-                    _settingsFactory.CreateAuthorization(_settings.Value, GetUserToken()),
+                    _settingsFactory.CreateAuthorization(_settings.Value),
                     _settings.Value.AuthorizationDomainId.Value,
                     _settings.Value.LogDomainId.Value,
                     eventCode, 
