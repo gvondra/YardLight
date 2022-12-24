@@ -41,6 +41,14 @@ namespace YardLight.CommonAPI
         protected string GetCurrentUserEmailAddress()
             => User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
+        protected bool UserHasRole(string role)
+        {
+            return (User.Identity?.IsAuthenticated ?? false)
+                && User.Claims.Any(
+                c => string.Equals(ClaimTypes.Role, c.Type, StringComparison.OrdinalIgnoreCase) && string.Equals(role, c.Value, StringComparison.OrdinalIgnoreCase)
+                );
+        }
+
         protected async Task<AuthorizationAPI.Models.User> GetCurrentUser(AuthorizationAPI.ISettings settings, Guid domainId)
         {
             AuthorizationAPI.Models.User user = null;

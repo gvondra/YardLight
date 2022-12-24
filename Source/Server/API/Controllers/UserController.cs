@@ -33,49 +33,42 @@ namespace API.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Constants.POLICY_USER_READ)]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         [ProducesResponseType(typeof(List<User>), 200)]
         public async Task<IActionResult> Search([FromQuery] string emailAddress)
         {
             IActionResult result = null;
             try
             {
-                if (result == null && string.IsNullOrEmpty(emailAddress))
-                    result = BadRequest("Missing emailAddress parameter value");
-                if (result == null)
+                AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                AuthorizationAPI.Models.User innerUser = null;
+                List<AuthorizationAPI.Models.User> innerUsers = null;
+                if (result == null && !string.IsNullOrEmpty(emailAddress) && !UserHasRole(Constants.POLICY_USER_READ))
                 {
-                    AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                    result = Unauthorized();
+                }
+                if (result == null && innerUser == null && innerUsers == null && !string.IsNullOrEmpty(emailAddress))
+                {
+                    innerUsers = await _userService.Search(settings, _settings.Value.AuthorizationDomainId.Value, emailAddress);
+                }
+                if (result == null && innerUser == null && innerUsers == null)
+                {
+                    innerUser = await _userService.Get(settings, _settings.Value.AuthorizationDomainId.Value);
+                }
+                if (result == null && innerUser != null && innerUsers == null)
+                {
+                    innerUsers = new List<AuthorizationAPI.Models.User> { innerUser };
+                }
+                if (result == null && innerUsers != null)
+                {                    
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
-                    IEnumerable<AuthorizationAPI.Models.User> innerUsers = await _userService.Search(settings, _settings.Value.AuthorizationDomainId.Value, emailAddress);
                     result = Ok(
                         innerUsers.Select<AuthorizationAPI.Models.User, User>(u => mapper.Map<User>(u))
                         );
                 }
-            }
-            catch (System.Exception ex)
-            {
-                await WriteException(ex);
-                result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
-            }
-            return result;
-        }
-
-        [HttpGet()]
-        [Authorize(Constants.POLICY_BL_AUTH)]
-        [ProducesResponseType(typeof(User), 200)]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            IActionResult result = null;
-            try
-            {
                 if (result == null)
                 {
-                    AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
-                    IMapper mapper = new Mapper(MapperConfiguration.Get());
-                    AuthorizationAPI.Models.User innerUser = await _userService.Get(settings, _settings.Value.AuthorizationDomainId.Value);
-                    result = Ok(                       
-                        mapper.Map<User>(innerUser) 
-                        );
+                    result = Ok(new List<User>());
                 }
             }
             catch (System.Exception ex)

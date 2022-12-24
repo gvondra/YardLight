@@ -18,13 +18,14 @@ namespace YardLight.Interface
             _service = service;
         }
 
-        public Task<User> Get(ISettings settings)
+        public async Task<User> Get(ISettings settings)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
                 .AddPath("User")
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
-            return _restUtil.Send<User>(_service, request);
+            List<User> users = await _restUtil.Send<List<User>>(_service, request);
+            return users != null ? users[0] : null;
         }
 
         public Task<User> Get(ISettings settings, Guid userId)
