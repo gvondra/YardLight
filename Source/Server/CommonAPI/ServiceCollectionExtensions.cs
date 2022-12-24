@@ -62,6 +62,13 @@ namespace YardLight.CommonAPI
                 Console.WriteLine($"IdIssuer={idIssuer}");
                 if (!string.IsNullOrEmpty(idIssuer))
                 {
+                    o.AddPolicy(Constants.POLICY_BL_AUTH,
+                        configure =>
+                        {
+                            configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_BL_AUTH, googleIdIssuer))
+                            .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_YARD_LIGHT)
+                            .Build();
+                        });
                     AddPolicy(o, Constants.POLICY_CLIENT_EDIT, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer);
                     AddPolicy(o, Constants.POLICY_CLIENT_READ, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer);
                     AddPolicy(o, Constants.POLICY_LOG_READ, Constants.AUTH_SCHEMA_YARD_LIGHT, idIssuer, _additionalLogWritePolicies);

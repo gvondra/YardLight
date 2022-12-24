@@ -10,6 +10,7 @@ namespace YardLight.CommonAPI
     {
         public const string AUTH_SCHEME_GOOGLE = "GoogleAuthentication";
         public const string AUTH_SCHEMA_YARD_LIGHT = "YardLightAuthentication";
+        public const string POLICY_BL_AUTH = "BL:AUTH"; // ensures the requestor used a brass loon token
         public const string POLICY_CLIENT_EDIT = "CLIENT:EDIT";
         public const string POLICY_CLIENT_READ = "CLIENT:READ";
         public const string POLICY_TOKEN_CREATE = "TOKEN:CREATE";

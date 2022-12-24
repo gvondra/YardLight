@@ -14,6 +14,8 @@ namespace API
             {
                 c.CreateMap<AuthorizationAPI.Role, Role>();
                 c.CreateMap<Role, AuthorizationAPI.Role>();
+                c.CreateMap<AuthorizationAPI.User, User>();
+                c.CreateMap<User, AuthorizationAPI.User>();
                 c.CreateMap<LogAPI.Exception, YardLight.Interface.Models.Exception>();
                 c.CreateMap<LogAPI.Metric, Metric>();
                 c.CreateMap<Project, IProject>();
