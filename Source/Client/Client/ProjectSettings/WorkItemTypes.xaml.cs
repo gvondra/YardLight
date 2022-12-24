@@ -159,7 +159,7 @@ namespace YardLight.Client.ProjectSettings
                 WorkItemTypeVM workItemTypeVM = new WorkItemTypeVM(WorkItemTypesVM, type);
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IUserService userService = scope.Resolve<IUserService>();
-                User user = await userService.Get(settingsFactory.CreateApi());
+                Models.User user = await userService.Get(settingsFactory.CreateApi());
                 workItemTypeVM.CreateUserName = user.Name;
                 workItemTypeVM.UpdateUserName = user.Name;
                 return workItemTypeVM;

@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.ProjectSettings.ViewModel;
-using YardLight.Interface.Models;
+using YardLight.Interface;
 using Models = YardLight.Interface.Models;
 
 namespace YardLight.Client.ProjectSettings.Controls
@@ -52,7 +52,7 @@ namespace YardLight.Client.ProjectSettings.Controls
                 WorkItemStatusVM workItemStatusVM = new WorkItemStatusVM(workItemStatus);
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IUserService userService = scope.Resolve<IUserService>();
-                User user = await userService.Get(settingsFactory.CreateApi());
+                Models.User user = await userService.Get(settingsFactory.CreateApi());
                 workItemStatusVM.CreateUserName = user.Name;
                 workItemStatusVM.UpdateUserName = user.Name;
                 return workItemStatusVM;

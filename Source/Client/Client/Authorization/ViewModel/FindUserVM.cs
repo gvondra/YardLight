@@ -6,15 +6,15 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using YardLight.Interface.Models;
+using InterfaceModels = YardLight.Interface.Models;
 
 namespace YardLight.Client.Authorization.ViewModel
 {
     public class FindUserVM : INotifyPropertyChanged
     {
         private string _findAddress;
-        private AuthModels.User _user;
-        private List<Role> _allRoles;
+        private InterfaceModels.User _user;
+        private List<InterfaceModels.Role> _allRoles;
         private ObservableCollection<FindUserRoleVM> _roles = new ObservableCollection<FindUserRoleVM>();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -34,7 +34,7 @@ namespace YardLight.Client.Authorization.ViewModel
 
         public ObservableCollection<FindUserRoleVM> Roles => _roles;
 
-        public AuthModels.User User
+        public InterfaceModels.User User
         {
             get => _user;
             set
@@ -44,7 +44,7 @@ namespace YardLight.Client.Authorization.ViewModel
             }
         }
 
-        public List<Role> AllRoles
+        public List<InterfaceModels.Role> AllRoles
         {
             get => _allRoles;
             set

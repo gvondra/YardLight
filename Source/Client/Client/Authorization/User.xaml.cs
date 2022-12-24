@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YardLight.Client.Authorization.ViewModel;
 using YardLight.Interface;
-using YardLight.Interface.Models;
+using InterfaceModels = YardLight.Interface.Models;
 
 namespace YardLight.Client.Authorization
 {
@@ -43,7 +43,7 @@ namespace YardLight.Client.Authorization
                 .ContinueWith(GetAllRolesCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private Task<List<Role>> GetAllRoles()
+        private Task<List<InterfaceModels.Role>> GetAllRoles()
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
@@ -53,7 +53,7 @@ namespace YardLight.Client.Authorization
             }
         }
 
-        private async Task GetAllRolesCallback(Task<List<Role>> task, object state)
+        private async Task GetAllRolesCallback(Task<List<InterfaceModels.Role>> task, object state)
         {
             try
             {
@@ -71,8 +71,10 @@ namespace YardLight.Client.Authorization
             UserVM.Roles.Clear();
             if (UserVM.User != null && UserVM.AllRoles != null)
             {
-                List<string> activeRoles = (UserVM.User.Roles ?? new Dictionary<string, string>()).Keys.ToList();
-                foreach (Role role in UserVM.AllRoles)
+                List<string> activeRoles = (UserVM.User.Roles ?? new List<InterfaceModels.AppliedRole>())
+                    .Select(r => r.PolicyName)
+                    .ToList();
+                foreach (InterfaceModels.Role role in UserVM.AllRoles)
                 {
                     UserVM.Roles.Add(
                         new FindUserRoleVM(role)
@@ -100,17 +102,17 @@ namespace YardLight.Client.Authorization
             }
         }
 
-        private async Task<AuthModels.User> GetUser(string emailAddress)
+        private async Task<InterfaceModels.User> GetUser(string emailAddress)
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IUserService userService = scope.Resolve<IUserService>();
-                return await userService.GetByEmailAddress(settingsFactory.CreateApi(), emailAddress);
+                return (await userService.Search(settingsFactory.CreateApi(), emailAddress)).FirstOrDefault();
             }
         }
 
-        private async Task GetUserCallback(Task<AuthModels.User> task, object state)
+        private async Task GetUserCallback(Task<InterfaceModels.User> task, object state)
         {
             try
             {
@@ -131,7 +133,8 @@ namespace YardLight.Client.Authorization
                 {
                     UserVM.User.Roles = UserVM.Roles
                         .Where(r => r.IsActive)
-                        .ToDictionary(r => r.PolicyName, r => r.Name);
+                        .Select(r => new InterfaceModels.AppliedRole { Name = r.Name, PolicyName = r.PolicyName })
+                        .ToList();
                     Task.Run(() => SaveUser(UserVM.User))
                         .ContinueWith(SaverUserCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
                 }
@@ -142,7 +145,7 @@ namespace YardLight.Client.Authorization
             }
         }
 
-        private async Task<AuthModels.User> SaveUser(AuthModels.User user)
+        private async Task<InterfaceModels.User> SaveUser(InterfaceModels.User user)
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
@@ -152,11 +155,11 @@ namespace YardLight.Client.Authorization
             }
         }
 
-        private async Task SaverUserCallback(Task<AuthModels.User> task, object state)
+        private async Task SaverUserCallback(Task<InterfaceModels.User> task, object state)
         {
             try
             {
-                AuthModels.User user = await task;
+                InterfaceModels.User user = await task;
                 UserVM.User = user;
                 MessageBox.Show(Window.GetWindow(this), "Save Complete", "Save", MessageBoxButton.OK, MessageBoxImage.Information);
             }
