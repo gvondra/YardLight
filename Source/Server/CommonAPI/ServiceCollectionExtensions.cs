@@ -65,7 +65,7 @@ namespace YardLight.CommonAPI
                     o.AddPolicy(Constants.POLICY_BL_AUTH,
                         configure =>
                         {
-                            configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_BL_AUTH, googleIdIssuer))
+                            configure.AddRequirements(new AuthorizationRequirement(Constants.POLICY_BL_AUTH, idIssuer))
                             .AddAuthenticationSchemes(Constants.AUTH_SCHEMA_YARD_LIGHT)
                             .Build();
                         });
