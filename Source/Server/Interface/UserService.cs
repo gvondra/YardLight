@@ -1,4 +1,7 @@
 ﻿using BrassLoon.RestClient;
+using Microsoft.Extensions.Caching.Memory;
+using Polly;
+using Polly.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -9,6 +12,8 @@ namespace YardLight.Interface
 {
     public class UserService : IUserService
     {
+        private static Policy _userNameCache = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(6));
+
         private readonly RestUtil _restUtil;
         private readonly IService _service;
 
@@ -40,12 +45,16 @@ namespace YardLight.Interface
 
         public Task<string> GetName(ISettings settings, Guid userId)
         {
-            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
+            return _userNameCache.Execute(context =>
+            {
+                IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
                 .AddPath("User/{id}/Name")
                 .AddPathParameter("id", userId.ToString("D"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
-            return _restUtil.Send<string>(_service, request);
+                return _restUtil.Send<string>(_service, request);
+            },
+            new Context(userId.ToString("N")));            
         }
 
         public Task<List<User>> Search(ISettings settings, string emailAddress)
