@@ -22,24 +22,24 @@ namespace YardLight.Core
             _dataSaver = dataSaver;
         }
 
-        private WorkItemComment Create(WorkItemCommentData data) => new WorkItemComment(data, _dataSaver);
+        private WorkItemComment Create(WorkItemCommentData data, IWorkItem workItem) => new WorkItemComment(data, _dataSaver, workItem);
 
-        public IWorkItemComment Create(Guid workItemId, string text, WorkItemCommentType workItemCommentType)
+        public IWorkItemComment Create(IWorkItem workItem, string text, WorkItemCommentType workItemCommentType)
         {
             if (workItemCommentType == WorkItemCommentType.NotSet)
                 throw new ArgumentNullException(nameof(workItemCommentType));
             return Create(new WorkItemCommentData
             {
                 Text = text ?? string.Empty,
-                Type = (short) workItemCommentType,
-                WorkItemId = workItemId
-            });
+                Type = (short) workItemCommentType
+            },
+            workItem);
         }
 
-        public async Task<IEnumerable<IWorkItemComment>> GetByWorkItemId(ISettings settings, Guid workItemId)
+        public async Task<IEnumerable<IWorkItemComment>> GetByWorkItem(ISettings settings, IWorkItem workItem)
         {
-            return (await _dataFactory.GetByWorkItemId(new DataSettings(settings), workItemId))
-                .Select<WorkItemCommentData, IWorkItemComment>(Create);
+            return (await _dataFactory.GetByWorkItemId(new DataSettings(settings), workItem.WorkItemId))
+                .Select<WorkItemCommentData, IWorkItemComment>(d => Create(d, workItem));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace YardLight.Framework
 {
     public interface IWorkItemCommentFactory
     {
-        IWorkItemComment Create(Guid workItemId, string text, WorkItemCommentType workItemCommentType);
-        Task<IEnumerable<IWorkItemComment>> GetByWorkItemId(ISettings settings, Guid workItemId);
+        IWorkItemComment Create(IWorkItem workItem, string text, WorkItemCommentType workItemCommentType);
+        Task<IEnumerable<IWorkItemComment>> GetByWorkItem(ISettings settings, IWorkItem workItem);
     }
 }

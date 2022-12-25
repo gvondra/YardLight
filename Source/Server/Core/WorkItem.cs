@@ -121,7 +121,7 @@ namespace YardLight.Core
             IWorkItemComment result = null;
             if (!_comments.ContainsKey(workItemCommentType))
             {
-                foreach (IWorkItemComment comment in await _commentFactory.GetByWorkItemId(settings, WorkItemId))
+                foreach (IWorkItemComment comment in await _commentFactory.GetByWorkItem(settings, this))
                 {
                     if (!_comments.ContainsKey(comment.Type))
                         _comments.Add(comment.Type, comment);
@@ -146,19 +146,19 @@ namespace YardLight.Core
             IWorkItemComment comment = await InnerGetComment(settings, workItemCommentType);
             if (comment == null || text != comment.Text)
             {
-                _comments[workItemCommentType] = _commentFactory.Create(WorkItemId, text, workItemCommentType);
+                _comments[workItemCommentType] = _commentFactory.Create(this, text, workItemCommentType);
             }
         }
 
         public async Task<IEnumerable<IWorkItemComment>> GetComments(ISettings settings, WorkItemCommentType workItemCommentType)
         {
-            return (await _commentFactory.GetByWorkItemId(settings, WorkItemId))
+            return (await _commentFactory.GetByWorkItem(settings, this))
                 .Where(c => c.Type == workItemCommentType);
         }
 
         public IWorkItemComment CreateComment(string text, WorkItemCommentType workItemCommentType)
         {
-            return _commentFactory.Create(WorkItemId, text, workItemCommentType);
+            return _commentFactory.Create(this, text, workItemCommentType);
         }
     }
 }

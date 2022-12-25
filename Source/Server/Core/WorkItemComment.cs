@@ -15,20 +15,26 @@ namespace YardLight.Core
     {
         private readonly WorkItemCommentData _data;
         private readonly IWorkItemCommentDataSaver _dataSaver;
+        private readonly IWorkItem _parentWorkItem;
 
         public WorkItemComment(WorkItemCommentData data,
-            IWorkItemCommentDataSaver dataSaver)
+            IWorkItemCommentDataSaver dataSaver,
+            IWorkItem parentWorkItem)
             : base(data)
         {
             _data = data;
             _dataSaver = dataSaver;
+            _parentWorkItem = parentWorkItem;
         }
 
-        public Guid WorkItemId => _data.WorkItemId;
+        public Guid WorkItemId { get => _data.WorkItemId; private set => _data.WorkItemId = value; }
 
         public WorkItemCommentType Type => (WorkItemCommentType)_data.Type;
 
-        public Task Create(ITransactionHandler transactionHandler, Guid userId)
-        => _dataSaver.Create(transactionHandler, _data, userId);
+        public async Task Create(ITransactionHandler transactionHandler, Guid userId)
+        {
+            WorkItemId = _parentWorkItem.WorkItemId;
+            await _dataSaver.Create(transactionHandler, _data, userId);
+        }        
     }
 }
