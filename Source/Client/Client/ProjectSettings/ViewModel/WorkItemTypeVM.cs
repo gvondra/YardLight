@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +20,7 @@ namespace YardLight.Client.ProjectSettings.ViewModel
         private readonly WorkItemStatusesVM _statusesVM;
         private readonly ConcurrentDictionary<string, string> _errors = new ConcurrentDictionary<string, string>();
         private readonly List<object> _behaviors = new List<object>();
+        private readonly ObservableCollection<string> _brushes;
         private WorkItemType _workItemType;
         private bool _saveButtonEnabled = true;
         private string _createUserName;
@@ -28,6 +31,7 @@ namespace YardLight.Client.ProjectSettings.ViewModel
             _workItemTypesVM = workItemTypesVM;
             _workItemType = workItemType;
             _statusesVM = new WorkItemStatusesVM(this);
+            _brushes = GetBrushes();
             InitializeStatuses(workItemType);
             _behaviors.Add(new WorkItemTypeValidator(this));
         }
@@ -37,6 +41,7 @@ namespace YardLight.Client.ProjectSettings.ViewModel
         public WorkItemType InnerType => _workItemType;
         public WorkItemStatusesVM StatusesVM => _statusesVM;
         public WorkItemTypesVM WorkItemTypesVM => _workItemTypesVM;
+        public ObservableCollection<string> Brushes => _brushes;
 
         public bool SaveButtonEnabled
         {
@@ -92,7 +97,7 @@ namespace YardLight.Client.ProjectSettings.ViewModel
                 }
                 catch
                 {
-                    return Brushes.Gray;
+                    return System.Windows.Media.Brushes.Gray;
                 }
             }
         }
@@ -174,6 +179,16 @@ namespace YardLight.Client.ProjectSettings.ViewModel
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        internal static ObservableCollection<string> GetBrushes()
+        {
+            ObservableCollection<string> result = new ObservableCollection<string>(
+                typeof(System.Windows.Media.Brushes).GetProperties(BindingFlags.Static | BindingFlags.Public)
+                .Where(p => p.CanRead)
+                .Select(p => p.Name)
+                );            
+            return result;
         }
     }
 }

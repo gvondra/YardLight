@@ -22,8 +22,17 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.Row="0">Title:</TextBlock>
         <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxWithError}" Text="{Binding Title, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
-        <TextBlock Grid.Column="0" Grid.Row="1">Color Code: <TextBlock Foreground="{Binding BulletColor}" FontSize="16">•</TextBlock> </TextBlock>
-        <TextBox Grid.Column="1" Grid.Row="1" Style="{StaticResource TextBoxWithError}" Text="{Binding ColorCode, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+        <TextBlock Grid.Column="0" Grid.Row="1">Color Code:</TextBlock>
+        <ComboBox Grid.Column="1" Grid.Row="1" SelectedItem="{Binding ColorCode}" ItemsSource="{Binding Brushes}" IsEditable="False">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <TextBlock Foreground="{Binding .}" FontSize="16">•</TextBlock>
+                        <TextBlock Text="{Binding .}"/>
+                    </TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
         <TextBlock Grid.Column="0" Grid.Row="2">Is Active:</TextBlock>
         <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding IsActive}"/>
         <TextBlock Grid.Column="0" Grid.Row="3">Created:</TextBlock>

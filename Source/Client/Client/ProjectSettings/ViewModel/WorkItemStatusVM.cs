@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -20,16 +21,19 @@ namespace YardLight.Client.ProjectSettings.ViewModel
         private bool _saveButtonEnabled = true;
         private string _createUserName;
         private string _updateUserName;
+        private readonly ObservableCollection<string> _brushes;
 
         public WorkItemStatusVM(WorkItemStatus workItemStatus)
         {
             _workItemStatus = workItemStatus;
+            _brushes = WorkItemTypeVM.GetBrushes();
             _behaviors.Add(new WorkItemStatusValidator(this));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public WorkItemStatus InnerStatus => _workItemStatus;
+        public ObservableCollection<string> Brushes => _brushes;
 
         public bool SaveButtonEnabled
         {
@@ -85,7 +89,7 @@ namespace YardLight.Client.ProjectSettings.ViewModel
                 }
                 catch
                 {
-                    return Brushes.Gray;
+                    return System.Windows.Media.Brushes.Gray;
                 }
             }
         }
