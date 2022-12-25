@@ -3,15 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Net.Mail;
-using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using YardLight.CommonAPI;
 using YardLight.Interface.Models;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
-using System.Linq;
 
 namespace API.Controllers
 {
@@ -37,6 +36,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(List<User>), 200)]
         public async Task<IActionResult> Search([FromQuery] string emailAddress)
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -53,7 +53,7 @@ namespace API.Controllers
                 }
                 if (result == null && innerUser == null && innerUsers == null)
                 {
-                    innerUser = await _userService.Get(settings, _settings.Value.AuthorizationDomainId.Value);
+                    innerUser = await GetCurrentUser(settings, _settings.Value.AuthorizationDomainId.Value);
                 }
                 if (result == null && innerUser != null && innerUsers == null)
                 {
@@ -76,6 +76,14 @@ namespace API.Controllers
                 await WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
+            finally
+            {
+                await WriteMetrics("search-users", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                    new Dictionary<string, string>
+                    {
+                        { nameof(emailAddress), emailAddress ?? string.Empty }
+                    });
+            }
             return result;
         }
 
@@ -84,6 +92,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(User), 200)]
         public async Task<IActionResult> Get([FromRoute] Guid? id)
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -111,6 +120,10 @@ namespace API.Controllers
                 await WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
+            finally
+            {
+                await WriteMetrics("get-user", DateTime.UtcNow.Subtract(start).TotalSeconds);
+            }
             return result;
         }
 
@@ -119,6 +132,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(string), 200)]
         public async Task<IActionResult> GetName([FromRoute] Guid? id)
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -143,6 +157,10 @@ namespace API.Controllers
                 await WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
+            finally
+            {
+                await WriteMetrics("get-user-name", DateTime.UtcNow.Subtract(start).TotalSeconds);
+            }
             return result;
         }
 
@@ -151,6 +169,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(User), 200)]
         public async Task<IActionResult> Update([FromRoute] Guid? id, [FromBody] User user)
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -173,6 +192,10 @@ namespace API.Controllers
             {
                 await WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+            finally
+            {
+                await WriteMetrics("update-user", DateTime.UtcNow.Subtract(start).TotalSeconds);
             }
             return result;
         }
