@@ -11,14 +11,12 @@ using YardLight.Interface.Models;
 
 namespace YardLight.Client.ProjectSettings.ViewModel
 {
-    public class WorkItemStatusesVM : INotifyPropertyChanged
+    public class WorkItemStatusesVM : ViewModelBase
     {
         private readonly ObservableCollection<WorkItemStatusVM> _statuses = new ObservableCollection<WorkItemStatusVM>();
         private readonly WorkItemTypeVM _workItemTypeVM;
         private Project _project;
         private WorkItemStatusVM _selectedStatus;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public WorkItemStatusesVM(WorkItemTypeVM workItemTypeVM)
         {
@@ -52,11 +50,6 @@ namespace YardLight.Client.ProjectSettings.ViewModel
                     NotifyPropertyChanged();
                 }
             }
-        }
-
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

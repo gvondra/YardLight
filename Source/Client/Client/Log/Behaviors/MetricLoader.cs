@@ -32,6 +32,7 @@ namespace YardLight.Client.Log.Behaviors
             switch (e.PropertyName) 
             {
                 case nameof(MetricLogVM.SelectedEventCode):
+                    _metricLogVM.BusyVisibility = Visibility.Visible;
                     Task.Run(() => LoadMetrics(_metricLogVM.SelectedEventCode))
                         .ContinueWith(LoadMetricsCallback, _metricLogVM.SelectedEventCode, TaskScheduler.FromCurrentSynchronizationContext());
                     break;
@@ -67,6 +68,10 @@ namespace YardLight.Client.Log.Behaviors
             catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, null);
+            }
+            finally
+            {
+                _metricLogVM.BusyVisibility = Visibility.Collapsed;
             }
         }
     }

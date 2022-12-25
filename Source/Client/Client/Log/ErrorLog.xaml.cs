@@ -37,6 +37,7 @@ namespace YardLight.Client.Log
         {
             ErrorLogVM = new ErrorLogVM();
             DataContext= ErrorLogVM;
+            ErrorLogVM.BusyVisibility = Visibility.Visible;
             Task.Run(GetExceptions)
                 .ContinueWith(GetExceptionsCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -64,6 +65,10 @@ namespace YardLight.Client.Log
             catch (Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
+            }
+            finally
+            {
+                ErrorLogVM.BusyVisibility = Visibility.Collapsed;
             }
         }
     }

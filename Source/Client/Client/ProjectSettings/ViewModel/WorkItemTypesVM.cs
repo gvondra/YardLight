@@ -11,16 +11,28 @@ using YardLight.Interface.Models;
 
 namespace YardLight.Client.ProjectSettings.ViewModel
 {
-    public class WorkItemTypesVM : INotifyPropertyChanged
+    public class WorkItemTypesVM : ViewModelBase
     {
         private Project _project;
         private WorkItemTypeVM _selectedType;
         private readonly ObservableCollection<WorkItemTypeVM> _types = new ObservableCollection<WorkItemTypeVM>();
         private bool _showInactive = false;
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        private Visibility _busyVisibility = Visibility.Collapsed;
 
         public ObservableCollection<WorkItemTypeVM> Types => _types;
+
+        public Visibility BusyVisibility
+        {
+            get => _busyVisibility;
+            set
+            {
+                if (_busyVisibility != value)
+                {
+                    _busyVisibility = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public bool ShowInactive
         {
@@ -59,11 +71,6 @@ namespace YardLight.Client.ProjectSettings.ViewModel
                     NotifyPropertyChanged();
                 }
             }
-        }
-
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

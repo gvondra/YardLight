@@ -42,6 +42,7 @@ namespace YardLight.Client.ProjectSettings
             UserSession userSession = UserSessionLoader.GetUserSession();
             if (userSession?.OpenProjectId != null)
             {
+                WorkItemTypesVM.BusyVisibility = Visibility.Visible;
                 Task.Run(() => GetProject(userSession.OpenProjectId))
                     .ContinueWith(GetProjectCallback, userSession.OpenProjectId, TaskScheduler.FromCurrentSynchronizationContext());
                 Task.Run(() => GetTypes(userSession.OpenProjectId, WorkItemTypesVM.ShowInactive))
@@ -100,6 +101,10 @@ namespace YardLight.Client.ProjectSettings
             catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, Window.GetWindow(this));
+            }
+            finally
+            {
+                WorkItemTypesVM.BusyVisibility = Visibility.Collapsed;
             }
         }
 
