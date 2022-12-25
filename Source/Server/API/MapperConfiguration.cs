@@ -12,6 +12,8 @@ namespace API
         {
             _mapperConfiguration = new AutoMapper.MapperConfiguration((c) =>
             {
+                c.CreateMap<AuthorizationAPI.AppliedRole, AppliedRole>();
+                c.CreateMap<AppliedRole, AuthorizationAPI.AppliedRole>();
                 c.CreateMap<AuthorizationAPI.Role, Role>();
                 c.CreateMap<Role, AuthorizationAPI.Role>();
                 c.CreateMap<AuthorizationAPI.User, User>();
