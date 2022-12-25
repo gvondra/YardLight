@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface;
@@ -24,6 +25,7 @@ namespace YardLight.Client.Backlog.Behaviors
         public void Load()
         {
             _backlogVM.CanRefresh = false;
+            _backlogVM.BusyVisibility = Visibility.Visible;
             UserSession userSession = UserSessionLoader.GetUserSession();
             Task.Run(() => LoadProject(userSession.OpenProjectId.Value))
                 .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());
@@ -101,8 +103,7 @@ namespace YardLight.Client.Backlog.Behaviors
         {
             try
             {
-                List<WorkItemVM> items = new List<WorkItemVM>();
-                items = (await loadAllWorkItems)
+                List<WorkItemVM> items = (await loadAllWorkItems)
                     .Select(i => WorkItemVM.Create(_backlogVM, i)).ToList();
                 WorkItemLoader workItemLoader;
                 foreach (WorkItemVM item in items.Where(i => !i.ParentWorkItemId.HasValue))
@@ -111,6 +112,11 @@ namespace YardLight.Client.Backlog.Behaviors
                     _backlogVM.AddBehavior(workItemLoader);
                     workItemLoader.Load();
                 }
+
+                // todo load child work items
+                //      the get work items, now, only returns the root elements
+                //      for each item start recursive calls to load all children
+
                 foreach (WorkItemVM item in items.Where(i => i.ParentWorkItemId.HasValue))
                 {
                     WorkItemVM parent = items.FirstOrDefault(i => item.ParentWorkItemId.Value.Equals(i.WorkItemId.Value));
@@ -121,12 +127,16 @@ namespace YardLight.Client.Backlog.Behaviors
                 }
                 _backlogVM.RootWorkItems = new ReadOnlyCollection<WorkItemVM>(
                     items.Where(i => !i.ParentWorkItemId.HasValue).ToList()
-                    );
-                _backlogVM.CanRefresh = true;
+                    );                
             }
             catch(System.Exception ex)
             {
                 ErrorWindow.Open(ex, null);
+            }
+            finally
+            {
+                _backlogVM.CanRefresh = true;
+                _backlogVM.BusyVisibility = Visibility.Collapsed;
             }
         }
 
@@ -156,6 +166,7 @@ namespace YardLight.Client.Backlog.Behaviors
             }
             catch (System.Exception ex)
             {
+                _backlogVM.BusyVisibility = Visibility.Collapsed;
                 ErrorWindow.Open(ex, null);
             }
         }
@@ -186,6 +197,7 @@ namespace YardLight.Client.Backlog.Behaviors
             }
             catch (System.Exception ex)
             {
+                _backlogVM.BusyVisibility = Visibility.Collapsed;
                 ErrorWindow.Open(ex, null);
             }
         }

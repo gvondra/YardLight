@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:fa="http://schemas.fontawesome.io/icons/"
       xmlns:local="clr-namespace:YardLight.Client.Backlog"
       xmlns:ctrl="clr-namespace:YardLight.Client.Backlog.Controls"
       mc:Ignorable="d" 
@@ -41,8 +42,13 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{StaticResource PageTitle}" >Backlog: <TextBlock Text="{Binding Project.Title}"/></TextBlock>
-            <TextBlock Grid.Column="2"><Hyperlink Command="{Binding RefreshBackLogCommand}">Refresh (F5)</Hyperlink></TextBlock>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource PageTitle}" >Backlog: <TextBlock Text="{Binding Project.Title}"/></TextBlock>
+            <TextBlock Grid.Column="2" Grid.Row="0"><Hyperlink Command="{Binding RefreshBackLogCommand}">Refresh (F5)</Hyperlink></TextBlock>
+            <fa:ImageAwesome Grid.Column="0" Grid.Row="1" Icon="CircleOutlineNotch" Spin="True" Height="24" Width="24" Visibility="{Binding BusyVisibility}" Foreground="Navy" HorizontalAlignment="Left" />
         </Grid>        
         <ctrl:AddWorkItem DockPanel.Dock="Bottom" HorizontalAlignment="Left" VerticalAlignment="Bottom" DataContext="{Binding CreateWorkItemVM}" />
         <Border DockPanel.Dock="Right" BorderThickness="1" BorderBrush="DarkGray" Padding="2,0">

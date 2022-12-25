@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using YardLight.Client.Backlog.Behaviors;
 using YardLight.Interface.Models;
@@ -22,6 +23,7 @@ namespace YardLight.Client.Backlog.ViewModels
         private Project _project;
         private RefreshBackLogCommand _refreshBackLogCommand;
         private bool _canRefresh = false;
+        private Visibility _busyVisibility = Visibility.Collapsed;
 
         public BacklogVM()
         {
@@ -33,6 +35,19 @@ namespace YardLight.Client.Backlog.ViewModels
         public ObservableCollection<WorkItemTypeVM> AvailableTypes => _availableTypes;
         public WorkItemFilterVM Filter => _filter;
         public ObservableCollection<WorkItemVM> FilteredChildren => _filteredChildren;
+
+        public Visibility BusyVisibility
+        {
+            get => _busyVisibility;
+            set
+            {
+                if (_busyVisibility != value)
+                {
+                    _busyVisibility = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public ReadOnlyCollection<WorkItemVM> RootWorkItems
         {
