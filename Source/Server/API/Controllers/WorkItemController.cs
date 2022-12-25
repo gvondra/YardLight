@@ -74,6 +74,7 @@ namespace API.Controllers
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     result = Ok(await Task.WhenAll(
                         (await _workItemFactory.GetByProjectId(settings, projectId.Value))
+                        .Where(i => !i.ParentWorkItemId.HasValue)
                         .Select<IWorkItem, Task<WorkItem>>(i => Map(settings, mapper, i))
                         ));
                 }
