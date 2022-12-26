@@ -37,7 +37,7 @@ namespace YardLight.Client.Backlog.Behaviors
             }
         }
 
-        private void ApplyFilter()
+        public void ApplyFilter()
         {
             _backlogVM.FilteredChildren.Clear();
             foreach (WorkItemVM workItemVM in _backlogVM.RootWorkItems)

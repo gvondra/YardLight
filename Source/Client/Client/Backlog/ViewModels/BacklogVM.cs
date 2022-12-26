@@ -109,5 +109,14 @@ namespace YardLight.Client.Backlog.ViewModels
                 );
         }
 
+        public void ReapplyFilter()
+        {
+            WorkItemFilter workItemFilter = this._behaviors
+                .Where(b => b.GetType().Equals(typeof(WorkItemFilter)))
+                .Select(b => (WorkItemFilter)b)
+                .FirstOrDefault();
+            if (workItemFilter != null) 
+                workItemFilter.ApplyFilter();
+        }
     }
 }

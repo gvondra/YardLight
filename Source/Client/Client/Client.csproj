@@ -166,8 +166,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.38, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.38\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.39, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.39\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -196,7 +196,7 @@
     <Compile Include="Backlog\Behaviors\CreateWorkItemValidator.cs" />
     <Compile Include="Backlog\Behaviors\LoadWorkItemCommentCommand.cs" />
     <Compile Include="Backlog\Behaviors\RefreshBackLogCommand.cs" />
-    <Compile Include="Backlog\Behaviors\BacklogFilter.cs" />
+    <Compile Include="Backlog\Behaviors\WorkItemFilter.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemValidator.cs" />
     <Compile Include="Backlog\Controls\AddWorkItem.xaml.cs">

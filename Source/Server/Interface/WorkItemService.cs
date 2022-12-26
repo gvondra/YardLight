@@ -103,5 +103,21 @@ namespace YardLight.Interface
                 throw new ArgumentNullException(nameof(workItem.ProjectId));
             return Update(settings, workItem.ProjectId.Value, workItem.WorkItemId.Value, workItem);
         }
+
+        public async Task<List<WorkItem>> GetByParentIds(ISettings settings, Guid projectId, params Guid[] parentIds)
+        {
+            if (parentIds == null || parentIds.Length == 0)
+                throw new ArgumentNullException(nameof(parentIds));
+            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
+                .AddPath("Project/{projectId}/WorkItem")
+                .AddPathParameter("projectId", projectId.ToString("N"))
+                .AddJwtAuthorizationToken(settings.GetToken)
+                ;
+            for (int i = 0; i < parentIds.Length; i += 1)
+            {
+                request.AddQueryParameter("parentIds", parentIds[i].ToString("D"));
+            }
+            return await _restUtil.Send<List<WorkItem>>(_service, request);
+        }
     }
 }

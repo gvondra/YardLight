@@ -47,6 +47,7 @@ namespace YardLight.Client.Backlog.ViewModels
         public ObservableCollection<CommentVM> Comments => _comments;
         public ObservableCollection<WorkItemVM> FilteredChildren => _filteredChildren;
         public Guid? ProjectId => _innerWorkItem.ProjectId;
+        public BacklogVM BackLogVM => _backlog;
 
         public ReadOnlyCollection<WorkItemVM> Children
         { 

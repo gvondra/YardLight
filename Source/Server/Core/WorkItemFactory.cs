@@ -82,5 +82,11 @@ namespace YardLight.Core
             return _dataFactory.GetItterationsByProjectId(new DataSettings(settings), projectId);
                 
         }
+
+        public async Task<IEnumerable<IWorkItem>> GetByParentIds(ISettings settings, params Guid[] parentIds)
+        {
+            return (await _dataFactory.GetByParentIds(new DataSettings(settings), parentIds))
+                .Select<WorkItemData, IWorkItem>(Create);
+        }
     }
 }

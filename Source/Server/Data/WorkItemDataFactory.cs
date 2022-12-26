@@ -32,6 +32,21 @@ namespace YardLight.Data
                 )).FirstOrDefault();
         }
 
+        public async Task<IEnumerable<WorkItemData>> GetByParentIds(ISettings settings, params Guid[] parentIds)
+        {
+            if (parentIds == null || parentIds.Length == 0) 
+                throw new ArgumentNullException(nameof(parentIds));
+            IDataParameter parameter = DataUtil.CreateParameter(_providerFactory, "parentIds", DbType.AnsiString, 
+                DataUtil.GetParameterValue(string.Join(',', parentIds.Select(id => id.ToString("D"))))
+                );
+            return await _dataFactory.GetData(settings, _providerFactory,
+                "[yl].[GetWorkItem_by_ParentIds]",
+                () => new WorkItemData(),
+                DataUtil.AssignDataStateManager,
+                new IDataParameter[] { parameter }
+                );
+        }
+
         public async Task<IEnumerable<WorkItemData>> GetByProjectId(ISettings settings, Guid projectId)
         {
             IDataParameter parameter = DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId));

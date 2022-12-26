@@ -48,7 +48,7 @@ namespace API.Controllers
 
         [HttpGet("/api/Project/{projectId}/WorkItem")]
         [Authorize()]
-        public async Task<IActionResult> GetByProjectId([FromRoute] Guid? projectId)
+        public async Task<IActionResult> Search([FromRoute] Guid? projectId, [FromQuery] Guid[] parentIds)
         {
             DateTime start = DateTime.UtcNow;
             IActionResult result = null;
@@ -57,6 +57,7 @@ namespace API.Controllers
                 ISettings settings = _settingsFactory.CreateCore(_settings.Value);
                 Guid? currentUserId = null;
                 IProject project = null;
+                IEnumerable<IWorkItem> innerWorkItems = null;
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
@@ -69,13 +70,20 @@ namespace API.Controllers
                     if (project == null)
                         result = NotFound();
                 }
-                if (result == null && project != null)
+                if (result == null && project != null && innerWorkItems == null && parentIds != null && parentIds.Length > 0)
+                {
+                    innerWorkItems = await _workItemFactory.GetByParentIds(settings, parentIds);
+                }
+                if (result == null && project != null && innerWorkItems == null)
+                {
+                    innerWorkItems = (await _workItemFactory.GetByProjectId(settings, projectId.Value))
+                        .Where(i => !i.ParentWorkItemId.HasValue);
+                }
+                if (result == null && project != null && innerWorkItems != null)
                 {
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     result = Ok(await Task.WhenAll(
-                        (await _workItemFactory.GetByProjectId(settings, projectId.Value))
-                        .Where(i => !i.ParentWorkItemId.HasValue)
-                        .Select<IWorkItem, Task<WorkItem>>(i => Map(settings, mapper, i))
+                        innerWorkItems.Select<IWorkItem, Task<WorkItem>>(i => Map(settings, mapper, i))
                         ));
                 }
             }
@@ -89,7 +97,8 @@ namespace API.Controllers
                 await WriteMetrics("get-project-items", DateTime.UtcNow.Subtract(start).TotalSeconds,
                     new Dictionary<string, string>
                     {
-                        { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty }
+                        { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty },
+                        { "parentIdLength", parentIds != null ? parentIds.Length.ToString() : string.Empty }
                     }
                     );
             }

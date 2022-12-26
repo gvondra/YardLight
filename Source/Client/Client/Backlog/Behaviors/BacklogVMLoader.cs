@@ -26,6 +26,7 @@ namespace YardLight.Client.Backlog.Behaviors
         {
             _backlogVM.CanRefresh = false;
             _backlogVM.BusyVisibility = Visibility.Visible;
+            _backlogVM.RootWorkItems = new ReadOnlyCollection<WorkItemVM>(new List<WorkItemVM>());
             UserSession userSession = UserSessionLoader.GetUserSession();
             Task.Run(() => LoadProject(userSession.OpenProjectId.Value))
                 .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());
@@ -89,45 +90,57 @@ namespace YardLight.Client.Backlog.Behaviors
             }
         }
 
-        private Task<List<WorkItem>> LoadAllWorkItems(Guid projectId)
+        private Task<List<WorkItem>> LoadWorkItems(Guid projectId, params Guid[] parentIds)
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IWorkItemService workItemService = scope.Resolve<IWorkItemService>();
-                return workItemService.GetByProjectId(settingsFactory.CreateApi(), projectId);
+                ISettings settings = settingsFactory.CreateApi();
+                if (parentIds != null && parentIds.Length > 0)
+                    return workItemService.GetByParentIds(settings, projectId, parentIds);
+                else
+                    return workItemService.GetByProjectId(settings, projectId);
             }
         }
-
-        private async Task LoadAllWorkItemsCallback(Task<List<WorkItem>> loadAllWorkItems, object state)
+                
+        private async Task LoadWorkItemsCallback(Task<List<WorkItem>> loadWorkItems, object state)
         {
             try
             {
-                List<WorkItemVM> items = (await loadAllWorkItems)
-                    .Select(i => WorkItemVM.Create(_backlogVM, i)).ToList();
-                WorkItemLoader workItemLoader;
-                foreach (WorkItemVM item in items.Where(i => !i.ParentWorkItemId.HasValue))
+                BacklogVM backlogVM;
+                WorkItemVM item;
+                WorkItemLoader itemLoader;
+                List<WorkItemVM> items = new List<WorkItemVM>();
+                Action<object> addBehavior;
+                ReadOnlyCollection<WorkItemVM> currentChildItems;
+                Action<object, IEnumerable<WorkItemVM>, IEnumerable<WorkItemVM>> setChildItems;
+                if (state.GetType().Equals(typeof(BacklogVM)))
                 {
-                    workItemLoader = new WorkItemLoader(item);
-                    _backlogVM.AddBehavior(workItemLoader);
-                    workItemLoader.Load();
+                    backlogVM = (BacklogVM)state;
+                    addBehavior = ((BacklogVM)state).AddBehavior;
+                    currentChildItems = ((BacklogVM)state).RootWorkItems;
+                    setChildItems = (object s, IEnumerable<WorkItemVM> current, IEnumerable<WorkItemVM> additional) => ((BacklogVM)s).RootWorkItems = new ReadOnlyCollection<WorkItemVM>(current.Concat(additional).ToList());
                 }
-
-                // todo load child work items
-                //      the get work items, now, only returns the root elements
-                //      for each item start recursive calls to load all children
-
-                foreach (WorkItemVM item in items.Where(i => i.ParentWorkItemId.HasValue))
+                else
                 {
-                    WorkItemVM parent = items.FirstOrDefault(i => item.ParentWorkItemId.Value.Equals(i.WorkItemId.Value));
-                    workItemLoader = new WorkItemLoader(item);
-                    parent.AddBehavior(workItemLoader);
-                    workItemLoader.Load();
-                    parent.AppendChild(item);
+                    backlogVM = ((WorkItemVM)state).BackLogVM;
+                    addBehavior = ((WorkItemVM)state).AddBehavior;
+                    currentChildItems = ((WorkItemVM)state).Children;
+                    setChildItems = (object s, IEnumerable<WorkItemVM> current, IEnumerable<WorkItemVM> additional) => ((WorkItemVM)s).Children = new ReadOnlyCollection<WorkItemVM>(current.Concat(additional).ToList());
                 }
-                _backlogVM.RootWorkItems = new ReadOnlyCollection<WorkItemVM>(
-                    items.Where(i => !i.ParentWorkItemId.HasValue).ToList()
-                    );                
+                foreach (WorkItem innerWorkItem in (await loadWorkItems))
+                {
+                    item = WorkItemVM.Create(backlogVM, innerWorkItem);
+                    items.Add(item);
+                    itemLoader = new WorkItemLoader(item);
+                    addBehavior(itemLoader);
+                    itemLoader.Load();
+                    _ = Task.Run(() => LoadWorkItems(backlogVM.Project.ProjectId, innerWorkItem.WorkItemId.Value))
+                    .ContinueWith(LoadWorkItemsCallback, item, TaskScheduler.FromCurrentSynchronizationContext());
+                }
+                setChildItems(state, currentChildItems, items);
+                backlogVM.ReapplyFilter();
             }
             catch(System.Exception ex)
             {
@@ -161,8 +174,8 @@ namespace YardLight.Client.Backlog.Behaviors
                 }
                 if (_backlogVM.AvailableTypes.Count > 0)
                     _backlogVM.CreateWorkItemVM.SelectedNewItemType = _backlogVM.AvailableTypes[0];
-                _ = Task.Run(() => LoadAllWorkItems(_backlogVM.Project.ProjectId))
-                    .ContinueWith(LoadAllWorkItemsCallback, _backlogVM.Project.ProjectId, TaskScheduler.FromCurrentSynchronizationContext());
+                _ = Task.Run(() => LoadWorkItems(_backlogVM.Project.ProjectId))
+                    .ContinueWith(LoadWorkItemsCallback, _backlogVM, TaskScheduler.FromCurrentSynchronizationContext());
             }
             catch (System.Exception ex)
             {
