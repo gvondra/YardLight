@@ -56,26 +56,37 @@ namespace YardLight.Client.Board.Behaviors
                 .ContinueWith(LoadWorkItemsCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private Task<List<WorkItem>> LoadWorkItems(Project project, WorkItemFilterVM workItemFilterVM)
+        private async Task<List<WorkItemVM>> LoadWorkItems(Project project, WorkItemFilterVM workItemFilterVM)
         {
             using(ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IWorkItemService workItemService = scope.Resolve<IWorkItemService>();
                 ISettings settings = settingsFactory.CreateApi();
+                List<WorkItemVM> result = new List<WorkItemVM>();
                 if (workItemFilterVM?.WorkItemTypeId != null)
-                    return workItemService.GetByProjectIdTypeId(settings, project.ProjectId, workItemFilterVM.WorkItemTypeId.Value, workItemFilterVM.Team, workItemFilterVM.Itteration);
-                else
-                    return Task.FromResult(new List<WorkItem>());
+                {
+                    result = (await workItemService.GetByProjectIdTypeId(settings, project.ProjectId, workItemFilterVM.WorkItemTypeId.Value, workItemFilterVM.Team, workItemFilterVM.Itteration))
+                        .Select(i => new WorkItemVM(i))
+                        .ToList();
+                    foreach (WorkItemVM item in result)
+                    {
+                        item.Children = new ReadOnlyCollection<WorkItemVM>(
+                            (await workItemService.GetByParentIds(settings, project.ProjectId, item.InnerWorkItem.WorkItemId.Value))
+                            .Select(i => new WorkItemVM(i)).ToList()
+                            );
+                    }
+                }                    
+                return result;
             }
         }
 
-        private async Task LoadWorkItemsCallback(Task<List<WorkItem>> loadWorkItems, object state)
+        private async Task LoadWorkItemsCallback(Task<List<WorkItemVM>> loadWorkItems, object state)
         {
             try
             {
                 _boardVM.WorkItems = new ReadOnlyCollection<WorkItemVM>(
-                    (await loadWorkItems).Select(i => new WorkItemVM(i)).ToList()
+                    (await loadWorkItems)
                     );
             }
             catch (System.Exception ex) 

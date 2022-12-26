@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using YardLight.Interface.Models;
 
 namespace YardLight.Client.Board.ViewModels
@@ -15,6 +16,34 @@ namespace YardLight.Client.Board.ViewModels
         private Project _project;
         private Visibility _busyVisibility = Visibility.Collapsed;
         private ReadOnlyCollection<WorkItemVM> _workItems;
+        private ReadOnlyCollection<object> _allBoardItems;
+        private int _rowCount;
+        private int _columnCount;
+        public int RowCount
+        {
+            get => _rowCount;
+            set
+            {
+                if (_rowCount != value)
+                {
+                    _rowCount = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public int ColumnCount
+        {
+            get => _columnCount;
+            set
+            {
+                if (_columnCount != value)
+                {
+                    _columnCount = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public ReadOnlyCollection<WorkItemVM> WorkItems
         {
@@ -24,6 +53,20 @@ namespace YardLight.Client.Board.ViewModels
                 if (_workItems != value)
                 {
                     _workItems = value;
+                    NotifyPropertyChanged();
+                    RowCount = value != null ? value.Count : 0;
+                }
+            }
+        }
+
+        public ReadOnlyCollection<object> AllBoardItems
+        {
+            get => _allBoardItems;
+            set
+            {
+                if (_allBoardItems != value)
+                {
+                    _allBoardItems = value;
                     NotifyPropertyChanged();
                 }
             }

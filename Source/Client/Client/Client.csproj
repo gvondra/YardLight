@@ -219,12 +219,21 @@
     <Compile Include="Backlog\ViewModels\WorkItemTypeVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemVM.cs" />
     <Compile Include="Behaviors\CreateProjectValidator.cs" />
+    <Compile Include="Board\Behaviors\BoardLayout.cs" />
     <Compile Include="Board\Behaviors\BoardVMLoader.cs" />
     <Compile Include="Board\Behaviors\WorkItemFilter.cs" />
     <Compile Include="Board\Board.xaml.cs">
       <DependentUpon>Board.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Board\Controls\WorkItemCard.xaml.cs">
+      <DependentUpon>WorkItemCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Board\Controls\WorkItemCardPannel.xaml.cs">
+      <DependentUpon>WorkItemCardPannel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Board\ViewModels\BoardColumnHeaderVM.cs" />
     <Compile Include="Board\ViewModels\BoardVM.cs" />
+    <Compile Include="Board\ViewModels\WorkItemChildrenVM.cs" />
     <Compile Include="Board\ViewModels\WorkItemFilterVM.cs" />
     <Compile Include="Board\ViewModels\WorkItemVM.cs" />
     <Compile Include="CreateProjectWindow.xaml.cs">
@@ -320,6 +329,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Board\Board.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Board\Controls\WorkItemCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Board\Controls\WorkItemCardPannel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

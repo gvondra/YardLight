@@ -1,40 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using YardLight.Interface.Models;
 
 namespace YardLight.Client.Board.ViewModels
 {
-    public class WorkItemVM : ViewModelBase
+    public class BoardColumnHeaderVM : ViewModelBase
     {
-        private readonly WorkItem _innerWorkItem;
         private int _rowIndex = 0;
         private int _columnIndex = 0;
-        private ReadOnlyCollection<WorkItemVM> _children;
+        private string _title;
+        private Guid? _id;
 
-        public WorkItemVM(WorkItem innerWorkItem)
+        public Guid? Id
         {
-            _innerWorkItem = innerWorkItem;
-        }
-
-        public WorkItem InnerWorkItem => _innerWorkItem;
-
-        public string Title => _innerWorkItem.Title;
-
-        public string ColorCode => _innerWorkItem.Type.ColorCode;
-
-        public ReadOnlyCollection<WorkItemVM> Children
-        {
-            get => _children;
+            get => _id;
             set
             {
-                if (_children != value)
+                if (_id != value)
                 {
-                    _children = value;
+                    _id = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                if (_title != value)
+                {
+                    _title = value;
                     NotifyPropertyChanged();
                 }
             }

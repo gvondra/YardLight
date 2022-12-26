@@ -25,10 +25,7 @@ namespace YardLight.Client.Board.Behaviors
             _boardVM.BusyVisibility = Visibility.Visible;
             UserSession userSession = UserSessionLoader.GetUserSession();
             Task.Run(() => LoadProject(userSession.OpenProjectId.Value))
-                .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());            
-            // loading the filter is a 3 step process: load types, load teams, load itteration. Then assign the fileter back to the board vm
-            Task.Run(() => LoadWorkItemTypes(userSession.OpenProjectId))
-                .ContinueWith(LoadWorkItemTypesCallback, new WorkItemFilterVM(userSession), TaskScheduler.FromCurrentSynchronizationContext());
+                .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());                        
         }
 
         private Task<List<string>> LoadItterations(Guid? projectId)
@@ -54,6 +51,10 @@ namespace YardLight.Client.Board.Behaviors
             catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, null);
+            }
+            finally
+            {
+                _boardVM.BusyVisibility = Visibility.Collapsed;
             }
         }
 
@@ -142,14 +143,14 @@ namespace YardLight.Client.Board.Behaviors
                 {
                     _boardVM.Project = project;
                 }
+                // loading the filter is a 3 step process: load types, load teams, load itteration. Then assign the fileter back to the board vm
+                UserSession userSession = UserSessionLoader.GetUserSession();
+                _ = Task.Run(() => LoadWorkItemTypes(userSession.OpenProjectId))
+                    .ContinueWith(LoadWorkItemTypesCallback, new WorkItemFilterVM(userSession), TaskScheduler.FromCurrentSynchronizationContext());
             }
             catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, null);
-            }
-            finally
-            {
-                _boardVM.BusyVisibility = Visibility.Collapsed;
             }
         }
     }

@@ -5,6 +5,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:fa="http://schemas.fontawesome.io/icons/"
       xmlns:local="clr-namespace:YardLight.Client.Board"
+      xmlns:ctrl="clr-namespace:YardLight.Client.Board.Controls"
+      xmlns:vm="clr-namespace:YardLight.Client.Board.ViewModels"
+      xmlns:system="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Yard Light: Board" Style="{StaticResource DefaultPageStyle}"
@@ -51,5 +54,29 @@
                 <ComboBox Grid.Column="1" Grid.Row="3" IsEditable="True" ItemsSource="{Binding Filter.Itterations}" Text="{Binding Filter.Itteration, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
             </Grid>
         </Border>
+        <ItemsControl x:Name="boardGrid" ItemsSource="{Binding AllBoardItems}" >
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid local:Board.RowCount="{Binding RowCount}" local:Board.ColumnCount="{Binding ColumnCount}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.Resources>
+                <DataTemplate DataType="{x:Type vm:WorkItemVM}">
+                    <ctrl:WorkItemCard />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:WorkItemChildrenVM}">
+                    <ctrl:WorkItemCardPannel />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:BoardColumnHeaderVM}">
+                    <TextBlock Text="{Binding Title}" />
+                </DataTemplate>
+            </ItemsControl.Resources>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Grid.Row" Value="{Binding RowIndex}"/>
+                    <Setter Property="Grid.Column" Value="{Binding ColumnIndex}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>        
     </DockPanel>
 </Page>
