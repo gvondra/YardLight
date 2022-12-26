@@ -88,5 +88,21 @@ namespace YardLight.Core
             return (await _dataFactory.GetByParentIds(new DataSettings(settings), parentIds))
                 .Select<WorkItemData, IWorkItem>(Create);
         }
+
+        public async Task<IEnumerable<IWorkItem>> GetByProjectIdTypeId(ISettings settings, Guid projectId, Guid workItemTypeId, string team = "", string itteration = "")
+        {
+            return (await _dataFactory.GetByProjectIdTypeId(new DataSettings(settings), projectId, workItemTypeId))
+                .Select<WorkItemData, IWorkItem>(Create)
+                .Where(item => WorkItemFilter(item, team, itteration));
+        }
+
+        // return true to include items
+        private static bool WorkItemFilter(IWorkItem workItem, string team, string itteration)
+        {
+            bool include = true;
+            include = (include && (string.IsNullOrEmpty(team) || string.IsNullOrEmpty(workItem.Team) || string.Equals(team, workItem.Team, StringComparison.OrdinalIgnoreCase)));
+            include = (include && (string.IsNullOrEmpty(itteration) || string.IsNullOrEmpty(workItem.Itteration) || string.Equals(itteration, workItem.Itteration, StringComparison.OrdinalIgnoreCase)));
+            return include;
+        }
     }
 }

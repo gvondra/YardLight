@@ -3,12 +3,53 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:fa="http://schemas.fontawesome.io/icons/"
       xmlns:local="clr-namespace:YardLight.Client.Board"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Board">
+      Title="Yard Light: Board" Style="{StaticResource DefaultPageStyle}"
+      KeepAlive="True">
 
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource PageTitle}" >Backlog: <TextBlock Text="{Binding Project.Title}"/></TextBlock>
+            <fa:ImageAwesome Grid.Column="0" Grid.Row="1" Icon="CircleOutlineNotch" Spin="True" Height="24" Width="24" Visibility="{Binding BusyVisibility}" Foreground="Navy" HorizontalAlignment="Left" />
+        </Grid>
+        <Border DockPanel.Dock="Right" BorderThickness="1" BorderBrush="DarkGray" Padding="2,0">
+            <Grid MinWidth="150">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                    <TextBlock TextDecorations="Underline">Filter</TextBlock>
+                </Label>
+                <Label Grid.Column="0" Grid.Row="1">Type</Label>
+                <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Filter.WorkItemTypes}" SelectedItem="{Binding Filter.WorkItemType}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Label Grid.Column="0" Grid.Row="2">Team</Label>
+                <ComboBox Grid.Column="1" Grid.Row="2" IsEditable="True" ItemsSource="{Binding Filter.Teams}" Text="{Binding Filter.Team, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+                <Label Grid.Column="0" Grid.Row="3">Itteration</Label>
+                <ComboBox Grid.Column="1" Grid.Row="3" IsEditable="True" ItemsSource="{Binding Filter.Itterations}" Text="{Binding Filter.Itteration, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+            </Grid>
+        </Border>
+    </DockPanel>
 </Page>

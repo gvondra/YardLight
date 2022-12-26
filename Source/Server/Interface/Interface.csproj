@@ -11,8 +11,8 @@
 	  <Product>Yard Light</Product>
 	  <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.0.0-alpha.39</Version>
-	  <AssemblyVersion>1.0.0.39</AssemblyVersion>
+	  <Version>1.0.0-alpha.40</Version>
+	  <AssemblyVersion>1.0.0.40</AssemblyVersion>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

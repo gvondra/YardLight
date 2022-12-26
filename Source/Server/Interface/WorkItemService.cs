@@ -119,5 +119,20 @@ namespace YardLight.Interface
             }
             return await _restUtil.Send<List<WorkItem>>(_service, request);
         }
+
+        public async Task<List<WorkItem>> GetByProjectIdTypeId(ISettings settings, Guid projectId, Guid workItemTypeId, string team = "", string itteration = "")
+        {
+            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
+                .AddPath("Project/{projectId}/WorkItem")
+                .AddPathParameter("projectId", projectId.ToString("N"))
+                .AddQueryParameter("workItemTypeId", workItemTypeId.ToString("N"))
+                .AddJwtAuthorizationToken(settings.GetToken)
+                ;
+            if (!string.IsNullOrEmpty(team))
+                request.AddQueryParameter("team", team);
+            if (!string.IsNullOrEmpty(itteration))
+                request.AddQueryParameter("itteration", itteration);
+            return await _restUtil.Send<List<WorkItem>>(_service, request);
+        }
     }
 }

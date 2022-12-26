@@ -12,6 +12,9 @@ namespace YardLight.Client
         private Guid? _openProjectId;
         private string _backlogFilterTeam;
         private string _backlogFilterItteration;
+        private string _boardFilterTeam;
+        private string _boardFilterItteration;
+        private Guid? _boardWorkItemTypeId;
 
         public string BacklogFilterTeam
         {
@@ -29,6 +32,36 @@ namespace YardLight.Client
             set
             {
                 _backlogFilterItteration = value;
+                Save();
+            }
+        }
+
+        public string BoardFilterTeam
+        {
+            get => _boardFilterTeam;
+            set
+            {
+                _boardFilterTeam = value;
+                Save();
+            }
+        }
+
+        public Guid? BoardWorkItemTypeId
+        {
+            get => _boardWorkItemTypeId;
+            set
+            {
+                _boardWorkItemTypeId = value;
+                Save();
+            }
+        }
+
+        public string BoardFilterItteration
+        {
+            get => _boardFilterItteration;
+            set
+            {
+                _boardFilterItteration = value;
                 Save();
             }
         }

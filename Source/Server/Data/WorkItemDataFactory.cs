@@ -58,6 +58,21 @@ namespace YardLight.Data
                 );
         }
 
+        public async Task<IEnumerable<WorkItemData>> GetByProjectIdTypeId(ISettings settings, Guid projectId, Guid workItemTypeId)
+        {
+            IDataParameter[] parameters = new IDataParameter[]
+            {
+                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId)),
+                DataUtil.CreateParameter(_providerFactory, "workItemTypeId", DbType.Guid, DataUtil.GetParameterValue(workItemTypeId))
+            };                
+            return await _dataFactory.GetData(settings, _providerFactory,
+                "[yl].[GetWorkItem_by_ProjectId_WorkItemTypeId]",
+                () => new WorkItemData(),
+                DataUtil.AssignDataStateManager,
+                parameters
+                );
+        }
+
         public Task<IEnumerable<string>> GetItterationsByProjectId(ISettings settings, Guid projectId)
         {
             return DataUtil.ReadList<string>(_providerFactory, settings, "[yl].[GetItterationByProjectId]",

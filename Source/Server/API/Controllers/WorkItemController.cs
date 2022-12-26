@@ -48,7 +48,12 @@ namespace API.Controllers
 
         [HttpGet("/api/Project/{projectId}/WorkItem")]
         [Authorize()]
-        public async Task<IActionResult> Search([FromRoute] Guid? projectId, [FromQuery] Guid[] parentIds)
+        public async Task<IActionResult> Search(
+            [FromRoute] Guid? projectId, 
+            [FromQuery] Guid[] parentIds,
+            [FromQuery] Guid? workItemTypeId,
+            [FromQuery] string team,
+            [FromQuery] string itteration)
         {
             DateTime start = DateTime.UtcNow;
             IActionResult result = null;
@@ -69,6 +74,10 @@ namespace API.Controllers
                     project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
                     if (project == null)
                         result = NotFound();
+                }
+                if (result == null && project != null && innerWorkItems == null && workItemTypeId.HasValue && !workItemTypeId.Value.Equals(Guid.Empty))
+                {
+                    innerWorkItems = await _workItemFactory.GetByProjectIdTypeId(settings, projectId.Value, workItemTypeId.Value, team: team, itteration: itteration);
                 }
                 if (result == null && project != null && innerWorkItems == null && parentIds != null && parentIds.Length > 0)
                 {
