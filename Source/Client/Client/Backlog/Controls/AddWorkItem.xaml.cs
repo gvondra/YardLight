@@ -89,6 +89,7 @@ namespace YardLight.Client.Backlog.Controls
                 {
                     parent.AppendChild(workItemVM);
                     parent.AddBehavior(workItemLoader);
+                    parent.IsExpanded = true;
                 }
                 workItemLoader.Load();
                 createWorkItemVM.CreateWorkItemVisible = Visibility.Collapsed;

@@ -33,7 +33,7 @@
                     <ctrl:AddWorkItem Margin="5,0" DataContext="{Binding CreateWorkItemVM}" Visibility="{Binding CreateWorkItemVisible}" />
                 </WrapPanel>
             </Grid>
-        </HierarchicalDataTemplate>
+        </HierarchicalDataTemplate>        
     </Page.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Top">
@@ -75,7 +75,13 @@
             </Grid>
         </Border>
         <TreeView ItemsSource="{Binding FilteredChildren}" 
-                  ItemTemplate="{StaticResource TreeItemTemplate}"/>
+                  ItemTemplate="{StaticResource TreeItemTemplate}">
+            <TreeView.Resources>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}"/>
+                </Style>
+            </TreeView.Resources>
+        </TreeView>
 
     </DockPanel>
 </Page>

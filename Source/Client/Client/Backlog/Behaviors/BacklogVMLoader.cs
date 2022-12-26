@@ -115,12 +115,14 @@ namespace YardLight.Client.Backlog.Behaviors
                 Action<object> addBehavior;
                 ReadOnlyCollection<WorkItemVM> currentChildItems;
                 Action<object, IEnumerable<WorkItemVM>, IEnumerable<WorkItemVM>> setChildItems;
+                bool isExpanded = false;
                 if (state.GetType().Equals(typeof(BacklogVM)))
                 {
                     backlogVM = (BacklogVM)state;
                     addBehavior = ((BacklogVM)state).AddBehavior;
                     currentChildItems = ((BacklogVM)state).RootWorkItems;
                     setChildItems = (object s, IEnumerable<WorkItemVM> current, IEnumerable<WorkItemVM> additional) => ((BacklogVM)s).RootWorkItems = new ReadOnlyCollection<WorkItemVM>(current.Concat(additional).ToList());
+                    isExpanded = true;
                 }
                 else
                 {
@@ -135,6 +137,7 @@ namespace YardLight.Client.Backlog.Behaviors
                     items.Add(item);
                     itemLoader = new WorkItemLoader(item);
                     addBehavior(itemLoader);
+                    item.IsExpanded = isExpanded;
                     itemLoader.Load();
                     _ = Task.Run(() => LoadWorkItems(backlogVM.Project.ProjectId, innerWorkItem.WorkItemId.Value))
                     .ContinueWith(LoadWorkItemsCallback, item, TaskScheduler.FromCurrentSynchronizationContext());
