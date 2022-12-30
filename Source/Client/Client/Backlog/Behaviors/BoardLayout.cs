@@ -68,13 +68,100 @@ namespace YardLight.Client.Backlog.Behaviors
                             {
                                 Children = new ReadOnlyCollection<WorkItemVM>(group.ToList()),
                                 RowIndex = i,
-                                ColumnIndex = columnIndexLookup[group.Key]
+                                ColumnIndex = columnIndexLookup[group.Key],
+                                WorkItemStatusId = group.Key,
+                                ParentWorkItemId = workItemVM.WorkItemId.Value
                             });
+                            AddPropertyChangeHandlers(group);
                         }
                     }
                 }
                 _board.AllBoardItems = new ReadOnlyCollection<object>(allItems);
             }
+        }
+
+        private void AddPropertyChangeHandlers(IEnumerable<WorkItemVM> workItemVMs)
+        {
+            foreach (WorkItemVM workItemVM in workItemVMs)
+            {
+                workItemVM.PropertyChanged += WorkItemVM_PropertyChanged;
+            }
+        }
+
+        private void WorkItemVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(WorkItemVM.Status):
+                    UpdatedStatus((WorkItemVM)sender);
+                    break;
+            }
+        }
+
+        private void UpdatedStatus(WorkItemVM workItemVM)
+        {
+            bool found = false;
+            foreach (WorkItemChildrenVM child in _board.AllBoardItems
+                .Where(i => i.GetType().Equals(typeof(WorkItemChildrenVM)))
+                .Select(i => (WorkItemChildrenVM)i)
+                .Where(i => i.ParentWorkItemId.Equals(workItemVM.ParentWorkItemId.Value))
+                )
+            {
+                IEnumerable<WorkItemVM> newChildern = child.Children.Where(i => !i.WorkItemId.Value.Equals(workItemVM.WorkItemId.Value));
+                if (child.WorkItemStatusId.Equals(workItemVM.Status.WorkItemStatusId))
+                {
+                    child.Children = new ReadOnlyCollection<WorkItemVM>(
+                        newChildern.Concat(new WorkItemVM[] { workItemVM }).ToList()
+                        );
+                    found = true;
+                }
+                else
+                {
+                    child.Children = new ReadOnlyCollection<WorkItemVM>(
+                        newChildern.ToList()
+                        );
+                }
+            }
+            if (!found)
+            {
+                AddChild(workItemVM);
+            }
+        }
+
+        private void AddChild(WorkItemVM childWorkItemVM)
+        {
+            WorkItemChildrenVM[] workItemChildrenVMs = new WorkItemChildrenVM[]
+            {
+                new WorkItemChildrenVM
+                {
+                Children = new ReadOnlyCollection<WorkItemVM>(new WorkItemVM[] { childWorkItemVM }),
+                RowIndex = FindParentRowIndex(childWorkItemVM.ParentWorkItemId.Value),
+                ColumnIndex = FindStatusColumnIndex(childWorkItemVM.Status.WorkItemStatusId),
+                WorkItemStatusId = childWorkItemVM.Status.WorkItemStatusId,
+                ParentWorkItemId = childWorkItemVM.ParentWorkItemId.Value
+             }
+            };
+            _board.AllBoardItems = new ReadOnlyCollection<object>(
+                _board.AllBoardItems.Concat(workItemChildrenVMs).ToList()
+                );
+        }
+
+        private int FindParentRowIndex(Guid workItemId)
+        {
+            return _board.AllBoardItems
+                .Where(i => i.GetType().Equals(typeof(WorkItemVM)))
+                .Select(i => (WorkItemVM)i)
+                .FirstOrDefault(i => i.WorkItemId.Value.Equals(workItemId))
+                .RowIndex;
+        }
+
+        private int FindStatusColumnIndex(Guid statusId)
+        {
+            return _board.AllBoardItems
+                .Where(i => i.GetType().Equals(typeof(BoardColumnHeaderVM)))
+                .Select(i => (BoardColumnHeaderVM)i)
+                .FirstOrDefault(i => i.Id.Equals(statusId))
+                .ColumnIndex;
         }
     }
 }

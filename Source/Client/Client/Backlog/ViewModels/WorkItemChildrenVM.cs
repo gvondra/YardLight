@@ -12,6 +12,34 @@ namespace YardLight.Client.Backlog.ViewModels
         private int _rowIndex = 0;
         private int _columnIndex = 0;
         private ReadOnlyCollection<WorkItemVM> _children;
+        private Guid _workItemStatusId;
+        private Guid _parentWorkItemId;
+
+        public Guid WorkItemStatusId
+        {
+            get => _workItemStatusId;
+            set
+            {
+                if (_workItemStatusId != value)
+                {
+                    _workItemStatusId = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public Guid ParentWorkItemId
+        {
+            get => _parentWorkItemId;
+            set
+            {
+                if (_parentWorkItemId != value)
+                {
+                    _parentWorkItemId = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public ReadOnlyCollection<WorkItemVM> Children
         {

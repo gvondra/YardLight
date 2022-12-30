@@ -9,6 +9,13 @@
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem Header="Edit" Command="{Binding WorkItemEditCommand}" CommandParameter="{Binding RelativeSource={x:Static RelativeSource.Self}}"/>
+            <MenuItem Header="Status" ItemsSource="{Binding AvailableStatuses}">
+                <MenuItem.ItemTemplate>
+                    <DataTemplate>
+                        <MenuItem Header="{Binding Title}" Click="MenuItem_Click"/>
+                    </DataTemplate>
+                </MenuItem.ItemTemplate>
+            </MenuItem>
         </ContextMenu>
     </UserControl.ContextMenu>
     <Border Margin="2" BorderThickness="1" BorderBrush="DarkGray">
