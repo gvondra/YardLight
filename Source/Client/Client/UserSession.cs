@@ -15,6 +15,7 @@ namespace YardLight.Client
         private string _boardFilterTeam;
         private string _boardFilterItteration;
         private Guid? _boardWorkItemTypeId;
+        private Guid? _backlogWorkItemTypeId;
 
         public string BacklogFilterTeam
         {
@@ -52,6 +53,16 @@ namespace YardLight.Client
             set
             {
                 _boardWorkItemTypeId = value;
+                Save();
+            }
+        }
+
+        public Guid? BacklogWorkItemTypeId
+        {
+            get => _backlogWorkItemTypeId;
+            set
+            {
+                _backlogWorkItemTypeId = value;
                 Save();
             }
         }

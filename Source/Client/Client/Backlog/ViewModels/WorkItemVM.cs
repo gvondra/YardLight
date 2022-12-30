@@ -13,7 +13,6 @@ namespace YardLight.Client.Backlog.ViewModels
 {
     public class WorkItemVM : ViewModelBase
     {
-        private readonly BacklogVM _backlog;
         private readonly WorkItem _innerWorkItem;
         private readonly CreateWorkItemVM _createWorkItemVM;
         private readonly ObservableCollection<WorkItemVM> _filteredChildren = new ObservableCollection<WorkItemVM>();
@@ -27,16 +26,21 @@ namespace YardLight.Client.Backlog.ViewModels
         private LoadWorkItemCommentCommand _loadWorkItemCommentCommand;
         private CreateWorkIemCommentCommand _createWorkIemCommentCommand;
         private bool _isExpanded = true;
+        private int _rowIndex = 0;
+        private int _columnIndex = 0;
 
-        public WorkItemVM(BacklogVM backlog, WorkItem innerWorkItem)
+        public WorkItemVM(WorkItem innerWorkItem)
         {
-            _backlog = backlog;
             _innerWorkItem = innerWorkItem;
-            _createWorkItemVM = new CreateWorkItemVM(_backlog, this)
+            AddBehavior(new WorkItemValidator(this));
+        }
+
+        public WorkItemVM(BacklogVM backlog, WorkItem innerWorkItem) : this(innerWorkItem)
+        {
+            _createWorkItemVM = new CreateWorkItemVM(backlog, this)
             {
                 CreateWorkItemVisible = Visibility.Collapsed
             };
-            AddBehavior(new WorkItemValidator(this));
         }
 
         public WorkItem InnerWorkItem => _innerWorkItem;
@@ -48,7 +52,6 @@ namespace YardLight.Client.Backlog.ViewModels
         public ObservableCollection<CommentVM> Comments => _comments;
         public ObservableCollection<WorkItemVM> FilteredChildren => _filteredChildren;
         public Guid? ProjectId => _innerWorkItem.ProjectId;
-        public BacklogVM BackLogVM => _backlog;
 
         public bool IsExpanded
         {
@@ -306,6 +309,32 @@ namespace YardLight.Client.Backlog.ViewModels
                 if (_innerWorkItem.Criteria != value)
                 {
                     _innerWorkItem.Criteria = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public int RowIndex
+        {
+            get => _rowIndex;
+            set
+            {
+                if (_rowIndex != value)
+                {
+                    _rowIndex = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public int ColumnIndex
+        {
+            get => _columnIndex;
+            set
+            {
+                if (_columnIndex != value)
+                {
+                    _columnIndex = value;
                     NotifyPropertyChanged();
                 }
             }

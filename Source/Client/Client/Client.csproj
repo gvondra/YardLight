@@ -191,6 +191,9 @@
       <DependentUpon>Backlog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Backlog\Behaviors\BacklogVMLoader.cs" />
+    <Compile Include="Backlog\Behaviors\BoardLayout.cs" />
+    <Compile Include="Backlog\Behaviors\BoardVMLoader.cs" />
+    <Compile Include="Backlog\Behaviors\BoardWorkItemFilter.cs" />
     <Compile Include="Backlog\Behaviors\CreateWorkIemCommentCommand.cs" />
     <Compile Include="Backlog\Behaviors\CreateWorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\CreateWorkItemValidator.cs" />
@@ -199,11 +202,20 @@
     <Compile Include="Backlog\Behaviors\BacklogWorkItemFilter.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemValidator.cs" />
+    <Compile Include="Backlog\Board.xaml.cs">
+      <DependentUpon>Board.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Backlog\Controls\AddWorkItem.xaml.cs">
       <DependentUpon>AddWorkItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Backlog\Controls\EditWorkItem.xaml.cs">
       <DependentUpon>EditWorkItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Backlog\Controls\WorkItemCard.xaml.cs">
+      <DependentUpon>WorkItemCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Backlog\Controls\WorkItemCardPannel.xaml.cs">
+      <DependentUpon>WorkItemCardPannel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Backlog\Controls\WorkItemComment.xaml.cs">
       <DependentUpon>WorkItemComment.xaml</DependentUpon>
@@ -212,30 +224,16 @@
       <DependentUpon>EditWorkItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Backlog\ViewModels\BacklogVM.cs" />
+    <Compile Include="Backlog\ViewModels\BoardColumnHeaderVM.cs" />
+    <Compile Include="Backlog\ViewModels\BoardVM.cs" />
     <Compile Include="Backlog\ViewModels\CommentVM.cs" />
     <Compile Include="Backlog\ViewModels\CreateWorkItemVM.cs" />
+    <Compile Include="Backlog\ViewModels\WorkItemChildrenVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemFilterVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemStatusVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemTypeVM.cs" />
     <Compile Include="Backlog\ViewModels\WorkItemVM.cs" />
     <Compile Include="Behaviors\CreateProjectValidator.cs" />
-    <Compile Include="Board\Behaviors\BoardLayout.cs" />
-    <Compile Include="Board\Behaviors\BoardVMLoader.cs" />
-    <Compile Include="Board\Behaviors\BoardWorkItemFilter.cs" />
-    <Compile Include="Board\Board.xaml.cs">
-      <DependentUpon>Board.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Board\Controls\WorkItemCard.xaml.cs">
-      <DependentUpon>WorkItemCard.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Board\Controls\WorkItemCardPannel.xaml.cs">
-      <DependentUpon>WorkItemCardPannel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Board\ViewModels\BoardColumnHeaderVM.cs" />
-    <Compile Include="Board\ViewModels\BoardVM.cs" />
-    <Compile Include="Board\ViewModels\WorkItemChildrenVM.cs" />
-    <Compile Include="Board\ViewModels\WorkItemFilterVM.cs" />
-    <Compile Include="Board\ViewModels\WorkItemVM.cs" />
     <Compile Include="CreateProjectWindow.xaml.cs">
       <DependentUpon>CreateProjectWindow.xaml</DependentUpon>
     </Compile>
@@ -312,6 +310,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Backlog\Board.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Backlog\Controls\AddWorkItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -320,23 +322,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Backlog\Controls\WorkItemCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Backlog\Controls\WorkItemCardPannel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Backlog\Controls\WorkItemComment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Backlog\EditWorkItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Board\Board.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Board\Controls\WorkItemCard.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Board\Controls\WorkItemCardPannel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

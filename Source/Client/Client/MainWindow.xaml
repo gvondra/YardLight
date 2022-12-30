@@ -33,7 +33,7 @@
             </MenuItem>
             <MenuItem Header="_Project" Visibility="{Binding ShowProject}">
                 <MenuItem Header="_Backlog" Command="NavigationCommands.GoToPage" CommandParameter="Backlog/Backlog.xaml"/>
-                <MenuItem Header="_Board" Command="NavigationCommands.GoToPage" CommandParameter="Board/Board.xaml"/>
+                <MenuItem Header="_Board" Command="NavigationCommands.GoToPage" CommandParameter="Backlog/Board.xaml"/>
             </MenuItem>
         </Menu>
         <Frame x:Name="navigationFrame" Source="NavigationPage/Home.xaml" Margin="0,0,0,15" NavigationUIVisibility="Hidden" />

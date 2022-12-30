@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using YardLight.Interface.Models;
 
-namespace YardLight.Client.Board.ViewModels
+namespace YardLight.Client.Backlog.ViewModels
 {
     public class BoardVM : ViewModelBase
     {

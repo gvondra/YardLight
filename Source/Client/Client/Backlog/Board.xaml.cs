@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using YardLight.Client.Board.Behaviors;
-using YardLight.Client.Board.ViewModels;
+using YardLight.Client.Backlog.Behaviors;
+using YardLight.Client.Backlog.ViewModels;
 
-namespace YardLight.Client.Board
+namespace YardLight.Client.Backlog
 {
     /// <summary>
     /// Interaction logic for Board.xaml
@@ -62,7 +62,7 @@ namespace YardLight.Client.Board
             {
                 _boardVMLoader = new BoardVMLoader(BoardVM);
                 _boardVMLoader.Load();
-            }         
+            }
         }
 
         private static void SetGridRowDefinitions(DependencyObject target, DependencyPropertyChangedEventArgs args)

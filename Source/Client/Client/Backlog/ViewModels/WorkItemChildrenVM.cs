@@ -1,39 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YardLight.Client.Board.ViewModels
+namespace YardLight.Client.Backlog.ViewModels
 {
-    public class BoardColumnHeaderVM : ViewModelBase
+    public class WorkItemChildrenVM : ViewModelBase
     {
         private int _rowIndex = 0;
         private int _columnIndex = 0;
-        private string _title;
-        private Guid? _id;
+        private ReadOnlyCollection<WorkItemVM> _children;
 
-        public Guid? Id
+        public ReadOnlyCollection<WorkItemVM> Children
         {
-            get => _id;
+            get => _children;
             set
             {
-                if (_id != value)
+                if (_children != value)
                 {
-                    _id = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-        public string Title
-        {
-            get => _title;
-            set
-            {
-                if (_title != value)
-                {
-                    _title = value;
+                    _children = value;
                     NotifyPropertyChanged();
                 }
             }

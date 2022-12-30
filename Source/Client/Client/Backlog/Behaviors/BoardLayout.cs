@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YardLight.Client.Board.ViewModels;
+using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface.Models;
 
-namespace YardLight.Client.Board.Behaviors
+namespace YardLight.Client.Backlog.Behaviors
 {
     public class BoardLayout
     {

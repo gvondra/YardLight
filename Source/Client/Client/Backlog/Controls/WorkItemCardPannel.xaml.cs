@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace YardLight.Client.Board.Controls
+namespace YardLight.Client.Backlog.Controls
 {
     /// <summary>
     /// Interaction logic for WorkItemCardPannel.xaml

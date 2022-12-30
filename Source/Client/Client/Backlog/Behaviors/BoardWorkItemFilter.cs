@@ -5,11 +5,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YardLight.Client.Board.ViewModels;
+using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface;
 using YardLight.Interface.Models;
 
-namespace YardLight.Client.Board.Behaviors
+namespace YardLight.Client.Backlog.Behaviors
 {
     public class BoardWorkItemFilter
     {
@@ -20,10 +20,10 @@ namespace YardLight.Client.Board.Behaviors
         {
             _boardVM = boardVM;
             SetWorkItemFilterVM(boardVM.Filter);
-            _boardVM.PropertyChanged += BoardVM_PropertyChanged;            
+            _boardVM.PropertyChanged += BoardVM_PropertyChanged;
         }
 
-        private void SetWorkItemFilterVM(WorkItemFilterVM workItemFilterVM) 
+        private void SetWorkItemFilterVM(WorkItemFilterVM workItemFilterVM)
         {
             if (_workItemFilterVM != null)
                 _workItemFilterVM.PropertyChanged -= Filter_PropertyChanged;
@@ -58,7 +58,7 @@ namespace YardLight.Client.Board.Behaviors
 
         private async Task<List<WorkItemVM>> LoadWorkItems(Project project, WorkItemFilterVM workItemFilterVM)
         {
-            using(ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+            using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                 IWorkItemService workItemService = scope.Resolve<IWorkItemService>();
@@ -76,7 +76,7 @@ namespace YardLight.Client.Board.Behaviors
                             .Select(i => new WorkItemVM(i)).ToList()
                             );
                     }
-                }                    
+                }
                 return result;
             }
         }
@@ -89,7 +89,7 @@ namespace YardLight.Client.Board.Behaviors
                     (await loadWorkItems)
                     );
             }
-            catch (System.Exception ex) 
+            catch (System.Exception ex)
             {
                 ErrorWindow.Open(ex, null);
             }

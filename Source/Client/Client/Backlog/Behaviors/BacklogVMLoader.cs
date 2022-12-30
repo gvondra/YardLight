@@ -108,7 +108,6 @@ namespace YardLight.Client.Backlog.Behaviors
         {
             try
             {
-                BacklogVM backlogVM;
                 WorkItemVM item;
                 WorkItemLoader itemLoader;
                 List<WorkItemVM> items = new List<WorkItemVM>();
@@ -118,7 +117,6 @@ namespace YardLight.Client.Backlog.Behaviors
                 bool isExpanded = false;
                 if (state.GetType().Equals(typeof(BacklogVM)))
                 {
-                    backlogVM = (BacklogVM)state;
                     addBehavior = ((BacklogVM)state).AddBehavior;
                     currentChildItems = ((BacklogVM)state).RootWorkItems;
                     setChildItems = (object s, IEnumerable<WorkItemVM> current, IEnumerable<WorkItemVM> additional) => ((BacklogVM)s).RootWorkItems = new ReadOnlyCollection<WorkItemVM>(current.Concat(additional).ToList());
@@ -126,24 +124,23 @@ namespace YardLight.Client.Backlog.Behaviors
                 }
                 else
                 {
-                    backlogVM = ((WorkItemVM)state).BackLogVM;
                     addBehavior = ((WorkItemVM)state).AddBehavior;
                     currentChildItems = ((WorkItemVM)state).Children;
                     setChildItems = (object s, IEnumerable<WorkItemVM> current, IEnumerable<WorkItemVM> additional) => ((WorkItemVM)s).Children = new ReadOnlyCollection<WorkItemVM>(current.Concat(additional).ToList());
                 }
                 foreach (WorkItem innerWorkItem in (await loadWorkItems))
                 {
-                    item = WorkItemVM.Create(backlogVM, innerWorkItem);
+                    item = WorkItemVM.Create(_backlogVM, innerWorkItem);
                     items.Add(item);
                     itemLoader = new WorkItemLoader(item);
                     addBehavior(itemLoader);
                     item.IsExpanded = isExpanded;
                     itemLoader.Load();
-                    _ = Task.Run(() => LoadWorkItems(backlogVM.Project.ProjectId, innerWorkItem.WorkItemId.Value))
+                    _ = Task.Run(() => LoadWorkItems(_backlogVM.Project.ProjectId, innerWorkItem.WorkItemId.Value))
                     .ContinueWith(LoadWorkItemsCallback, item, TaskScheduler.FromCurrentSynchronizationContext());
                 }
                 setChildItems(state, currentChildItems, items);
-                backlogVM.ReapplyFilter();
+                _backlogVM.ReapplyFilter();
             }
             catch(System.Exception ex)
             {

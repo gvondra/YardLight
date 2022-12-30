@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using YardLight.Client.Board.ViewModels;
+using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface.Models;
 using YardLight.Interface;
 
-namespace YardLight.Client.Board.Behaviors
+namespace YardLight.Client.Backlog.Behaviors
 {
     public class BoardVMLoader
     {
@@ -25,7 +25,7 @@ namespace YardLight.Client.Board.Behaviors
             _boardVM.BusyVisibility = Visibility.Visible;
             UserSession userSession = UserSessionLoader.GetUserSession();
             Task.Run(() => LoadProject(userSession.OpenProjectId.Value))
-                .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());                        
+                .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private Task<List<string>> LoadItterations(Guid? projectId)
@@ -83,9 +83,9 @@ namespace YardLight.Client.Board.Behaviors
                     workItemFilterVM.WorkItemType = null;
                 if (workItemFilterVM.WorkItemType == null && workItemFilterVM.WorkItemTypes.Count > 0)
                     workItemFilterVM.WorkItemType = workItemFilterVM.WorkItemTypes[0];
-                                
+
                 UserSession userSession = UserSessionLoader.GetUserSession();
-                _ =Task.Run(() => LoadTeams(userSession.OpenProjectId))
+                _ = Task.Run(() => LoadTeams(userSession.OpenProjectId))
                     .ContinueWith(LoadTeamsCallback, state, TaskScheduler.FromCurrentSynchronizationContext());
             }
             catch (System.Exception ex)
