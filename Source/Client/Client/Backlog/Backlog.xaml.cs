@@ -40,7 +40,7 @@ namespace YardLight.Client.Backlog
             {
                 _backlogVMLoader = null;
                 BacklogVM = new BacklogVM();
-                BacklogVM.AddBehavior(new WorkItemFilter(BacklogVM));
+                BacklogVM.AddBehavior(new BacklogWorkItemFilter(BacklogVM));
                 DataContext = BacklogVM;
                 _backlogVMLoader = null;
             }

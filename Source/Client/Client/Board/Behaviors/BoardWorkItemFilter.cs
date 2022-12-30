@@ -11,12 +11,12 @@ using YardLight.Interface.Models;
 
 namespace YardLight.Client.Board.Behaviors
 {
-    public class WorkItemFilter
+    public class BoardWorkItemFilter
     {
         private readonly BoardVM _boardVM;
         private WorkItemFilterVM _workItemFilterVM;
 
-        public WorkItemFilter(BoardVM boardVM)
+        public BoardWorkItemFilter(BoardVM boardVM)
         {
             _boardVM = boardVM;
             SetWorkItemFilterVM(boardVM.Filter);

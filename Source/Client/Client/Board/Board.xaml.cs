@@ -53,7 +53,7 @@ namespace YardLight.Client.Board
             if (BoardVM == null || DataContext == null)
             {
                 BoardVM = new BoardVM();
-                BoardVM.AddBehavior(new WorkItemFilter(BoardVM));
+                BoardVM.AddBehavior(new BoardWorkItemFilter(BoardVM));
                 BoardVM.AddBehavior(new BoardLayout(BoardVM));
                 DataContext = BoardVM;
             }

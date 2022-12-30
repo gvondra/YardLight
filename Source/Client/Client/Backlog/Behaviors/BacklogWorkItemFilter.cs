@@ -10,11 +10,11 @@ using YardLight.Interface.Models;
 
 namespace YardLight.Client.Backlog.Behaviors
 {
-    public class WorkItemFilter
+    public class BacklogWorkItemFilter
     {
         private readonly BacklogVM _backlogVM;
         
-        public WorkItemFilter(BacklogVM backlogVM)
+        public BacklogWorkItemFilter(BacklogVM backlogVM)
         {
             _backlogVM = backlogVM;
             ApplyFilter();

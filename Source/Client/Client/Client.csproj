@@ -196,7 +196,7 @@
     <Compile Include="Backlog\Behaviors\CreateWorkItemValidator.cs" />
     <Compile Include="Backlog\Behaviors\LoadWorkItemCommentCommand.cs" />
     <Compile Include="Backlog\Behaviors\RefreshBackLogCommand.cs" />
-    <Compile Include="Backlog\Behaviors\WorkItemFilter.cs" />
+    <Compile Include="Backlog\Behaviors\BacklogWorkItemFilter.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemValidator.cs" />
     <Compile Include="Backlog\Controls\AddWorkItem.xaml.cs">
@@ -221,7 +221,7 @@
     <Compile Include="Behaviors\CreateProjectValidator.cs" />
     <Compile Include="Board\Behaviors\BoardLayout.cs" />
     <Compile Include="Board\Behaviors\BoardVMLoader.cs" />
-    <Compile Include="Board\Behaviors\WorkItemFilter.cs" />
+    <Compile Include="Board\Behaviors\BoardWorkItemFilter.cs" />
     <Compile Include="Board\Board.xaml.cs">
       <DependentUpon>Board.xaml</DependentUpon>
     </Compile>

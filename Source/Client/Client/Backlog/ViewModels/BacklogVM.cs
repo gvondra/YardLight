@@ -111,9 +111,9 @@ namespace YardLight.Client.Backlog.ViewModels
 
         public void ReapplyFilter()
         {
-            WorkItemFilter workItemFilter = this._behaviors
-                .Where(b => b.GetType().Equals(typeof(WorkItemFilter)))
-                .Select(b => (WorkItemFilter)b)
+            BacklogWorkItemFilter workItemFilter = this._behaviors
+                .Where(b => b.GetType().Equals(typeof(BacklogWorkItemFilter)))
+                .Select(b => (BacklogWorkItemFilter)b)
                 .FirstOrDefault();
             if (workItemFilter != null) 
                 workItemFilter.ApplyFilter();
