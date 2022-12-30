@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface.Models;
 
@@ -72,7 +73,7 @@ namespace YardLight.Client.Backlog.Behaviors
                                 WorkItemStatusId = group.Key,
                                 ParentWorkItemId = workItemVM.WorkItemId.Value
                             });
-                            AddPropertyChangeHandlers(group);
+                            AddPropertyChangeHandlers_SetStatusVisibility(group);
                         }
                     }
                 }
@@ -80,10 +81,11 @@ namespace YardLight.Client.Backlog.Behaviors
             }
         }
 
-        private void AddPropertyChangeHandlers(IEnumerable<WorkItemVM> workItemVMs)
+        private void AddPropertyChangeHandlers_SetStatusVisibility(IEnumerable<WorkItemVM> workItemVMs)
         {
             foreach (WorkItemVM workItemVM in workItemVMs)
             {
+                workItemVM.StatusVisibility = Visibility.Collapsed;
                 workItemVM.PropertyChanged += WorkItemVM_PropertyChanged;
             }
         }

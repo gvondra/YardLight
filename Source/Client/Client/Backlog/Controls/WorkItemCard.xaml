@@ -21,8 +21,15 @@
     <Border Margin="2" BorderThickness="1" BorderBrush="DarkGray">
         <Border Padding="2" BorderThickness="2" BorderBrush="{Binding ColorCode}">
             <Grid>
-                <Label>
-                    <TextBlock Text="{Binding Title}"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0">
+                    <TextBlock Text="{Binding Title}"/>                    
+                </Label>
+                <Label Grid.Row="1" Visibility="{Binding StatusVisibility}">
+                    <TextBlock Text="{Binding StatusTitle}"/>
                 </Label>
             </Grid>
         </Border>
