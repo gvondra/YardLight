@@ -6,6 +6,11 @@
              xmlns:local="clr-namespace:YardLight.Client.Backlog.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Edit" Command="{Binding WorkItemEditCommand}" CommandParameter="{Binding RelativeSource={x:Static RelativeSource.Self}}"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
     <Border Margin="2" BorderThickness="1" BorderBrush="DarkGray">
         <Border Padding="2" BorderThickness="2" BorderBrush="{Binding ColorCode}">
             <Grid>

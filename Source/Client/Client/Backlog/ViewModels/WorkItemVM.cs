@@ -28,6 +28,7 @@ namespace YardLight.Client.Backlog.ViewModels
         private bool _isExpanded = true;
         private int _rowIndex = 0;
         private int _columnIndex = 0;
+        private WorkItemEditCommand _workItemEditCommand;
 
         public WorkItemVM(WorkItem innerWorkItem)
         {
@@ -52,6 +53,19 @@ namespace YardLight.Client.Backlog.ViewModels
         public ObservableCollection<CommentVM> Comments => _comments;
         public ObservableCollection<WorkItemVM> FilteredChildren => _filteredChildren;
         public Guid? ProjectId => _innerWorkItem.ProjectId;
+
+        public WorkItemEditCommand WorkItemEditCommand
+        {
+            get => _workItemEditCommand;
+            set
+            {
+                if (_workItemEditCommand != value)
+                {
+                    _workItemEditCommand = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public bool IsExpanded
         {

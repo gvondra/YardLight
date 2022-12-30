@@ -29,7 +29,7 @@ namespace YardLight.Client.Backlog.Behaviors
             }
         }
 
-        private void Layout()
+        public void Layout()
         {
             if (_board.WorkItems != null && _board.WorkItems.Count > 0)
             {

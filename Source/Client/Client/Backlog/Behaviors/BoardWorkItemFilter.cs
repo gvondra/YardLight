@@ -70,7 +70,7 @@ namespace YardLight.Client.Backlog.Behaviors
                         .Select(i => new WorkItemVM(i))
                         .ToList();
                     foreach (WorkItemVM item in result)
-                    {
+                    {                        
                         item.Children = new ReadOnlyCollection<WorkItemVM>(
                             (await workItemService.GetByParentIds(settings, project.ProjectId, item.InnerWorkItem.WorkItemId.Value))
                             .Select(i => new WorkItemVM(i)).ToList()
@@ -85,8 +85,25 @@ namespace YardLight.Client.Backlog.Behaviors
         {
             try
             {
+                List<WorkItemVM> workItems = await loadWorkItems;
+                WorkItemLoader workItemLoader;
+                foreach (WorkItemVM item in workItems)
+                {
+                    workItemLoader = new WorkItemLoader(item);
+                    item.AddBehavior(workItemLoader);
+                    workItemLoader.Load();
+                    if (item.Children != null)
+                    {
+                        foreach (WorkItemVM child in item.Children)
+                        {
+                            workItemLoader = new WorkItemLoader(child);
+                            item.AddBehavior(workItemLoader);
+                            workItemLoader.Load();
+                        }
+                    }
+                }
                 _boardVM.WorkItems = new ReadOnlyCollection<WorkItemVM>(
-                    (await loadWorkItems)
+                    (workItems)
                     );
             }
             catch (System.Exception ex)

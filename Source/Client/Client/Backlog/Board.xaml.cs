@@ -57,6 +57,12 @@ namespace YardLight.Client.Backlog
                 BoardVM.AddBehavior(new BoardLayout(BoardVM));
                 DataContext = BoardVM;
             }
+            else
+            {
+                BoardLayout boardLayout = BoardVM.GetBehavior<BoardLayout>();
+                if (boardLayout != null)
+                    boardLayout.Layout();
+            }
             GoogleLogin.ShowLoginDialog(owner: Window.GetWindow(this));
             if (_boardVMLoader == null)
             {

@@ -38,7 +38,13 @@ namespace YardLight.Client
         public bool ContainsBehavior<T>()
         {
             List<object> behaviors = _behaviors ?? new List<object>();
-            return behaviors.Any(b => b.GetType().Equals(typeof(T)));  
+            return behaviors.Any(b => b.GetType().Equals(typeof(T)));
+        }
+
+        public T GetBehavior<T>()
+        {
+            List<object> behaviors = _behaviors ?? new List<object>();
+            return behaviors.Where(b => b.GetType().Equals(typeof(T))).Select<object, T>(b => (T)b).FirstOrDefault();
         }
 
         public void AddBehavior(object behavior) => _behaviors.Add(behavior);

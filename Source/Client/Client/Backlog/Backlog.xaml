@@ -23,7 +23,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0">
                     <TextBlock Foreground="{Binding BulletColor}" FontSize="16">•</TextBlock>
-                    <Hyperlink Click="Hyperlink_Click" Foreground="Black">
+                    <Hyperlink Command="{Binding WorkItemEditCommand}" CommandParameter="{Binding RelativeSource={x:Static RelativeSource.Self}}" Foreground="Black">
                         <TextBlock Text="{Binding Title}" FontSize="14"/>
                     </Hyperlink>
                     <TextBlock Text="{Binding StatusTitle}"/>

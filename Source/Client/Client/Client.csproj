@@ -200,6 +200,7 @@
     <Compile Include="Backlog\Behaviors\LoadWorkItemCommentCommand.cs" />
     <Compile Include="Backlog\Behaviors\RefreshBackLogCommand.cs" />
     <Compile Include="Backlog\Behaviors\BacklogWorkItemFilter.cs" />
+    <Compile Include="Backlog\Behaviors\WorkItemEditCommand.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemLoader.cs" />
     <Compile Include="Backlog\Behaviors\WorkItemValidator.cs" />
     <Compile Include="Backlog\Board.xaml.cs">

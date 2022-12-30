@@ -48,6 +48,8 @@ namespace YardLight.Client.Backlog.Behaviors
                 _workItemVM.LoadWorkItemCommentCommand = new LoadWorkItemCommentCommand(this);
             if (_workItemVM.CreateWorkIemCommentCommand == null)
                 _workItemVM.CreateWorkIemCommentCommand = new CreateWorkIemCommentCommand();
+            if (_workItemVM.WorkItemEditCommand == null)
+                _workItemVM.WorkItemEditCommand = new WorkItemEditCommand();
 
         }
 
