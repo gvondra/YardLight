@@ -18,10 +18,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Column="0" Grid.Row="0">Title:</TextBlock>
+        <Label Grid.Column="0" Grid.Row="0">Title:</Label>
         <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxWithError}" Text="{Binding Title, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
-        <TextBlock Grid.Column="0" Grid.Row="1">Color Code:</TextBlock>
+        <Label Grid.Column="0" Grid.Row="1">Color Code:</Label>
         <ComboBox Grid.Column="1" Grid.Row="1" SelectedItem="{Binding ColorCode}" ItemsSource="{Binding Brushes}" IsEditable="False">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
@@ -32,21 +33,27 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <TextBlock Grid.Column="0" Grid.Row="2">Order:</TextBlock>
+        <Label Grid.Column="0" Grid.Row="2">Order:</Label>
         <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Order}" MaxLength="3"/>
-        <TextBlock Grid.Column="0" Grid.Row="3">Is Active:</TextBlock>
+        <Label Grid.Column="0" Grid.Row="3">Is Active:</Label>
         <CheckBox Grid.Column="1" Grid.Row="3" IsChecked="{Binding IsActive}"/>
-        <TextBlock Grid.Column="0" Grid.Row="4">Created:</TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="4">
-            <TextBlock Text="{Binding CreateTimestamp, StringFormat='yyyy-MM-dd HH:mm', Mode=OneWay}" /> 
-            by
-            <TextBlock Text="{Binding CreateUserName}" />
-        </TextBlock>        
-        <TextBlock Grid.Column="0" Grid.Row="5">Updated:</TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="5">
-            <TextBlock Text="{Binding UpdateTimestamp, StringFormat='yyyy-MM-dd HH:mm', Mode=OneWay}" />
-            by
-            <TextBlock Text="{Binding UpdateUserName}" />
-        </TextBlock>
+        <Label Grid.Column="0" Grid.Row="4">Default Hidden:</Label>
+        <CheckBox Grid.Column="1" Grid.Row="4" IsChecked="{Binding IsDefaultHidden}"/>
+        <Label Grid.Column="0" Grid.Row="5">Created:</Label>
+        <Label Grid.Column="1" Grid.Row="5">
+            <TextBlock>
+                <TextBlock Text="{Binding CreateTimestamp, StringFormat='yyyy-MM-dd HH:mm', Mode=OneWay}" /> 
+                by
+                <TextBlock Text="{Binding CreateUserName}" />
+            </TextBlock>
+        </Label>
+        <Label Grid.Column="0" Grid.Row="6">Updated:</Label>
+        <Label Grid.Column="1" Grid.Row="6">
+            <TextBlock>
+                <TextBlock Text="{Binding UpdateTimestamp, StringFormat='yyyy-MM-dd HH:mm', Mode=OneWay}" />
+                by
+                <TextBlock Text="{Binding UpdateUserName}" />
+            </TextBlock>
+        </Label>
     </Grid>
 </UserControl>

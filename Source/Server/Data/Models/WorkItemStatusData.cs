@@ -16,7 +16,8 @@ namespace YardLight.Data.Models
         [ColumnMapping()] public string ColorCode { get; set; } = "black";
         [ColumnMapping()] public short Order { get; set; } = 0;
         [ColumnMapping()] public bool IsActive { get; set; } = true;
-	    [ColumnMapping(IsUtc = true)] public DateTime CreateTimestamp { get; set; }
+        [ColumnMapping()] public bool IsDefaultHidden { get; set; } = false;
+        [ColumnMapping(IsUtc = true)] public DateTime CreateTimestamp { get; set; }
         [ColumnMapping(IsUtc = true)] public DateTime UpdateTimestamp { get; set; }
         [ColumnMapping()] public Guid CreateUserId { get; set; }
         [ColumnMapping()] public Guid UpdateUserId { get; set; }

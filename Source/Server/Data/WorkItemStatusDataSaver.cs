@@ -85,6 +85,7 @@ namespace YardLight.Data
             DataUtil.AddParameter(_providerFactory, parameters, "colorCode", DbType.String, DataUtil.GetParameterValue(data.ColorCode));
             DataUtil.AddParameter(_providerFactory, parameters, "order", DbType.Int16, DataUtil.GetParameterValue(data.Order));
             DataUtil.AddParameter(_providerFactory, parameters, "isActive", DbType.Boolean, DataUtil.GetParameterValue(data.IsActive));
+            DataUtil.AddParameter(_providerFactory, parameters, "isDefaultHidden", DbType.Boolean, DataUtil.GetParameterValue(data.IsDefaultHidden));
         }
     }
 }

@@ -37,12 +37,12 @@ namespace YardLight.Client.Backlog.Behaviors
                 List<object> allItems = new List<object>();
                 int i = 0;
                 WorkItemType type = _board.WorkItems.SelectMany(itm => itm.Children).FirstOrDefault()?.InnerWorkItem?.Type;
-                _board.ColumnCount = type?.Statuses?.Count ?? 0;
+                _board.ColumnCount = type?.Statuses?.Where(s => !(s.IsDefaultHidden ?? false))?.Count() ?? 0;
                 Dictionary<Guid, int> columnIndexLookup = new Dictionary<Guid, int>();
                 if (type?.Statuses != null)
                 {
                     int column = 0;
-                    foreach (WorkItemStatus status in type.Statuses)
+                    foreach (WorkItemStatus status in type.Statuses.Where(s => !(s.IsDefaultHidden ?? false)))
                     {
                         column += 1;
                         allItems.Add(new BoardColumnHeaderVM()
@@ -65,15 +65,18 @@ namespace YardLight.Client.Backlog.Behaviors
                     {
                         foreach (IGrouping<Guid, WorkItemVM> group in workItemVM.Children.GroupBy(itm => itm.InnerWorkItem.Status.WorkItemStatusId.Value))
                         {
-                            allItems.Add(new WorkItemChildrenVM()
+                            if (columnIndexLookup.ContainsKey(group.Key))
                             {
-                                Children = new ReadOnlyCollection<WorkItemVM>(group.ToList()),
-                                RowIndex = i,
-                                ColumnIndex = columnIndexLookup[group.Key],
-                                WorkItemStatusId = group.Key,
-                                ParentWorkItemId = workItemVM.WorkItemId.Value
-                            });
-                            AddPropertyChangeHandlers_SetStatusVisibility(group);
+                                allItems.Add(new WorkItemChildrenVM()
+                                {
+                                    Children = new ReadOnlyCollection<WorkItemVM>(group.ToList()),
+                                    RowIndex = i,
+                                    ColumnIndex = columnIndexLookup[group.Key],
+                                    WorkItemStatusId = group.Key,
+                                    ParentWorkItemId = workItemVM.WorkItemId.Value
+                                });
+                                AddPropertyChangeHandlers_SetStatusVisibility(group);
+                            }
                         }
                     }
                 }
@@ -132,20 +135,24 @@ namespace YardLight.Client.Backlog.Behaviors
 
         private void AddChild(WorkItemVM childWorkItemVM)
         {
-            WorkItemChildrenVM[] workItemChildrenVMs = new WorkItemChildrenVM[]
+            int? columnIndex = FindStatusColumnIndex(childWorkItemVM.Status.WorkItemStatusId);
+            if (columnIndex.HasValue)
             {
+                WorkItemChildrenVM[] workItemChildrenVMs = new WorkItemChildrenVM[]
+                {
                 new WorkItemChildrenVM
                 {
                 Children = new ReadOnlyCollection<WorkItemVM>(new WorkItemVM[] { childWorkItemVM }),
                 RowIndex = FindParentRowIndex(childWorkItemVM.ParentWorkItemId.Value),
-                ColumnIndex = FindStatusColumnIndex(childWorkItemVM.Status.WorkItemStatusId),
+                ColumnIndex = columnIndex.Value,
                 WorkItemStatusId = childWorkItemVM.Status.WorkItemStatusId,
                 ParentWorkItemId = childWorkItemVM.ParentWorkItemId.Value
              }
-            };
-            _board.AllBoardItems = new ReadOnlyCollection<object>(
-                _board.AllBoardItems.Concat(workItemChildrenVMs).ToList()
-                );
+                };
+                _board.AllBoardItems = new ReadOnlyCollection<object>(
+                    _board.AllBoardItems.Concat(workItemChildrenVMs).ToList()
+                    );
+            }
         }
 
         private int FindParentRowIndex(Guid workItemId)
@@ -157,13 +164,12 @@ namespace YardLight.Client.Backlog.Behaviors
                 .RowIndex;
         }
 
-        private int FindStatusColumnIndex(Guid statusId)
+        private int? FindStatusColumnIndex(Guid statusId)
         {
             return _board.AllBoardItems
                 .Where(i => i.GetType().Equals(typeof(BoardColumnHeaderVM)))
                 .Select(i => (BoardColumnHeaderVM)i)
-                .FirstOrDefault(i => i.Id.Equals(statusId))
-                .ColumnIndex;
+                .FirstOrDefault(i => i.Id.Equals(statusId))?.ColumnIndex;
         }
     }
 }

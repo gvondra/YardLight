@@ -83,9 +83,12 @@ namespace YardLight.Client.Backlog
         private static void SetGridColumnDefinitions(DependencyObject target, DependencyPropertyChangedEventArgs args)
         {
             Grid grid = (Grid)target;
+            int newCount = (int)args.NewValue;
+            if (newCount < grid.ColumnDefinitions.Count)
+                grid.ColumnDefinitions.Clear();
             if (grid.ColumnDefinitions.Count == 0)
                 grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            for (int i = grid.ColumnDefinitions.Count; i <= (int)args.NewValue; i += 1)
+            for (int i = grid.ColumnDefinitions.Count; i <= newCount; i += 1)
             {
                 grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
             }

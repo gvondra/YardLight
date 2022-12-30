@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using YardLight.CommonCore;
 
@@ -17,6 +13,7 @@ namespace YardLight.Framework
         string ColorCode { get; set; }
         short Order { get; set; }
         bool IsActive { get; set; }
+        bool IsDefaultHidden { get; set; }
         DateTime CreateTimestamp { get; }
         DateTime UpdateTimestamp { get; }
         Guid CreateUserId { get; }

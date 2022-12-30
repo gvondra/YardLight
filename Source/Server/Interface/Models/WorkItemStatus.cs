@@ -15,6 +15,7 @@ namespace YardLight.Interface.Models
         public string ColorCode { get; set; }
         public short? Order { get; set; }
         public bool? IsActive { get; set; } = true;
+        public bool? IsDefaultHidden { get; set; } = false;
         public DateTime? CreateTimestamp { get; set; }
         public DateTime? UpdateTimestamp { get; set; }
         public Guid? CreateUserId { get; set; }

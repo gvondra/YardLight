@@ -47,6 +47,8 @@ namespace YardLight.Core
 
         public Guid UpdateUserId => _data.UpdateUserId;
 
+        public bool IsDefaultHidden { get => _data.IsDefaultHidden; set => _data.IsDefaultHidden = value; }
+
         public async Task Create(ITransactionHandler transactionHandler, Guid userId)
         {
             WorkItemTypeId = _parentType.WorkItemTypeId;

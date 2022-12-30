@@ -2,7 +2,7 @@
 	@workItemTypeId UNIQUEIDENTIFIER,
 	@isActive BIT = null
 AS
-SELECT [WorkItemStatusId],[WorkItemTypeId],[ProjectId],[Title],[ColorCode],[Order],[IsActive],
+SELECT [WorkItemStatusId],[WorkItemTypeId],[ProjectId],[Title],[ColorCode],[Order],[IsActive],[IsDefaultHidden],
 	[CreateTimestamp],[UpdateTimestamp],[CreateUserId],[UpdateUserId]
 FROM [yl].[WorkItemStatus]
 WHERE [WorkItemTypeId] = @workItemTypeId

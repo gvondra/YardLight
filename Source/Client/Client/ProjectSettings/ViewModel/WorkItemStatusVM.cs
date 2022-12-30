@@ -120,6 +120,19 @@ namespace YardLight.Client.ProjectSettings.ViewModel
             }
         }
 
+        public bool IsDefaultHidden
+        {
+            get => _workItemStatus.IsDefaultHidden ?? false;
+            set
+            {
+                if (_workItemStatus.IsDefaultHidden != value)
+                {
+                    _workItemStatus.IsDefaultHidden = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public string CreateUserName
         {
             get => _createUserName;

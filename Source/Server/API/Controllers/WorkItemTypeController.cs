@@ -65,7 +65,7 @@ namespace API.Controllers
                             result.Statuses = (s ?? new List<IWorkItemStatus>()).Select(x => mapper.Map<WorkItemStatus>(x)).ToList();    
                             return result;
                         })
-                        ;
+                        .ToList();
                     
                     result = Ok(types);
                 }
