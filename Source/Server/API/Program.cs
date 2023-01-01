@@ -1,8 +1,10 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using BrassLoon.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -20,6 +22,26 @@ namespace API
 
             // Add services to the container.
             builder.Services.Configure<Settings>(builder.Configuration);
+            
+            builder.Services.AddLogging(b =>
+            {
+                Settings settings = new Settings();
+                builder.Configuration.Bind(settings);
+                if (settings.LogDomainId.HasValue && !string.IsNullOrEmpty(settings.BrassLoonLogApiBaseAddress) && settings.BrassLoonLogClientId.HasValue)
+                {
+                    b.AddBrassLoonLogger(c =>
+                    {
+                        Settings settings = new Settings();
+                        builder.Configuration.Bind(settings);
+                        c.AccountApiBaseAddress = settings.BrassLoonAccountApiBaseAddress;
+                        c.LogApiBaseAddress = settings.BrassLoonLogApiBaseAddress;
+                        c.LogDomainId = settings.LogDomainId.Value;
+                        c.LogClientId = settings.BrassLoonLogClientId.Value;
+                        c.LogClientSecret = settings.BrassLoonLogClientSecret;
+                    });
+                }
+            });            
+            
             builder.Services.AddControllers()
             .AddJsonOptions(o =>
             {
