@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using YardLight.CommonAPI;
 using YardLight.Interface.Models;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
-using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
 {
@@ -22,11 +23,10 @@ namespace API.Controllers
         public RoleController(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
-            Log.IMetricService metricService,
-            Log.IExceptionService exceptionService,
             AuthorizationAPI.IUserService userService,
-            AuthorizationAPI.IRoleService roleService
-            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
+            AuthorizationAPI.IRoleService roleService,
+            ILogger<RoleController> logger
+            ) : base(settings, settingsFactory, userService, logger)
         {
             _roleService = roleService;
         }
@@ -34,8 +34,9 @@ namespace API.Controllers
         [HttpGet()]
         [Authorize(Constants.POLICY_ROLE_EDIT)]
         [ProducesResponseType(typeof(List<Role>), 200)]
-        public async Task<IActionResult> GetByDomainId()
+        public async Task<IActionResult> Search()
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -51,8 +52,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                await WriteMetrics("search-roles", start, result);
             }
             return result;
         }
@@ -82,6 +87,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(Role), 200)]
         public async Task<IActionResult> Create([FromBody] Role role)
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -100,8 +106,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                await WriteMetrics("create-role", start, result);
             }
             return result;
         }
@@ -111,6 +121,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(Role), 200)]
         public async Task<IActionResult> Update([FromRoute] Guid? id, [FromBody] Role role)
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -131,8 +142,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                await WriteMetrics("update-role", start, result, new Dictionary<string, string> { { nameof(id), id?.ToString() ?? string.Empty } });
             }
             return result;
         }

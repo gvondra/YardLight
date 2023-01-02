@@ -1,13 +1,12 @@
-﻿using BrassLoon.Interface.Authorization.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 using YardLight.CommonAPI;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
-using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
 {
@@ -19,11 +18,10 @@ namespace API.Controllers
         public TokenController(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
-            Log.IMetricService metricService,
-            Log.IExceptionService exceptionService,
             AuthorizationAPI.IUserService userService,
-            AuthorizationAPI.ITokenService tokenService
-            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
+            AuthorizationAPI.ITokenService tokenService,
+            ILogger<TokenController> logger
+            ) : base(settings, settingsFactory, userService, logger)
         {
             _tokenService = tokenService;
         }
@@ -32,6 +30,7 @@ namespace API.Controllers
         [Authorize(Constants.POLICY_TOKEN_CREATE)]
         public async Task<IActionResult> Create()
         {
+            DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
@@ -44,8 +43,12 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            }
+            finally
+            {
+                await WriteMetrics("create-token", start, result);
             }
             return result;
         }

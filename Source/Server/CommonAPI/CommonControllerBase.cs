@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BrassLoon.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Polly;
 using Polly.Caching;
@@ -18,21 +20,15 @@ namespace YardLight.CommonAPI
     public abstract class CommonControllerBase : Controller
     {
         private readonly static Polly.Policy _currentUserCache = Polly.Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), new SlidingTtl(TimeSpan.FromMinutes(3)));
-        private readonly LogAPI.IMetricService _metricService;
-        private readonly LogAPI.IExceptionService _exceptionService;
         private readonly AuthorizationAPI.IUserService _userService;
+        private readonly ILogger _logger;
 
-        protected CommonControllerBase(LogAPI.IMetricService metricService,
-            LogAPI.IExceptionService exceptionService) : this(metricService, exceptionService, null)
-        {}
-
-        protected CommonControllerBase(LogAPI.IMetricService metricService,
-            LogAPI.IExceptionService exceptionService,
-            AuthorizationAPI.IUserService userService)
+        protected CommonControllerBase(
+            AuthorizationAPI.IUserService userService,
+            ILogger logger)
         {
-            _metricService = metricService;
-            _exceptionService = exceptionService;
             _userService = userService; 
+            _logger = logger;
         }
 
         protected string GetCurrentUserReferenceId() 
@@ -89,33 +85,51 @@ namespace YardLight.CommonAPI
             return token;
         }
 
-        protected Task WriteMetrics(LogAPI.ISettings settings, Guid domainId, string eventCode, double? magnitude, Dictionary<string, string> data = null)
-            => WriteMetrics(settings, domainId, eventCode, magnitude, userId: null, data: data);
-
-        protected async Task WriteMetrics(LogAPI.ISettings logSettings, 
+        protected async Task WriteMetrics(
             AuthorizationAPI.ISettings authSettings, 
             Guid authorizationDomainId,
-            Guid loggingDomainId,
             string eventCode, 
-            double? magnitude, 
+            double? magnitude = null,
+            IActionResult actionResult = null,
             Dictionary<string, string> data = null)
         {
             try
             {
-                await WriteMetrics(logSettings, loggingDomainId, eventCode, magnitude, userId: await GetCurrentUserId(authSettings, authorizationDomainId), data: data);
+                WriteMetrics(eventCode, 
+                    magnitude: magnitude, 
+                    userId: await GetCurrentUserId(authSettings, authorizationDomainId), 
+                    actionResult: actionResult,
+                    data: data
+                    );
             }
             catch (Exception ex)
             {
-                await WriteException(logSettings, loggingDomainId, ex);
+                WriteException(ex);
             }
         }
 
-        protected async Task WriteMetrics(LogAPI.ISettings settings, Guid domainId, string eventCode, double? magnitude, Guid? userId, Dictionary<string, string> data)
+        protected void WriteMetrics(
+            string eventCode, 
+            double? magnitude = null, 
+            Guid? userId = null, 
+            IActionResult actionResult = null,
+            Dictionary<string, string> data = null)
         {
             string status = string.Empty;
+            if (actionResult != null)
+            {
+                if (typeof(ObjectResult).IsAssignableFrom(actionResult.GetType()))
+                {
+                    status = ((ObjectResult)actionResult).StatusCode.ToString();
+                }
+                else if (typeof(StatusCodeResult).IsAssignableFrom(actionResult.GetType()))
+                {
+                    status = ((StatusCodeResult)actionResult).StatusCode.ToString();
+                }
+            }
             try
             {
-                if (Response != null)
+                if (string.IsNullOrEmpty(status) && Response != null)
                     status = ((int)Response.StatusCode).ToString();
             }
             catch (Exception ex)
@@ -124,23 +138,31 @@ namespace YardLight.CommonAPI
             }
             try
             {
-                await _metricService.Create(settings, domainId, eventCode, magnitude ?? 0.0, status, userId?.ToString("N"), data);
+                Metric metric = new Metric
+                {
+                    Data = data,
+                    EventCode = eventCode,
+                    Magnitude = magnitude ?? 0.0,
+                    Requestor = userId?.ToString("N"),
+                    Status = status
+                };
+                _logger.LogMetric(metric);
             }
             catch (Exception ex)
             {
-                await WriteException(settings, domainId, ex);
+                WriteException(ex);
             }
         }
 
-        protected async Task WriteException(LogAPI.ISettings settings, Guid domainId, Exception exception)
+        protected virtual void WriteException(Exception exception)
         {
             try
             {
-                await _exceptionService.Create(settings, domainId, exception);
+                _logger.LogError(exception, exception.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
             }
         }
     }

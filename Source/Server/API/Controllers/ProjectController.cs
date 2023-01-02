@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ using YardLight.CommonCore;
 using YardLight.Framework;
 using YardLight.Interface.Models;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
-using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
 {
@@ -25,12 +25,11 @@ namespace API.Controllers
         public ProjectController(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
-            Log.IMetricService metricService,
-            Log.IExceptionService exceptionService,
             AuthorizationAPI.IUserService userService,
             IProjectFactory projectFactory,
-            IProjectSaver projectSaver
-            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
+            IProjectSaver projectSaver,
+            ILogger<ProjectController> logger
+            ) : base(settings, settingsFactory, userService, logger)
         {
             _projectFactory = projectFactory;
             _projectSaver = projectSaver;
@@ -59,12 +58,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("search-project", DateTime.UtcNow.Subtract(start).TotalSeconds);
+                await WriteMetrics("search-project", start, result);
             }
             return result;
         }
@@ -100,12 +99,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("get-project", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { nameof(id), id?.ToString("D") } });
+                await WriteMetrics("get-project", start, result, new Dictionary<string, string> { { nameof(id), id?.ToString("D") } });
             }
             return result;
         }
@@ -140,12 +139,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("create-project", DateTime.UtcNow.Subtract(start).TotalSeconds);
+                await WriteMetrics("create-project", start, result);
             }
             return result;
         }
@@ -187,12 +186,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("update-project", DateTime.UtcNow.Subtract(start).TotalSeconds);
+                await WriteMetrics("update-project", start, result);
             }
             return result;
         }

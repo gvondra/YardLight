@@ -1,10 +1,13 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 using YardLight.CommonAPI;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
+
 namespace API
 {
     public abstract class APIControllerBase : CommonControllerBase
@@ -15,33 +18,42 @@ namespace API
         public APIControllerBase(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
-            Log.IMetricService metricService, 
-            Log.IExceptionService exceptionService,
-            AuthorizationAPI.IUserService userService
-            ) : base(metricService, exceptionService, userService)
+            AuthorizationAPI.IUserService userService,
+            ILogger logger
+            ) : base(userService, logger)
         { 
             _settingsFactory = settingsFactory;
             _settings = settings;
         }
 
-        protected async Task WriteMetrics(string eventCode, double? magnitude, Dictionary<string, string> data = null)
+        protected async Task WriteMetrics(string eventCode, double? magnitude, IActionResult actionResult = null, Dictionary<string, string> data = null)
         {
             if (!string.IsNullOrEmpty(_settings.Value.BrassLoonLogApiBaseAddress))
-                await base.WriteMetrics(
-                    _settingsFactory.CreateLog(_settings.Value),                     
+                await base.WriteMetrics(                
                     _settingsFactory.CreateAuthorization(_settings.Value),
                     _settings.Value.AuthorizationDomainId.Value,
-                    _settings.Value.LogDomainId.Value,
                     eventCode, 
-                    magnitude,
-                    data
+                    magnitude: magnitude,
+                    actionResult: actionResult,
+                    data: data
                     );
         }
 
-        protected async Task WriteException(Exception exception)
+        protected Task WriteMetrics(string eventCode, DateTime? startTime, IActionResult actionResult = null, Dictionary<string, string> data = null)
+        {
+            double? magnitude = null;
+            if (startTime.HasValue)
+            {
+                startTime = startTime.Value.ToUniversalTime();
+                magnitude = DateTime.UtcNow.Subtract(startTime.Value).TotalSeconds;
+            }
+            return WriteMetrics(eventCode, magnitude, actionResult, data);
+        }
+
+        protected override void WriteException(Exception exception)
         {
             if (!string.IsNullOrEmpty(_settings.Value.BrassLoonLogApiBaseAddress))
-                await base.WriteException(_settingsFactory.CreateLog(_settings.Value), _settings.Value.LogDomainId.Value, exception);
+                base.WriteException(exception);
             else
                 Console.WriteLine(exception.ToString());
         }

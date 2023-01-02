@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ using System.Threading.Tasks;
 using YardLight.CommonAPI;
 using YardLight.Interface.Models;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
-using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
 {
@@ -23,10 +23,9 @@ namespace API.Controllers
         public UserController(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
-            Log.IMetricService metricService,
-            Log.IExceptionService exceptionService,
-            AuthorizationAPI.IUserService userService
-            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
+            AuthorizationAPI.IUserService userService,
+            ILogger<UserController> logger
+            ) : base(settings, settingsFactory, userService, logger)
         {
             _userService = userService;
         }
@@ -73,12 +72,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
             finally
             {
-                await WriteMetrics("search-users", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                await WriteMetrics("search-users", start, result,
                     new Dictionary<string, string>
                     {
                         { nameof(emailAddress), emailAddress ?? string.Empty }
@@ -117,12 +116,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
             finally
             {
-                await WriteMetrics("get-user", DateTime.UtcNow.Subtract(start).TotalSeconds);
+                await WriteMetrics("get-user", start, result);
             }
             return result;
         }
@@ -154,12 +153,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
             finally
             {
-                await WriteMetrics("get-user-name", DateTime.UtcNow.Subtract(start).TotalSeconds);
+                await WriteMetrics("get-user-name", start, result);
             }
             return result;
         }
@@ -190,12 +189,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
             }
             finally
             {
-                await WriteMetrics("update-user", DateTime.UtcNow.Subtract(start).TotalSeconds);
+                await WriteMetrics("update-user", start, result);
             }
             return result;
         }

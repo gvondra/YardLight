@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
 using Log = BrassLoon.Interface.Log;
 using Models = YardLight.Interface.Models;
@@ -22,10 +23,10 @@ namespace API.Controllers
         public ExceptionController(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
-            Log.IMetricService metricService,
             Log.IExceptionService exceptionService,
-            AuthorizationAPI.IUserService userService
-            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
+            AuthorizationAPI.IUserService userService,
+            ILogger<ExceptionController> logger
+            ) : base(settings, settingsFactory, userService, logger)
         {
             _exceptionService = exceptionService;
         }
@@ -53,12 +54,12 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("get-exceptions-search", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { nameof(maxTimestamp), maxTimestamp?.ToString("o") } });
+                await WriteMetrics("get-exceptions-search", start, result, new Dictionary<string, string> { { nameof(maxTimestamp), maxTimestamp?.ToString("o") } });
             }
             return result;
         }

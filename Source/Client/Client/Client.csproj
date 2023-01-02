@@ -68,8 +68,8 @@
     <Reference Include="Autofac, Version=6.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.6.5.0\lib\netstandard2.0\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="BrassLoon.RestClient, Version=3.1.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BrassLoon.RestClient.3.1.0-prerelease.1\lib\netstandard2.0\BrassLoon.RestClient.dll</HintPath>
+    <Reference Include="BrassLoon.RestClient, Version=3.1.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BrassLoon.RestClient.3.1.0\lib\netstandard2.0\BrassLoon.RestClient.dll</HintPath>
     </Reference>
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
@@ -166,8 +166,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.41, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.41\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.42, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.42\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

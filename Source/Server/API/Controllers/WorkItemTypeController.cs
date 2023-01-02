@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ using YardLight.CommonCore;
 using YardLight.Framework;
 using YardLight.Interface.Models;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
-using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
 {
@@ -28,14 +28,13 @@ namespace API.Controllers
         public WorkItemTypeController(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
-            Log.IMetricService metricService,
-            Log.IExceptionService exceptionService,
             AuthorizationAPI.IUserService userService,
             IProjectFactory projectFactory,
             IWorkItemStatusFactory statusFactory,
             IWorkItemTypeFactory typeFactory,
-            IWorkItemTypeSaver typeSaver
-            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
+            IWorkItemTypeSaver typeSaver,
+            ILogger<WorkItemTypeController> logger
+            ) : base(settings, settingsFactory, userService, logger)
         {
             _projectFactory = projectFactory;
             _statusFactory = statusFactory;
@@ -72,12 +71,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("get-project-types", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                await WriteMetrics("get-project-types", start, result,
                     new Dictionary<string, string>
                     {
                         { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty },
@@ -146,12 +145,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("create-project-type", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                await WriteMetrics("create-project-type", start, result,
                     new Dictionary<string, string>
                     {
                         { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty }
@@ -223,12 +222,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("update-project-type", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                await WriteMetrics("update-project-type", start, result,
                     new Dictionary<string, string>
                     {
                         { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty },

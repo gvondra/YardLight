@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using YardLight.Interface.Models;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
@@ -25,9 +25,9 @@ namespace API.Controllers
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
             Log.IMetricService metricService,
-            Log.IExceptionService exceptionService,
-            AuthorizationAPI.IUserService userService
-            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
+            AuthorizationAPI.IUserService userService,
+            ILogger<MetricController> logger
+            ) : base(settings, settingsFactory, userService, logger)
         { 
             _metricService = metricService;
             _userService = userService;
@@ -60,12 +60,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("get-metrics-search", DateTime.UtcNow.Subtract(start).TotalSeconds, new Dictionary<string, string> { { nameof(maxTimestamp), maxTimestamp?.ToString("o") } });
+                await WriteMetrics("get-metrics-search", start, result, new Dictionary<string, string> { { nameof(maxTimestamp), maxTimestamp?.ToString("o") } });
             }
             return result;
         }
@@ -116,12 +116,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("get-metric-event-codes", DateTime.UtcNow.Subtract(start).TotalSeconds);
+                await WriteMetrics("get-metric-event-codes", start, result);
             }
             return result;
         }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ using YardLight.Framework;
 using YardLight.Framework.Enumerations;
 using YardLight.Interface.Models;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
-using Log = BrassLoon.Interface.Log;
 
 namespace API.Controllers
 {
@@ -27,13 +27,12 @@ namespace API.Controllers
         public WorkItemCommentController(
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
-            Log.IMetricService metricService,
-            Log.IExceptionService exceptionService,
             AuthorizationAPI.IUserService userService,
             IProjectFactory projectFactory,
             IWorkItemFactory workItemFactory,
-            IWorkItemCommentSaver commentSaver
-            ) : base(settings, settingsFactory, metricService, exceptionService, userService)
+            IWorkItemCommentSaver commentSaver,
+            ILogger<WorkItemCommentController> logger
+            ) : base(settings, settingsFactory, userService, logger)
         {
             _projectFactory = projectFactory;
             _workItemFactory = workItemFactory;
@@ -82,12 +81,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("get-project-item-comments", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                await WriteMetrics("get-project-item-comments", start, result,
                     new Dictionary<string, string>
                     {
                         { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty },
@@ -144,12 +143,12 @@ namespace API.Controllers
             }
             catch (System.Exception ex)
             {
-                await WriteException(ex);
+                WriteException(ex);
                 result = StatusCode(StatusCodes.Status500InternalServerError);
             }
             finally
             {
-                await WriteMetrics("create-project-item-comment", DateTime.UtcNow.Subtract(start).TotalSeconds,
+                await WriteMetrics("create-project-item-comment", start, result,
                     new Dictionary<string, string>
                     {
                         { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty },
