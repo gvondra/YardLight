@@ -56,7 +56,7 @@ namespace API.Controllers
                 {
                     ISettings settings = _settingsFactory.CreateCore(_settings.Value);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
-                    IEnumerable<IWorkItemStatus> statuses = await _statusFactory.GetByProjectId(settings, projectId.Value);                        
+                    IEnumerable<IWorkItemStatus> statuses = await _statusFactory.GetByProjectId(settings, projectId.Value, skipCache: true);                        
                     IEnumerable<WorkItemType> types = (await _typeFactory.GetByProjectId(settings, projectId.Value, isActive))
                         .GroupJoin(statuses, t => t.WorkItemTypeId, s => s.WorkItemTypeId, (t, s) => 
                         {

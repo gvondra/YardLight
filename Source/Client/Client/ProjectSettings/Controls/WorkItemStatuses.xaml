@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
-        <TextBlock DockPanel.Dock="Top" FontSize="16">Work Item Status</TextBlock>
+        <Label DockPanel.Dock="Top" FontSize="16">Work Item Statuses</Label>
         <Border DockPanel.Dock="Left" BorderBrush="DarkGray" BorderThickness="1" Padding="2,0">
             <Grid>
                 <Grid.RowDefinitions>

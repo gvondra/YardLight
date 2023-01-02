@@ -43,10 +43,13 @@ namespace YardLight.Core
             return result;
         }
 
-        public Task<IEnumerable<IWorkItemStatus>> GetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)
+        public Task<IEnumerable<IWorkItemStatus>> GetByProjectId(ISettings settings, Guid projectId, bool? isActive = null, bool skipCache = false)
         {
-            return _cacheByProjectId.Execute((context) => InnerGetByProjectId(settings, projectId, isActive),
-                new Context($"{projectId.ToString("N")};{isActive}"));
+            if (skipCache)
+                return InnerGetByProjectId(settings, projectId, isActive);
+            else
+                return _cacheByProjectId.Execute((context) => InnerGetByProjectId(settings, projectId, isActive),
+                    new Context($"{projectId.ToString("N")};{isActive}"));
         }
 
         private async Task<IEnumerable<IWorkItemStatus>> InnerGetByProjectId(ISettings settings, Guid projectId, bool? isActive = null)

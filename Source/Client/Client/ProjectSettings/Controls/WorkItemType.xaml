@@ -47,7 +47,7 @@
             by
             <TextBlock Text="{Binding UpdateUserName}" />
         </TextBlock>
-        <local:WorkItemStatuses Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="99" DataContext="{Binding StatusesVM}"/>
+        <local:WorkItemStatuses Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="99" Margin="0,5" DataContext="{Binding StatusesVM}"/>
         <Button Grid.Column="1" Grid.Row="6" Click="SaveButton_Click">
             <Button.Style>
                 <Style BasedOn="{StaticResource SaveButtonStyle}" TargetType="Button">
