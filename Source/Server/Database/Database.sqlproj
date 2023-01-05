@@ -100,6 +100,8 @@
     <Build Include="Stored Procedure\yl.GetWorkItemTypeComment_by_WorkItemId.sql" />
     <Build Include="Stored Procedure\yl.GetWorkItem_by_ParentIds.sql" />
     <Build Include="Stored Procedure\yl.GetWorkItem_by_ProjectId_WorkItemTypeId.sql" />
+    <Build Include="Table\yl.Itteration.sql" />
+    <Build Include="Stored Procedure\yl.SaveItteration.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />

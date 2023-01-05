@@ -73,13 +73,6 @@ namespace YardLight.Data
                 );
         }
 
-        public Task<IEnumerable<string>> GetItterationsByProjectId(ISettings settings, Guid projectId)
-        {
-            return DataUtil.ReadList<string>(_providerFactory, settings, "[yl].[GetItterationByProjectId]",
-                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId))
-                );
-        }
-
         public Task<IEnumerable<string>> GetTeamsByProjectId(ISettings settings, Guid projectId)
         {
             return DataUtil.ReadList<string>(_providerFactory, settings, "[yl].[GetTeamByProjectId]",

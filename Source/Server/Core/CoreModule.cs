@@ -1,9 +1,4 @@
 ﻿using Autofac;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YardLight.CommonCore;
 using YardLight.Framework;
 namespace YardLight.Core
@@ -15,6 +10,8 @@ namespace YardLight.Core
             base.Load(builder);
             builder.RegisterType<Saver>().SingleInstance();
             builder.RegisterModule(new YardLight.Data.DataModule());
+            builder.RegisterType<ItterationFactory>().As<IItterationFactory>();
+            builder.RegisterType<ItterationSaver>().As<IItterationSaver>();
             builder.RegisterType<ProjectFactory>().As<IProjectFactory>();
             builder.RegisterType<ProjectSaver>().As<IProjectSaver>();
             builder.RegisterType<WorkItemCommentFactory>().As<IWorkItemCommentFactory>();

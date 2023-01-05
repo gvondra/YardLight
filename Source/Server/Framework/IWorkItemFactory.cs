@@ -15,6 +15,5 @@ namespace YardLight.Framework
         Task<IEnumerable<IWorkItem>> GetByProjectIdTypeId(ISettings settings, Guid projectId, Guid workItemTypeId, string team = "", string itteration = "");
         Task<IEnumerable<IWorkItem>> GetByParentIds(ISettings settings, params Guid[] parentIds);
         Task<IEnumerable<string>> GetTeamsByProjectId(ISettings settings, Guid projectId);
-        Task<IEnumerable<string>> GetItterationsByProjectId(ISettings settings, Guid projectId);
     }
 }

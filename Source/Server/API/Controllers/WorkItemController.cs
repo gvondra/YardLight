@@ -20,6 +20,7 @@ namespace API.Controllers
     [ApiController]
     public class WorkItemController : APIControllerBase
     {
+        private readonly IItterationFactory _itterationFactory;
         private readonly IProjectFactory _projectFactory;
         private readonly IWorkItemFactory _workItemFactory;
         private readonly IWorkItemSaver _workItemSaver;
@@ -30,6 +31,7 @@ namespace API.Controllers
             IOptions<Settings> settings,
             ISettingsFactory settingsFactory,
             AuthorizationAPI.IUserService userService,
+            IItterationFactory itterationFactory,
             IProjectFactory projectFactory,
             IWorkItemFactory workItemFactory,
             IWorkItemSaver workItemSaver,
@@ -38,6 +40,7 @@ namespace API.Controllers
             ILogger<WorkItemController> logger
             ) : base(settings, settingsFactory, userService, logger)
         {
+            _itterationFactory = itterationFactory;
             _projectFactory = projectFactory;
             _workItemFactory = workItemFactory;
             _workItemSaver = workItemSaver;
@@ -281,6 +284,7 @@ namespace API.Controllers
         }
 
         [HttpGet("/api/Project/{projectId}/Itteration")]
+        [ProducesResponseType(typeof(string[]), 200)]
         [Authorize()]
         public async Task<IActionResult> GetItterations([FromRoute] Guid? projectId)
         {
@@ -294,7 +298,8 @@ namespace API.Controllers
                 {
                     ISettings settings = _settingsFactory.CreateCore(_settings.Value);
                     result = Ok(
-                        await _workItemFactory.GetItterationsByProjectId(settings, projectId.Value)
+                        (await _itterationFactory.GetByProjectId(settings, projectId.Value))
+                        .Select<IItteration, string>(i => i.Name)
                         );
                 }
             }

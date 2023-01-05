@@ -10,6 +10,8 @@ namespace YardLight.Data
         {
             base.Load(builder);
             builder.RegisterType<SqlClientProviderFactory>().As<ISqlDbProviderFactory>().SingleInstance();
+            builder.RegisterType<ItterationDataFactory>().As<IItterationDataFactory>();
+            builder.RegisterType<ItterationDataSaver>().As<IItterationDataSaver>();
             builder.RegisterType<ProjectDataFactory>().As<IProjectDataFactory>();
             builder.RegisterType<ProjectDataSaver>().As<IProjectDataSaver>();
             builder.RegisterType<ProjectUserDataFactory>().As<IProjectUserDataFactory>();

@@ -18,7 +18,7 @@
 	[UpdateTimestamp] DATETIME2(4) CONSTRAINT [DF_WorkItem_UpdateTimestamp] DEFAULT (SYSUTCDATETIME()) NOT NULL,
 	[CreateUserId] UNIQUEIDENTIFIER NOT NULL,
 	[UpdateUserId] UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT [PK_WorkItem] PRIMARY KEY CLUSTERED ([WorkItemId]), 
+	CONSTRAINT [PK_WorkItem] PRIMARY KEY NONCLUSTERED ([WorkItemId]), 
     CONSTRAINT [FK_WorkItem_To_Project] FOREIGN KEY ([ProjectId]) REFERENCES [yl].[Project]([ProjectId]), 
     CONSTRAINT [FK_WorkItem_To_Status] FOREIGN KEY ([StatusId]) REFERENCES [yl].[WorkItemStatus]([WorkItemStatusId]), 
     CONSTRAINT [FK_WorkItem_To_Type] FOREIGN KEY ([TypeId]) REFERENCES [yl].[WorkItemType]([WorkItemTypeId]), 
@@ -27,7 +27,7 @@
 
 GO
 
-CREATE INDEX [IX_WorkItem_ProjectId] ON [yl].[WorkItem] ([ProjectId])
+CREATE CLUSTERED INDEX [IX_WorkItem_ProjectId] ON [yl].[WorkItem] ([ProjectId])
 
 GO
 

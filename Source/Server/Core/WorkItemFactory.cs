@@ -15,8 +15,7 @@ namespace YardLight.Core
 {
     public class WorkItemFactory : IWorkItemFactory
     {
-        private readonly static Policy _cacheItteration = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(12));
-        private readonly static Policy _cacheTeam = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(12));
+        private readonly static Policy _cacheTeam = Policy.Cache(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions())), TimeSpan.FromMinutes(2));
         private readonly IWorkItemDataFactory _dataFactory;
         private readonly IWorkItemDataSaver _dataSaver;
         private readonly IWorkItemStatusFactory _statusFactory;
@@ -69,18 +68,6 @@ namespace YardLight.Core
         private Task<IEnumerable<string>> InnerGetTeamsByProjectId(ISettings settings, Guid projectId)
         {
             return _dataFactory.GetTeamsByProjectId(new DataSettings(settings), projectId);
-        }
-
-        public Task<IEnumerable<string>> GetItterationsByProjectId(ISettings settings, Guid projectId)
-        {
-            return _cacheItteration.Execute((context) => InnerGetItterationsByProjectId(settings, projectId),
-                new Context(projectId.ToString("N")));
-        }
-
-        private Task<IEnumerable<string>> InnerGetItterationsByProjectId(ISettings settings, Guid projectId)
-        {
-            return _dataFactory.GetItterationsByProjectId(new DataSettings(settings), projectId);
-                
         }
 
         public async Task<IEnumerable<IWorkItem>> GetByParentIds(ISettings settings, params Guid[] parentIds)
