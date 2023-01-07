@@ -65,7 +65,7 @@ namespace YardLight.Client
             }
             else
             {
-                using (IsolatedStorageFileStream stream = file.OpenFile(USER_SESSION_FILE_NAME, FileMode.OpenOrCreate, FileAccess.Write))
+                using (IsolatedStorageFileStream stream = file.OpenFile(USER_SESSION_FILE_NAME, FileMode.Create, FileAccess.Write))
                 {
                     using (StreamWriter streamWriter = new StreamWriter(stream))
                     using (JsonTextWriter jsonWriter = new JsonTextWriter(streamWriter))
