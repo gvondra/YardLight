@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YardLight.CommonAPI;
 using YardLight.CommonCore;
 using YardLight.Framework;
 using YardLight.Interface.Models;
@@ -36,7 +37,7 @@ namespace API.Controllers
         }
 
         [HttpGet()]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         [ProducesResponseType(typeof(Project[]), 200)]
         public async Task<IActionResult> Search()
         {
@@ -69,7 +70,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         [ProducesResponseType(typeof(Project), 200)]
         public async Task<IActionResult> Get([FromRoute] Guid? id)
         {
@@ -110,7 +111,7 @@ namespace API.Controllers
         }
 
         [HttpPost()]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         [ProducesResponseType(typeof(Project), 200)]
         public async Task<IActionResult> Create([FromBody] Project project)
         {
@@ -150,7 +151,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         [ProducesResponseType(typeof(Project), 200)]
         public async Task<IActionResult> Update([FromRoute] Guid? id, [FromBody] Project project)
         {

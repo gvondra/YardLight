@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YardLight.CommonAPI;
 using YardLight.CommonCore;
 using YardLight.Framework;
 using YardLight.Framework.Enumerations;
@@ -49,7 +50,7 @@ namespace API.Controllers
         }
 
         [HttpGet("/api/Project/{projectId}/WorkItem")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Search(
             [FromRoute] Guid? projectId, 
             [FromQuery] Guid[] parentIds,
@@ -148,7 +149,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/api/Project/{projectId}/WorkItem")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Create([FromRoute] Guid? projectId, [FromBody] WorkItem workItem)
         {
             DateTime start = DateTime.UtcNow;
@@ -215,7 +216,7 @@ namespace API.Controllers
         }
 
         [HttpPut("/api/Project/{projectId}/WorkItem/{id}")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Update([FromRoute] Guid? projectId, [FromRoute] Guid? id, [FromBody] WorkItem workItem)
         {
             DateTime start = DateTime.UtcNow;
@@ -285,7 +286,8 @@ namespace API.Controllers
 
         [HttpGet("/api/Project/{projectId}/Itteration")]
         [ProducesResponseType(typeof(string[]), 200)]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
+        [Obsolete()]
         public async Task<IActionResult> GetItterations([FromRoute] Guid? projectId)
         {
             DateTime start = DateTime.UtcNow;
@@ -321,20 +323,32 @@ namespace API.Controllers
         }
 
         [HttpGet("/api/Project/{projectId}/Team")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> GetTeams([FromRoute] Guid? projectId)
         {
             DateTime start = DateTime.UtcNow;
             IActionResult result = null;
             try
             {
+                Guid? currentUserId = null;
+                IProject project = null;
+                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
+                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
+                if (result == null && !currentUserId.HasValue)
+                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
+                if (result == null)
                 {
-                    ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
+                    if (project == null)
+                        result = NotFound();
+                }
+                if (result == null)
+                {
                     result = Ok(
-                        await _workItemFactory.GetTeamsByProjectId(settings, projectId.Value)
+                        await _workItemFactory.GetTeamsByProjectId(settings, project.ProjectId)
                         );
                 }
             }

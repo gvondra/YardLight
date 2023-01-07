@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YardLight.CommonAPI;
 using YardLight.CommonCore;
 using YardLight.Framework;
 using YardLight.Framework.Enumerations;
@@ -40,7 +41,7 @@ namespace API.Controllers
         }
 
         [HttpGet("/api/Project/{projectId}/WorkItem/{workItemId}/Comment")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> GetByWorkItemId([FromRoute] Guid? projectId, [FromRoute] Guid? workItemId)
         {
             DateTime start = DateTime.UtcNow;
@@ -98,7 +99,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/api/Project/{projectId}/WorkItem/{workItemId}/Comment")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Create([FromRoute] Guid? projectId, [FromRoute] Guid? workItemId, [FromBody] Comment comment)
         {
             DateTime start = DateTime.UtcNow;

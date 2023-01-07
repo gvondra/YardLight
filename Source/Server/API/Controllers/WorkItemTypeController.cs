@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using YardLight.CommonAPI;
 using YardLight.CommonCore;
 using YardLight.Framework;
 using YardLight.Interface.Models;
@@ -43,7 +44,7 @@ namespace API.Controllers
         }
 
         [HttpGet("/api/Project/{projectId}/WorkItemType")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Get([FromRoute] Guid? projectId, [FromQuery] bool? isActive = null)
         {
             DateTime start = DateTime.UtcNow;
@@ -101,7 +102,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/api/Project/{projectId}/WorkItemType")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Create([FromRoute] Guid? projectId, [FromBody] WorkItemType type)
         {
             DateTime start = DateTime.UtcNow;
@@ -161,7 +162,7 @@ namespace API.Controllers
         }
 
         [HttpPut("/api/Project/{projectId}/WorkItemType/{id}")]
-        [Authorize()]
+        [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Update([FromRoute] Guid? projectId, [FromRoute] Guid? id, [FromBody] WorkItemType type)
         {
             DateTime start = DateTime.UtcNow;
