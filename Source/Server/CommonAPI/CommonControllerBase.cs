@@ -60,13 +60,22 @@ namespace YardLight.CommonAPI
             return user;
         }
 
-        protected async Task<Guid?> GetCurrentUserId(AuthorizationAPI.ISettings settings, Guid domainId)
+        protected virtual async Task<Guid?> GetCurrentUserId(AuthorizationAPI.ISettings settings, Guid domainId)
         {
             Guid? id = null;
             AuthorizationAPI.Models.User user = await GetCurrentUser(settings, domainId);
             if (user != null)
                 id = user.UserId;
             return id;
+        }
+
+        protected virtual async Task<string> GetCurrentUserEmailAddress(AuthorizationAPI.ISettings settings, Guid domainId)
+        {
+            string emailAddress = null;
+            AuthorizationAPI.Models.User user = await GetCurrentUser(settings, domainId);
+            if (user != null)
+                emailAddress = user.EmailAddress;
+            return emailAddress;
         }
 
         protected string GetUserToken()

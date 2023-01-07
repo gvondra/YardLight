@@ -10,7 +10,7 @@ namespace YardLight.Framework
         DateTime CreateTimestamp { get; }
         DateTime UpdateTimestamp { get; }
 
-        Task Create(ITransactionHandler transactionHandler, Guid userId);
+        Task Create(ITransactionHandler transactionHandler, Guid userId, string userEmailAddress);
         Task Update(ITransactionHandler transactionHandler);
     }
 }

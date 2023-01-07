@@ -134,7 +134,11 @@ namespace API.Controllers
                     IProject innerProject = _projectFactory.Create(project.Title);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     mapper.Map<Project, IProject>(project, innerProject);
-                    await _projectSaver.Create(settings, innerProject, currentUserId.Value);
+                    await _projectSaver.Create(settings, 
+                        innerProject, 
+                        currentUserId.Value, 
+                        await GetCurrentUserEmailAddress(_settingsFactory.CreateAuthorization(_settings.Value))
+                        );
                     result = Ok(mapper.Map<Project>(innerProject));
                 }
             }
@@ -180,7 +184,11 @@ namespace API.Controllers
                     {
                         IMapper mapper = new Mapper(MapperConfiguration.Get());
                         mapper.Map<Project, IProject>(project, innerProject);
-                        await _projectSaver.Update(settings, innerProject);
+                        await _projectSaver.Update(settings, 
+                            innerProject, 
+                            currentUserId.Value,
+                            await GetCurrentUserEmailAddress(_settingsFactory.CreateAuthorization(_settings.Value))
+                            );
                         result = Ok(mapper.Map<Project>(innerProject));
                     }
                 }

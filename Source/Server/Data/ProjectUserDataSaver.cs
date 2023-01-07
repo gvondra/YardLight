@@ -71,6 +71,7 @@ namespace YardLight.Data
         {
             DataUtil.AddParameter(_providerFactory, parameters, "projectId", DbType.Guid, DataUtil.GetParameterValue(data.ProjectId));
             DataUtil.AddParameter(_providerFactory, parameters, "userId", DbType.Guid, DataUtil.GetParameterValue(data.UserId));
+            DataUtil.AddParameter(_providerFactory, parameters, "emailAddress", DbType.AnsiString, DataUtil.GetParameterValue(data.EmailAddress));
             DataUtil.AddParameter(_providerFactory, parameters, "isActive", DbType.Boolean, DataUtil.GetParameterValue(data.IsActive));
         }
     }

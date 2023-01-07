@@ -2,6 +2,7 @@
 (
 	[ProjectId] UNIQUEIDENTIFIER NOT NULL,
 	[UserId] UNIQUEIDENTIFIER NOT NULL,
+	[EmailAddress] VARCHAR(1024) CONSTRAINT [DF_ProjectUser_EmailAddress] DEFAULT ('') NOT NULL,
 	[IsActive] BIT CONSTRAINT [DF_ProjectUser_IsActive] DEFAULT (1) NOT NULL,
 	[CreateTimestamp] DATETIME2(4) CONSTRAINT [DF_ProjectUser_CreateTimestamp] DEFAULT (SYSUTCDATETIME()) NOT NULL,
 	[UpdateTimestamp] DATETIME2(4) CONSTRAINT [DF_ProjectUser_UpdateTimestamp] DEFAULT (SYSUTCDATETIME()) NOT NULL,

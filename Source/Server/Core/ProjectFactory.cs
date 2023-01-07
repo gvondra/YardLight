@@ -65,7 +65,7 @@ namespace YardLight.Core
                 ProjectUserData data = await _projectUserDataFactory.Get(new DataSettings(settings), projectId, userId);
                 return data?.IsActive ?? false;
             },
-            new Context($"{userId.ToString("N")}:{userId.ToString("N")}"));            
+            new Context($"{projectId.ToString("N")}:{userId.ToString("N")}"));            
         }
     }
 }

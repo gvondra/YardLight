@@ -58,9 +58,14 @@ namespace API
                 Console.WriteLine(exception.ToString());
         }
 
-        protected Task<Guid?> GetCurrentUserId(AuthorizationAPI.ISettings settings)
+        protected virtual Task<Guid?> GetCurrentUserId(AuthorizationAPI.ISettings settings)
         {
             return GetCurrentUserId(settings, _settings.Value.AuthorizationDomainId.Value);
+        }
+
+        protected virtual Task<string> GetCurrentUserEmailAddress(AuthorizationAPI.ISettings settings)
+        {
+            return GetCurrentUserEmailAddress(settings, _settings.Value.AuthorizationDomainId.Value);
         }
     }
 }

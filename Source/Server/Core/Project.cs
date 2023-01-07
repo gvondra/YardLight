@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using YardLight.CommonCore;
 using YardLight.Data.Framework;
@@ -30,7 +27,8 @@ namespace YardLight.Core
 
         public DateTime UpdateTimestamp => _data.UpdateTimestamp;
 
-        public Task Create(ITransactionHandler transactionHandler, Guid userId) => _dataSaver.Create(transactionHandler, _data, userId);
+        public Task Create(ITransactionHandler transactionHandler, Guid userId, string userEmailAddress) 
+            => _dataSaver.Create(transactionHandler, _data, userId, userEmailAddress);
 
         public Task Update(ITransactionHandler transactionHandler) => _dataSaver.Update(transactionHandler, _data);
     }
