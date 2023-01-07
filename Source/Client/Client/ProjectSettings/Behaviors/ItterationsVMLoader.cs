@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using YardLight.Client.Behaviors;
 using YardLight.Client.ProjectSettings.ViewModel;
 using YardLight.Interface;
 using Models = YardLight.Interface.Models;

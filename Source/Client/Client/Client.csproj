@@ -260,7 +260,7 @@
     <Compile Include="OpenProjectWindow.xaml.cs">
       <DependentUpon>OpenProjectWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProjectSettings\Behaviors\ItterationComparer.cs" />
+    <Compile Include="Behaviors\ItterationComparer.cs" />
     <Compile Include="ProjectSettings\Behaviors\ItterationsVMLoader.cs" />
     <Compile Include="ProjectSettings\Behaviors\ItterationValidator.cs" />
     <Compile Include="ProjectSettings\Behaviors\ProjectSettingsValidator.cs" />

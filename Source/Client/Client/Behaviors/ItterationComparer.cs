@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YardLight.Interface.Models;
 
-namespace YardLight.Client.ProjectSettings.Behaviors
+namespace YardLight.Client.Behaviors
 {
     public class ItterationComparer : IComparer<Itteration>
     {
