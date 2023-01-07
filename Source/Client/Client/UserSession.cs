@@ -83,8 +83,11 @@ namespace YardLight.Client
             set
             {
                 _openProjectId = value;
-                _backlogFilterTeam = string.Empty;
-                _backlogFilterItteration = string.Empty;
+                if (_enableSave)
+                {
+                    _backlogFilterTeam = string.Empty;
+                    _backlogFilterItteration = string.Empty;
+                }
                 Save();
             }
         }
