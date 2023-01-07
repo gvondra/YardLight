@@ -10,6 +10,7 @@ namespace YardLight.Interface.Models
         public DateTime? Start { get; set; }
         public DateTime? End { get; set; }
         public bool? Hidden { get; set; }
+        public bool? Virtual { get; set; }
         public DateTime? CreateTimestamp { get; set; }
         public DateTime? UpdateTimestamp { get; set; }
         public Guid? CreateUserId { get; set; }

@@ -1,10 +1,5 @@
 ﻿using Autofac;
 using BrassLoon.RestClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YardLight.Interface
 {
@@ -16,6 +11,7 @@ namespace YardLight.Interface
             builder.RegisterType<Service>().As<IService>().SingleInstance();
             builder.RegisterType<RestUtil>().SingleInstance();
             builder.RegisterType<ExceptionService>().As<IExceptionService>();
+            builder.RegisterType<ItterationService>().As<IItterationService>();
             builder.RegisterType<MetricService>().As<IMetricService>();
             builder.RegisterType<ProjectService>().As<IProjectService>();
             builder.RegisterType<RoleService>().As<IRoleService>();
