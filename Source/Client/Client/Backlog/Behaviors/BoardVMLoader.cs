@@ -8,6 +8,7 @@ using System.Windows;
 using YardLight.Client.Backlog.ViewModels;
 using YardLight.Interface.Models;
 using YardLight.Interface;
+using YardLight.Client.Behaviors;
 
 namespace YardLight.Client.Backlog.Behaviors
 {
@@ -28,16 +29,20 @@ namespace YardLight.Client.Backlog.Behaviors
                 .ContinueWith(LoadProjectCallback, userSession.OpenProjectId.Value, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private Task<List<string>> LoadItterations(Guid? projectId)
+        private async Task<List<string>> LoadItterations(Guid? projectId)
         {
             using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
             {
                 ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
-                IWorkItemService workItemService = scope.Resolve<IWorkItemService>();
+                IItterationService itterationService = scope.Resolve<IItterationService>();
                 if (projectId.HasValue)
-                    return workItemService.GetItterationsByProjectId(settingsFactory.CreateApi(), projectId.Value);
+                    return (await itterationService.GetByProjectId(settingsFactory.CreateApi(), projectId.Value))
+                        .Where(i => !(i.Hidden ?? false))
+                        .OrderBy(i => i, new ItterationComparer())
+                        .Select(i => i.Name)
+                        .ToList();
                 else
-                    return Task.FromResult(new List<string>());
+                    return new List<string>();
             }
         }
 
