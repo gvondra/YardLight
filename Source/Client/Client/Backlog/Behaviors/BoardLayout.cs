@@ -32,9 +32,9 @@ namespace YardLight.Client.Backlog.Behaviors
 
         public void Layout()
         {
+            List<object> allItems = new List<object>();
             if (_board.WorkItems != null && _board.WorkItems.Count > 0)
             {
-                List<object> allItems = new List<object>();
                 int i = 0;
                 WorkItemType type = _board.WorkItems.SelectMany(itm => itm.Children).FirstOrDefault()?.InnerWorkItem?.Type;
                 _board.ColumnCount = type?.Statuses?.Where(s => !(s.IsDefaultHidden ?? false))?.Count() ?? 0;
@@ -80,8 +80,8 @@ namespace YardLight.Client.Backlog.Behaviors
                         }
                     }
                 }
-                _board.AllBoardItems = new ReadOnlyCollection<object>(allItems);
             }
+            _board.AllBoardItems = new ReadOnlyCollection<object>(allItems);
         }
 
         private void AddPropertyChangeHandlers_SetStatusVisibility(IEnumerable<WorkItemVM> workItemVMs)
