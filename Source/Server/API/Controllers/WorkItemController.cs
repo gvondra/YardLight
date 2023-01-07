@@ -284,44 +284,6 @@ namespace API.Controllers
             return result;
         }
 
-        [HttpGet("/api/Project/{projectId}/Itteration")]
-        [ProducesResponseType(typeof(string[]), 200)]
-        [Authorize(Constants.POLICY_BL_AUTH)]
-        [Obsolete()]
-        public async Task<IActionResult> GetItterations([FromRoute] Guid? projectId)
-        {
-            DateTime start = DateTime.UtcNow;
-            IActionResult result = null;
-            try
-            {
-                if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
-                    result = BadRequest("Missing or invalid projectId route parameter value");
-                if (result == null)
-                {
-                    ISettings settings = _settingsFactory.CreateCore(_settings.Value);
-                    result = Ok(
-                        (await _itterationFactory.GetByProjectId(settings, projectId.Value))
-                        .Select<IItteration, string>(i => i.Name)
-                        );
-                }
-            }
-            catch (System.Exception ex)
-            {
-                WriteException(ex);
-                result = StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            finally
-            {
-                await WriteMetrics("get-project-itterations", start, result,
-                    new Dictionary<string, string>
-                    {
-                        { "projectId", projectId.HasValue ? projectId.Value.ToString("D") : string.Empty }
-                    }
-                    );
-            }
-            return result;
-        }
-
         [HttpGet("/api/Project/{projectId}/Team")]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> GetTeams([FromRoute] Guid? projectId)

@@ -52,12 +52,6 @@ namespace YardLight.Interface
             return await _restUtil.Send<List<WorkItem>>(_service, request);
         }
 
-        public Task<List<string>> GetItterationsByProjectId(ISettings settings, Guid projectId)
-        {
-            return _cacheItteration.Execute((context) => InnerGetItterationsByProjectId(settings, projectId),
-                new Context(projectId.ToString("N")));
-        }
-        
         private Task<List<string>> InnerGetItterationsByProjectId(ISettings settings, Guid projectId)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)

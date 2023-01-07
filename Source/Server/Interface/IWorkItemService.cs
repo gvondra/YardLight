@@ -14,8 +14,6 @@ namespace YardLight.Interface
         Task<WorkItem> Create(ISettings settings, WorkItem workItem);
         Task<WorkItem> Update(ISettings settings, Guid projectId, Guid id, WorkItem workItem);
         Task<WorkItem> Update(ISettings settings, WorkItem workItem);
-        [Obsolete("Switch to the itteration service")]
-        Task<List<string>> GetItterationsByProjectId(ISettings settings, Guid projectId);
         Task<List<string>> GetTeamsByProjectId(ISettings settings, Guid projectId);
     }
 }
