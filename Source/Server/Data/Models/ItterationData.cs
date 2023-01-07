@@ -11,6 +11,7 @@ namespace YardLight.Data.Models
         [ColumnMapping()] public DateTime? Start { get; set; }
         [ColumnMapping()] public DateTime? End { get; set; }
         [ColumnMapping()] public bool Hidden { get; set; }
+        [ColumnMapping()] public bool Virtual { get; set; }
         [ColumnMapping(IsUtc = true)] public DateTime CreateTimestamp { get; set; }
         [ColumnMapping(IsUtc = true)] public DateTime UpdateTimestamp { get; set; }
         [ColumnMapping()] public Guid? CreateUserId { get; set; }

@@ -2,7 +2,8 @@
 	@projectId UNIQUEIDENTIFIER
 AS
 BEGIN
-SELECT [ItterationId], [ProjectId], [Name], [Start], [End], [Hidden],	
+SELECT [ItterationId], [ProjectId], [Name], [Start], [End], [Hidden],
+	CONVERT(BIT, 0) [Virtual],
 	[CreateTimestamp], [UpdateTimestamp], [CreateUserId], [UpdateUserId]
 FROM [yl].[Itteration]
 WHERE [ProjectId] = @projectId
@@ -10,7 +11,8 @@ WHERE [ProjectId] = @projectId
 UNION
 
 SELECT NEWID() [ItterationId], @projectId [ProjectId], [wi].[Itteration] [Name],
-	NULL [Start], NULL [End], 0 [Hidden],
+	NULL [Start], NULL [End], CONVERT(BIT, 0) [Hidden],
+	CONVERT(BIT, 1) [Virtual],
 	SYSUTCDATETIME() [CreateTimestamp], SYSUTCDATETIME() [UpdateTimestamp], 
 	NULL [CreateUserId], NULL [UpdateUserId]
 FROM [yl].[WorkItem] [wi]

@@ -12,6 +12,7 @@ namespace YardLight.Framework
         DateTime? Start { get; set; }
         DateTime? End { get; set; }
         bool Hidden { get; set; }
+        bool Virtual { get; }
         DateTime CreateTimestamp { get; }
         DateTime UpdateTimestamp { get; }
         Guid? CreateUserId { get; }

@@ -48,6 +48,7 @@ namespace YardLight.Data
                     await command.ExecuteNonQueryAsync();
                     data.CreateTimestamp = (DateTime)timestamp.Value;
                     data.UpdateTimestamp = (DateTime)timestamp.Value;
+                    data.Virtual = false;
                 }
             }
         }

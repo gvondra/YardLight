@@ -30,6 +30,8 @@ namespace YardLight.Core
         public DateTime? End { get => _data.End; set => _data.End = value; }
         public bool Hidden { get => _data.Hidden; set => _data.Hidden = value; }
 
+        public bool Virtual => _data.Virtual;
+
         public DateTime CreateTimestamp => _data.CreateTimestamp;
 
         public DateTime UpdateTimestamp => _data.UpdateTimestamp;
