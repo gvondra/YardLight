@@ -23,22 +23,19 @@ namespace YardLight.Core
 
         private Itteration Create(ItterationData data) => new Itteration(data, _dataSaver);
 
-        public IItteration Create(Guid projectId)
+        public IItteration Create(Guid projectId, ref Guid id)
         {
             if (projectId.Equals(Guid.Empty))
                 throw new ArgumentNullException(nameof(projectId));
-            return Create(new ItterationData { ItterationId = Guid.NewGuid(), ProjectId = projectId });
+            if (id.Equals(Guid.Empty))
+                id = Guid.NewGuid();
+            return Create(new ItterationData { ItterationId = id, ProjectId = projectId });
         }
 
         public async Task<IEnumerable<IItteration>> GetByProjectId(ISettings settings, Guid projectId)
         {
             return (await _dataFactory.GetByProjectId(new DataSettings(settings), projectId))
                 .Select<ItterationData, IItteration>(Create);
-        }
-
-        public Task<IItteration> Get(ISettings settings, Guid id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

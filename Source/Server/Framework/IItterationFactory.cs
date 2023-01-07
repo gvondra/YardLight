@@ -9,8 +9,7 @@ namespace YardLight.Framework
 {
     public interface IItterationFactory
     {
-        IItteration Create(Guid projectId);
-        Task<IItteration> Get(ISettings settings, Guid id);
+        IItteration Create(Guid projectId, ref Guid id);
         Task<IEnumerable<IItteration>> GetByProjectId(ISettings settings, Guid projectId);
     }
 }
