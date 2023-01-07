@@ -12,9 +12,6 @@ namespace YardLight.Client
         private Guid? _openProjectId;
         private string _backlogFilterTeam;
         private string _backlogFilterItteration;
-        private string _boardFilterTeam;
-        private string _boardFilterItteration;
-        private Guid? _boardWorkItemTypeId;
         private Guid? _backlogWorkItemTypeId;
 
         public string BacklogFilterTeam
@@ -37,42 +34,12 @@ namespace YardLight.Client
             }
         }
 
-        public string BoardFilterTeam
-        {
-            get => _boardFilterTeam;
-            set
-            {
-                _boardFilterTeam = value;
-                Save();
-            }
-        }
-
-        public Guid? BoardWorkItemTypeId
-        {
-            get => _boardWorkItemTypeId;
-            set
-            {
-                _boardWorkItemTypeId = value;
-                Save();
-            }
-        }
-
         public Guid? BacklogWorkItemTypeId
         {
             get => _backlogWorkItemTypeId;
             set
             {
                 _backlogWorkItemTypeId = value;
-                Save();
-            }
-        }
-
-        public string BoardFilterItteration
-        {
-            get => _boardFilterItteration;
-            set
-            {
-                _boardFilterItteration = value;
                 Save();
             }
         }
@@ -85,6 +52,7 @@ namespace YardLight.Client
                 _openProjectId = value;
                 if (_enableSave)
                 {
+                    _backlogWorkItemTypeId = null;
                     _backlogFilterTeam = string.Empty;
                     _backlogFilterItteration = string.Empty;
                 }
