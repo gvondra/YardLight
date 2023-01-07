@@ -20,6 +20,8 @@ namespace API
                 c.CreateMap<User, AuthorizationAPI.User>();
                 c.CreateMap<LogAPI.Exception, YardLight.Interface.Models.Exception>();
                 c.CreateMap<LogAPI.Metric, Metric>();
+                c.CreateMap<Itteration, IItteration>();
+                c.CreateMap<IItteration, Itteration>();
                 c.CreateMap<Project, IProject>();
                 c.CreateMap<IProject, Project>();
                 c.CreateMap<WorkItem, IWorkItem>();
