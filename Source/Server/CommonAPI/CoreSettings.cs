@@ -23,6 +23,8 @@ namespace YardLight.CommonAPI
         public string ConnectionStringUser { get; set; }
         public string KeyVaultAddress { get; set; }
 
+        public bool UseDefaultAzureSqlToken => EnableDatabaseAccessToken && string.IsNullOrEmpty(ConnectionStringUser);
+
         public async Task<string> GetConnetionString()
         {
             string result = ConnectionString;
@@ -68,28 +70,7 @@ namespace YardLight.CommonAPI
 
         public Func<Task<string>> GetDatabaseAccessToken()
         {
-            Func<Task<string>> result = null;
-            if (EnableDatabaseAccessToken && string.IsNullOrEmpty(ConnectionStringUser))
-            {
-                result = async () =>
-                {
-                    TokenRequestContext context = new TokenRequestContext(new[] { "https://database.windows.net/.default" });
-                    AccessToken token = await new DefaultAzureCredential(
-                        new DefaultAzureCredentialOptions()
-                        {
-                            ExcludeAzureCliCredential = false,
-                            ExcludeAzurePowerShellCredential = false,
-                            ExcludeSharedTokenCacheCredential = false,
-                            ExcludeEnvironmentCredential = false,
-                            ExcludeManagedIdentityCredential = false,
-                            ExcludeVisualStudioCodeCredential = false,
-                            ExcludeVisualStudioCredential = false
-                        })
-                        .GetTokenAsync(context);
-                    return token.Token;
-                };
-            }
-            return result;
+            return null;
         }
     }
 }

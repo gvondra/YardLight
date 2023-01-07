@@ -21,6 +21,8 @@ namespace YardLight.CommonCore
 
         public Func<Task<string>> GetAccessToken => _settings.GetDatabaseAccessToken();
 
+        public bool UseDefaultAzureToken => _settings.UseDefaultAzureSqlToken;
+
         public Task<string> GetConnectionString() => _settings.GetConnetionString();
     }
 }
