@@ -110,6 +110,7 @@
     <None Include="LocalDatabase.publish.xml" />
     <None Include="Scripts\DropTables.sql" />
     <None Include="Scripts\DropProcedures.sql" />
+    <None Include="Scripts\DropColumns.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />
