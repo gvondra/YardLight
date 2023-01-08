@@ -1,0 +1,1 @@
+﻿DROP PROCEDURE IF EXISTS [yl].[GetProject_by_UserId];

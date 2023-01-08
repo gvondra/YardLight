@@ -10,3 +10,5 @@
 --------------------------------------------------------------------------------------
 */
 PRINT 'start predeployment scripts'
+:r .\DropProcedures.sql
+:r .\DropTables.sql
