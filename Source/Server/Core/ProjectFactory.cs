@@ -40,10 +40,10 @@ namespace YardLight.Core
             return project;
         }
 
-        public async Task<IProject> Get(ISettings settings, Guid userId, Guid projectId)
+        public async Task<IProject> Get(ISettings settings, string emailAddress, Guid projectId)
         {
             IProject project = null;
-            if (await GetProjectUserIsActive(settings, userId, projectId))
+            if (await GetProjectUserIsActive(settings, emailAddress, projectId))
             {
                 ProjectData data = await _dataFactory.Get(new DataSettings(settings), projectId);
                 if (data != null)
@@ -52,20 +52,22 @@ namespace YardLight.Core
             return project;
         }
 
-        public async Task<IEnumerable<IProject>> GetByUserId(ISettings settings, Guid userId)
+        public async Task<IEnumerable<IProject>> GetByEmailAddress(ISettings settings, string emailAddress)
         {
-            return (await _dataFactory.GetByUserId(new DataSettings(settings), userId))
+            return (await _dataFactory.GetByEmailAddress(new DataSettings(settings), emailAddress))
                 .Select<ProjectData, IProject>(Create);
         }
 
-        public Task<bool> GetProjectUserIsActive(ISettings settings, Guid userId, Guid projectId)
+        public Task<bool> GetProjectUserIsActive(ISettings settings, string emailAddress, Guid projectId)
         {
+            if (string.IsNullOrEmpty(emailAddress))
+                throw new ArgumentNullException(nameof(emailAddress));
             return _projectUserIsActiveCache.Execute(async (context) =>
             {
-                ProjectUserData data = await _projectUserDataFactory.Get(new DataSettings(settings), projectId, userId);
+                ProjectUserData data = await _projectUserDataFactory.Get(new DataSettings(settings), projectId, emailAddress);
                 return data?.IsActive ?? false;
             },
-            new Context($"{projectId.ToString("N")}:{userId.ToString("N")}"));            
+            new Context($"{projectId.ToString("N")}:{emailAddress.ToLower()}"));            
         }
     }
 }

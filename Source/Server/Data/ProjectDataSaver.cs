@@ -20,7 +20,7 @@ namespace YardLight.Data
             _providerFactory = providerFactory;
         }
 
-        public async Task Create(ISqlTransactionHandler transactionHandler, ProjectData data, Guid userId, string userEmailAddress)
+        public async Task Create(ISqlTransactionHandler transactionHandler, ProjectData data, string userEmailAddress)
         {
             if (data.Manager.GetState(data) == DataState.New)
             {
@@ -39,7 +39,6 @@ namespace YardLight.Data
                     timestamp.Direction = ParameterDirection.Output;
                     command.Parameters.Add(timestamp);
 
-                    DataUtil.AddParameter(_providerFactory, command.Parameters, "userId", DbType.Guid, DataUtil.GetParameterValue(userId));
                     DataUtil.AddParameter(_providerFactory, command.Parameters, "userEmailAddress", DbType.AnsiString, DataUtil.GetParameterValue(userEmailAddress));
                     AddCommonParameters(command.Parameters, data);
 

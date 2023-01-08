@@ -17,7 +17,7 @@ using AuthorizationAPI = BrassLoon.Interface.Authorization;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Project/{projectId}/[controller]")]
     [ApiController]
     public class WorkItemTypeController : APIControllerBase
     {
@@ -43,7 +43,7 @@ namespace API.Controllers
             _typeSaver = typeSaver;
         }
 
-        [HttpGet("/api/Project/{projectId}/WorkItemType")]
+        [HttpGet()]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Get([FromRoute] Guid? projectId, [FromQuery] bool? isActive = null)
         {
@@ -55,7 +55,12 @@ namespace API.Controllers
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
                 {
-                    ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                }
+                if (result == null)
+                {
+                    ISettings settings = GetCoreSettings();
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     IEnumerable<IWorkItemStatus> statuses = await _statusFactory.GetByProjectId(settings, projectId.Value, skipCache: true);                        
                     IEnumerable<WorkItemType> types = (await _typeFactory.GetByProjectId(settings, projectId.Value, isActive))
@@ -101,7 +106,7 @@ namespace API.Controllers
             return result;
         }
 
-        [HttpPost("/api/Project/{projectId}/WorkItemType")]
+        [HttpPost()]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Create([FromRoute] Guid? projectId, [FromBody] WorkItemType type)
         {
@@ -109,22 +114,17 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                Guid? currentUserId = null;
                 IProject project = null;
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                ISettings settings = GetCoreSettings();
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
                     result = Validate(type);
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
                 }
                 if (result == null && project != null)
                 {
@@ -138,7 +138,9 @@ namespace API.Controllers
                             return mapper.Map<WorkItemStatus, IWorkItemStatus>(s, innerStatus);
                         })
                         .ToList();
-                    await _typeSaver.Create(settings, innerType, innerStatuses, currentUserId.Value);
+                    await _typeSaver.Create(settings, innerType, innerStatuses, 
+                        (await GetCurrentUserId()).Value
+                        );
                     type = mapper.Map<WorkItemType>(innerType);
                     type.Statuses = innerStatuses.Select(s => mapper.Map<WorkItemStatus>(s)).ToList();
                     result = Ok(type);
@@ -161,7 +163,7 @@ namespace API.Controllers
             return result;
         }
 
-        [HttpPut("/api/Project/{projectId}/WorkItemType/{id}")]
+        [HttpPut("{id}")]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Update([FromRoute] Guid? projectId, [FromRoute] Guid? id, [FromBody] WorkItemType type)
         {
@@ -169,12 +171,11 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                Guid? currentUserId = null;
                 IProject project = null;
                 IWorkItemType innerType = null;
                 IWorkItemStatus innerStatus;
                 List<IWorkItemStatus> innerStatuses = null;
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                ISettings settings = GetCoreSettings();
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null && (!id.HasValue || Guid.Empty.Equals(id.Value)))
@@ -182,14 +183,10 @@ namespace API.Controllers
                 if (result == null)
                     result = Validate(type);
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
                 }
                 if (result == null && project != null)
                 {
@@ -215,7 +212,10 @@ namespace API.Controllers
                         }
                         mapper.Map(status, innerStatus);
                     }
-                    await _typeSaver.Update(settings, innerType, innerStatuses, currentUserId.Value);
+                    await _typeSaver.Update(settings, innerType, innerStatuses, 
+                        (await GetCurrentUserId()).Value
+                        
+                        );
                     type = mapper.Map<WorkItemType>(innerType);
                     type.Statuses = innerStatuses.Select(s => mapper.Map<WorkItemStatus>(s)).ToList();
                     result = Ok(type);

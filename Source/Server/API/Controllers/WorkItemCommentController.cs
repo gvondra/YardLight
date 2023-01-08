@@ -17,7 +17,7 @@ using AuthorizationAPI = BrassLoon.Interface.Authorization;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Project/{projectId}/WorkItem/{workItemId}/Comment")]
     [ApiController]
     public class WorkItemCommentController : APIControllerBase
     {
@@ -40,7 +40,7 @@ namespace API.Controllers
             _commentSaver = commentSaver;
         }
 
-        [HttpGet("/api/Project/{projectId}/WorkItem/{workItemId}/Comment")]
+        [HttpGet()]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> GetByWorkItemId([FromRoute] Guid? projectId, [FromRoute] Guid? workItemId)
         {
@@ -48,23 +48,16 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
-                Guid? currentUserId = null;
-                IProject project = null;
+                ISettings settings = GetCoreSettings();
                 IWorkItem workItem = null;
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null && (!workItemId.HasValue || Guid.Empty.Equals(workItemId.Value)))
                     result = BadRequest("Missing or invalid workItemId route parameter value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
                 }
                 if (result == null)
                 {
@@ -72,7 +65,7 @@ namespace API.Controllers
                     if (workItem == null)
                         result = NotFound();
                 }
-                if (result == null && project != null && workItem != null)
+                if (result == null && workItem != null)
                 {
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     result = Ok((await workItem.GetComments(settings, WorkItemCommentType.Comment))
@@ -98,7 +91,7 @@ namespace API.Controllers
             return result;
         }
 
-        [HttpPost("/api/Project/{projectId}/WorkItem/{workItemId}/Comment")]
+        [HttpPost()]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Create([FromRoute] Guid? projectId, [FromRoute] Guid? workItemId, [FromBody] Comment comment)
         {
@@ -106,9 +99,7 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
-                Guid? currentUserId = null;
-                IProject project = null;
+                ISettings settings = GetCoreSettings();
                 IWorkItem workItem = null;
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
@@ -117,14 +108,9 @@ namespace API.Controllers
                 if (result == null && string.IsNullOrEmpty(comment?.Text))
                     result = BadRequest("Missing comment text");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
                 }
                 if (result == null)
                 {
@@ -132,11 +118,13 @@ namespace API.Controllers
                     if (workItem == null)
                         result = NotFound();
                 }
-                if (result == null && project != null && workItem != null)
-                {
+                if (result == null && workItem != null)
+                {                    
                     IWorkItemComment innerComment = workItem.CreateComment(comment.Text, WorkItemCommentType.Comment);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
-                    await _commentSaver.Create(settings, innerComment, currentUserId.Value);
+                    await _commentSaver.Create(settings, innerComment, 
+                        (await GetCurrentUserId()).Value
+                        );
                     result = Ok(
                         mapper.Map<Comment>(innerComment)
                         );

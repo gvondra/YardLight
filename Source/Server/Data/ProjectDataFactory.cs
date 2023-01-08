@@ -31,11 +31,11 @@ namespace YardLight.Data
                 )).FirstOrDefault();
         }
 
-        public Task<IEnumerable<ProjectData>> GetByUserId(ISettings settings, Guid userId)
+        public Task<IEnumerable<ProjectData>> GetByEmailAddress(ISettings settings, string emailAddress)
         {
-            IDataParameter parameter = DataUtil.CreateParameter(_providerFactory, "userId", DbType.Guid, DataUtil.GetParameterValue(userId));
+            IDataParameter parameter = DataUtil.CreateParameter(_providerFactory, "emailAddress", DbType.AnsiString, DataUtil.GetParameterValue(emailAddress));
             return _dataFactory.GetData(settings, _providerFactory,
-                "[yl].[GetProject_by_UserId]",
+                "[yl].[GetProject_by_EmailAddress]",
                 () => new ProjectData(),
                 DataUtil.AssignDataStateManager,
                 new IDataParameter[] { parameter }

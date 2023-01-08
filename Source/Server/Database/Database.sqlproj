@@ -103,13 +103,11 @@
     <Build Include="Stored Procedure\yl.GetWorkItem_by_ProjectId_WorkItemTypeId.sql" />
     <Build Include="Table\yl.Itteration.sql" />
     <Build Include="Stored Procedure\yl.SaveItteration.sql" />
-    <Build Include="Table\yl.ProjectUser_v2.sql" />
-    <None Include="Scripts\MergeProjectUser2.sql" />
+    <PreDeploy Include="Scripts\PreDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />
     <None Include="LocalDatabase.publish.xml" />
-    <None Include="Scripts\SetProjectUserEmailAddress.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment.sql" />

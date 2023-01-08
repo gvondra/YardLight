@@ -1,9 +1,7 @@
 ﻿using BrassLoon.DataClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using YardLight.Data.Framework;
 using YardLight.Data.Models;
@@ -20,12 +18,12 @@ namespace YardLight.Data
             _providerFactory = providerFactory;
         }
 
-        public async Task<ProjectUserData> Get(ISettings settings, Guid projectId, Guid userId)
+        public async Task<ProjectUserData> Get(ISettings settings, Guid projectId, string emailAddress)
         {
             IDataParameter[] parameters = new IDataParameter[]
             {
                 DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId)),
-                DataUtil.CreateParameter(_providerFactory, "userId", DbType.Guid, DataUtil.GetParameterValue(userId))
+                DataUtil.CreateParameter(_providerFactory, "emailAddress", DbType.AnsiString, DataUtil.GetParameterValue(emailAddress))
             };
             return (await _dataFactory.GetData(settings, _providerFactory,
                 "[yl].[GetProjectUser]",

@@ -42,7 +42,7 @@ namespace API.Controllers
             {
                 if (result == null)
                 {
-                    AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                    AuthorizationAPI.ISettings settings = GetAuthorizationSettings();
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     result = Ok(
                         (await _roleService.GetByDomainId(settings, _settings.Value.AuthorizationDomainId.Value))
@@ -95,7 +95,7 @@ namespace API.Controllers
                     result = ValidateCreate(role);
                 if (result == null)
                 {
-                    AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                    AuthorizationAPI.ISettings settings = GetAuthorizationSettings();
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     AuthorizationAPI.Models.Role innerRole = mapper.Map<AuthorizationAPI.Models.Role>(role);
                     innerRole = await _roleService.Create(settings, _settings.Value.AuthorizationDomainId.Value, innerRole);
@@ -131,7 +131,7 @@ namespace API.Controllers
                     result = Validate(role);
                 if (result == null)
                 {
-                    AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                    AuthorizationAPI.ISettings settings = GetAuthorizationSettings();
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     AuthorizationAPI.Models.Role innerRole = mapper.Map<AuthorizationAPI.Models.Role>(role);
                     innerRole = await _roleService.Update(settings, _settings.Value.AuthorizationDomainId.Value, id.Value, innerRole);

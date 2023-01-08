@@ -50,7 +50,7 @@ namespace YardLight.Client.ProjectSettings
             }
         }
 
-        private async Task<List<WorkItemTypeVM>> GetTypes(Guid? projectId, bool showInactive)
+        private Task<List<WorkItemTypeVM>> GetTypes(Guid? projectId, bool showInactive)
         {
             if (projectId.HasValue)
             {
@@ -59,26 +59,26 @@ namespace YardLight.Client.ProjectSettings
                     ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
                     IWorkItemTypeService typeService = scope.Resolve<IWorkItemTypeService>();
                     bool? isAtive = showInactive ? default(bool?) : true;
-                    List<WorkItemTypeVM> typeVMs = (await typeService.GetByProjectId(settingsFactory.CreateApi(), projectId.Value, isAtive))
+                    List<WorkItemTypeVM> typeVMs = typeService.GetByProjectId(settingsFactory.CreateApi(), projectId.Value, isAtive).Result
                         .Select(t => new WorkItemTypeVM(WorkItemTypesVM, t))
                         .ToList();
                     IUserService userService = scope.Resolve<IUserService>();
                     foreach (WorkItemTypeVM workItemTypeVM in typeVMs)
                     {
-                        workItemTypeVM.CreateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemTypeVM.InnerType.CreateUserId.Value);
-                        workItemTypeVM.UpdateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemTypeVM.InnerType.UpdateUserId.Value);                        
+                        workItemTypeVM.CreateUserName = userService.GetName(settingsFactory.CreateApi(), workItemTypeVM.InnerType.CreateUserId.Value).Result;
+                        workItemTypeVM.UpdateUserName = userService.GetName(settingsFactory.CreateApi(), workItemTypeVM.InnerType.UpdateUserId.Value).Result;                        
                         foreach (WorkItemStatusVM workItemStatusVM in workItemTypeVM.StatusesVM.Statuses)
                         {
-                            workItemStatusVM.CreateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus.CreateUserId.Value);
-                            workItemStatusVM.UpdateUserName = await userService.GetName(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus.UpdateUserId.Value);
+                            workItemStatusVM.CreateUserName = userService.GetName(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus.CreateUserId.Value).Result;
+                            workItemStatusVM.UpdateUserName = userService.GetName(settingsFactory.CreateApi(), workItemStatusVM.InnerStatus.UpdateUserId.Value).Result;
                         }
                     }
-                    return typeVMs;
+                    return Task.FromResult(typeVMs);
                 }
             }
             else
             {
-                return new List<WorkItemTypeVM>();
+                return Task.FromResult(new List<WorkItemTypeVM>());
             }
         }
 

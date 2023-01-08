@@ -8,7 +8,7 @@ namespace YardLight.Framework
     public interface IProjectFactory
     {
         IProject Create(string title);
-        Task<IProject> Get(ISettings settings, Guid userId, Guid projectId);
-        Task<IEnumerable<IProject>> GetByUserId(ISettings settings, Guid userId);
+        Task<IProject> Get(ISettings settings, string emailAddress, Guid projectId);
+        Task<IEnumerable<IProject>> GetByEmailAddress(ISettings settings, string emailAddress);
     }
 }

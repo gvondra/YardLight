@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BrassLoon.RestClient.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,7 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                AuthorizationAPI.ISettings settings = GetAuthorizationSettings();
                 AuthorizationAPI.Models.User innerUser = null;
                 List<AuthorizationAPI.Models.User> innerUsers = null;
                 if (result == null && !string.IsNullOrEmpty(emailAddress) && !UserHasRole(Constants.POLICY_USER_READ))
@@ -99,7 +100,7 @@ namespace API.Controllers
                     result = BadRequest("Missing or invalid id parameter value");
                 if (result == null)
                 {
-                    AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                    AuthorizationAPI.ISettings settings = GetAuthorizationSettings();
                     AuthorizationAPI.Models.User innerUser = await _userService.Get(settings, _settings.Value.AuthorizationDomainId.Value, id.Value);
                     if (innerUser == null)
                     {
@@ -139,7 +140,7 @@ namespace API.Controllers
                     result = BadRequest("Missing or invalid id parameter value");
                 if (result == null)
                 {
-                    AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                    AuthorizationAPI.ISettings settings = GetAuthorizationSettings();
                     AuthorizationAPI.Models.User innerUser = await _userService.Get(settings, _settings.Value.AuthorizationDomainId.Value, id.Value);
                     if (innerUser == null)
                     {
@@ -150,6 +151,13 @@ namespace API.Controllers
                         result = Ok(innerUser.Name);
                     }
                 }
+            }
+            catch (RequestError ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    result = NotFound();
+                else
+                    throw;
             }
             catch (System.Exception ex)
             {
@@ -178,7 +186,7 @@ namespace API.Controllers
                     result = BadRequest("Missing user name value");
                 if (result == null)
                 {
-                    AuthorizationAPI.ISettings settings = _settingsFactory.CreateAuthorization(_settings.Value);
+                    AuthorizationAPI.ISettings settings = GetAuthorizationSettings();
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     AuthorizationAPI.Models.User innerUser = mapper.Map<AuthorizationAPI.Models.User>(user);
                     innerUser = await _userService.Update(settings, _settings.Value.AuthorizationDomainId.Value, id.Value, innerUser);

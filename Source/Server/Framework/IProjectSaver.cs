@@ -6,7 +6,7 @@ namespace YardLight.Framework
 {
     public interface IProjectSaver
     {
-        Task Create(ISettings settings, IProject project, Guid userId, string userEmailAddress);
-        Task Update(ISettings settings, IProject project, Guid userId, string userEmailAddress);
+        Task Create(ISettings settings, IProject project, string userEmailAddress);
+        Task Update(ISettings settings, IProject project);
     }
 }

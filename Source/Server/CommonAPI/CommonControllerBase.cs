@@ -13,7 +13,6 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
-using LogAPI = BrassLoon.Interface.Log;
 
 namespace YardLight.CommonAPI
 {
@@ -173,6 +172,6 @@ namespace YardLight.CommonAPI
             {
                 Console.WriteLine(ex.ToString());
             }
-        }
+        }        
     }
 }

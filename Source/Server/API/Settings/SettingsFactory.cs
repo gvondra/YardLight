@@ -13,12 +13,12 @@ namespace API
             _tokenService = tokenService;
         }
 
-        public BrassLoon.Interface.Authorization.ISettings CreateAuthorization(Settings settings, string token)
+        public AuthorizationSettings CreateAuthorization(Settings settings, string token)
         {
             return new AuthorizationSettings(settings.AuthorizationApiBaseAddress, token);
         }
 
-        public BrassLoon.Interface.Authorization.ISettings CreateAuthorization(Settings settings)
+        public AuthorizationSettings CreateAuthorization(Settings settings)
         {
             return new AuthorizationSettings(_tokenService, 
                 settings.AuthorizationApiBaseAddress, 
@@ -27,7 +27,7 @@ namespace API
                 settings.BrassLoonLogClientSecret);
         }
 
-        public YardLight.CommonCore.ISettings CreateCore(Settings settings)
+        public CoreSettings CreateCore(Settings settings)
         {
             return new CoreSettings()
             {

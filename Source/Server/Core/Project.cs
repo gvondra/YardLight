@@ -27,8 +27,8 @@ namespace YardLight.Core
 
         public DateTime UpdateTimestamp => _data.UpdateTimestamp;
 
-        public Task Create(ITransactionHandler transactionHandler, Guid userId, string userEmailAddress) 
-            => _dataSaver.Create(transactionHandler, _data, userId, userEmailAddress);
+        public Task Create(ITransactionHandler transactionHandler, string userEmailAddress) 
+            => _dataSaver.Create(transactionHandler, _data, userEmailAddress);
 
         public Task Update(ITransactionHandler transactionHandler) => _dataSaver.Update(transactionHandler, _data);
     }

@@ -1,10 +1,7 @@
 ﻿using BrassLoon.DataClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using YardLight.Data.Framework;
 using YardLight.Data.Models;
@@ -70,7 +67,6 @@ namespace YardLight.Data
         private void AddCommonParameters(DbParameterCollection parameters, ProjectUserData data)
         {
             DataUtil.AddParameter(_providerFactory, parameters, "projectId", DbType.Guid, DataUtil.GetParameterValue(data.ProjectId));
-            DataUtil.AddParameter(_providerFactory, parameters, "userId", DbType.Guid, DataUtil.GetParameterValue(data.UserId));
             DataUtil.AddParameter(_providerFactory, parameters, "emailAddress", DbType.AnsiString, DataUtil.GetParameterValue(data.EmailAddress));
             DataUtil.AddParameter(_providerFactory, parameters, "isActive", DbType.Boolean, DataUtil.GetParameterValue(data.IsActive));
         }

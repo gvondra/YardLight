@@ -17,7 +17,7 @@ using AuthorizationAPI = BrassLoon.Interface.Authorization;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Project/{projectId}/[controller]")]
     [ApiController]
     public class WorkItemController : APIControllerBase
     {
@@ -49,7 +49,7 @@ namespace API.Controllers
             _typeFactory = typeFactory;
         }
 
-        [HttpGet("/api/Project/{projectId}/WorkItem")]
+        [HttpGet()]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Search(
             [FromRoute] Guid? projectId, 
@@ -62,21 +62,16 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
-                Guid? currentUserId = null;
+                ISettings settings = GetCoreSettings();
                 IProject project = null;
                 IEnumerable<IWorkItem> innerWorkItems = null;
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
                 }
                 if (result == null && project != null && innerWorkItems == null && workItemTypeId.HasValue && !workItemTypeId.Value.Equals(Guid.Empty))
                 {
@@ -148,7 +143,7 @@ namespace API.Controllers
             return result;
         }
 
-        [HttpPost("/api/Project/{projectId}/WorkItem")]
+        [HttpPost()]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Create([FromRoute] Guid? projectId, [FromBody] WorkItem workItem)
         {
@@ -156,24 +151,19 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                Guid? currentUserId = null;
                 IProject project = null;
                 IWorkItemStatus innerStatus = null;
                 IWorkItemType innerType = null;
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                ISettings settings = GetCoreSettings();
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
                     result = Validate(workItem);
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
                 }
                 if (result == null && project != null)
                 {
@@ -194,7 +184,9 @@ namespace API.Controllers
                     mapper.Map(workItem, innerWorkItem);
                     await innerWorkItem.SetComment(settings, WorkItemCommentType.Description, workItem.Description ?? string.Empty);
                     await innerWorkItem.SetComment(settings, WorkItemCommentType.Criteria, workItem.Criteria ?? string.Empty);
-                    await _workItemSaver.Create(settings, innerWorkItem, currentUserId.Value);
+                    await _workItemSaver.Create(settings, innerWorkItem, 
+                        (await GetCurrentUserId()).Value
+                        );
                     result = Ok(await Map(settings, mapper, innerWorkItem));
                 }
             }
@@ -215,7 +207,7 @@ namespace API.Controllers
             return result;
         }
 
-        [HttpPut("/api/Project/{projectId}/WorkItem/{id}")]
+        [HttpPut("{id}")]
         [Authorize(Constants.POLICY_BL_AUTH)]
         public async Task<IActionResult> Update([FromRoute] Guid? projectId, [FromRoute] Guid? id, [FromBody] WorkItem workItem)
         {
@@ -223,11 +215,10 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                Guid? currentUserId = null;
                 IProject project = null;
                 IWorkItem innerWorkItem = null;
                 IWorkItemStatus innerStatus = null;
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                ISettings settings = GetCoreSettings();
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null && (!id.HasValue || Guid.Empty.Equals(id.Value)))
@@ -235,14 +226,10 @@ namespace API.Controllers
                 if (result == null)
                     result = Validate(workItem);
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
                 }
                 if (result == null)
                 {
@@ -263,7 +250,9 @@ namespace API.Controllers
                     mapper.Map(workItem, innerWorkItem);
                     await innerWorkItem.SetComment(settings, WorkItemCommentType.Description, workItem.Description ?? string.Empty);
                     await innerWorkItem.SetComment(settings, WorkItemCommentType.Criteria, workItem.Criteria ?? string.Empty);
-                    await _workItemSaver.Update(settings, innerWorkItem, currentUserId.Value);
+                    await _workItemSaver.Update(settings, innerWorkItem, 
+                        (await GetCurrentUserId()).Value
+                        );
                     result = Ok(await Map(settings, mapper, innerWorkItem));
                 }
             }
@@ -292,20 +281,15 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                Guid? currentUserId = null;
                 IProject project = null;
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
+                ISettings settings = GetCoreSettings();
                 if (result == null && (!projectId.HasValue || Guid.Empty.Equals(projectId.Value)))
                     result = BadRequest("Missing or invalid projectId route parameter value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
                 }
                 if (result == null)
                 {

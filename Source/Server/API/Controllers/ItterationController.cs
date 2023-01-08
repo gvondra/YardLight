@@ -48,23 +48,18 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                Guid? currentUserId = null;
                 IProject project = null;
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
                 if (!projectId.HasValue || projectId.Value.Equals(Guid.Empty))
                     result = BadRequest("Missing or invalid project id parameter value");
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
                 }
                 if (result == null)
                 {
+                    ISettings settings = GetCoreSettings();
                     IEnumerable<IItteration> innerItterations = await _itterationFactory.GetByProjectId(settings, projectId.Value);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     result = Ok(
@@ -106,9 +101,7 @@ namespace API.Controllers
             IActionResult result = null;
             try
             {
-                Guid? currentUserId = null;
                 IProject project = null;
-                ISettings settings = _settingsFactory.CreateCore(_settings.Value);
                 if (!projectId.HasValue || projectId.Value.Equals(Guid.Empty))
                     result = BadRequest("Missing or invalid project id parameter value");
                 if (result == null && (!id.HasValue || id.Value.Equals(Guid.Empty)))
@@ -116,18 +109,16 @@ namespace API.Controllers
                 if (result == null)
                     result = Validate(itteration);
                 if (result == null)
-                    currentUserId = await GetCurrentUserId(_settingsFactory.CreateAuthorization(_settings.Value));
-                if (result == null && !currentUserId.HasValue)
-                    result = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
-                if (result == null)
                 {
-                    project = await _projectFactory.Get(settings, currentUserId.Value, projectId.Value);
-                    if (project == null)
-                        result = NotFound();
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, projectId.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
                 }
                 if (result == null)
                 {
+                    Guid? currentUserId = await GetCurrentUserId();
                     Guid itterationId = id.Value;
+                    ISettings settings = GetCoreSettings();
                     IItteration innerItteration = _itterationFactory.Create(project.ProjectId, ref itterationId);
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     mapper.Map<Itteration, IItteration>(itteration, innerItteration);

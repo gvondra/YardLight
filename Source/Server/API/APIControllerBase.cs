@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using YardLight.CommonAPI;
+using YardLight.Framework;
 using AuthorizationAPI = BrassLoon.Interface.Authorization;
-using Log = BrassLoon.Interface.Log;
 
 namespace API
 {
@@ -14,6 +15,8 @@ namespace API
     {
         protected readonly ISettingsFactory _settingsFactory;
         protected readonly IOptions<Settings> _settings;
+        private CoreSettings _coreSettings;
+        private AuthorizationSettings _authorizationSettings;
 
         public APIControllerBase(
             IOptions<Settings> settings,
@@ -58,6 +61,12 @@ namespace API
                 Console.WriteLine(exception.ToString());
         }
 
+        protected virtual Task<Guid?> GetCurrentUserId()
+        {
+            return GetCurrentUserId(GetAuthorizationSettings(), _settings.Value.AuthorizationDomainId.Value);
+        }
+
+        [Obsolete()]
         protected virtual Task<Guid?> GetCurrentUserId(AuthorizationAPI.ISettings settings)
         {
             return GetCurrentUserId(settings, _settings.Value.AuthorizationDomainId.Value);
@@ -66,6 +75,36 @@ namespace API
         protected virtual Task<string> GetCurrentUserEmailAddress(AuthorizationAPI.ISettings settings)
         {
             return GetCurrentUserEmailAddress(settings, _settings.Value.AuthorizationDomainId.Value);
+        }
+
+        protected virtual async Task<ValueTuple<IActionResult, IProject>> GetProjectForCurrentUser(IProjectFactory projectFactory, Guid projectId)
+        {
+            if (projectId.Equals(Guid.Empty))
+                throw new ArgumentNullException(nameof(projectId));
+            IActionResult actionResult = null;
+            IProject project = null;
+            string emailAddress = await GetCurrentUserEmailAddress(GetAuthorizationSettings());
+            if (string.IsNullOrEmpty(emailAddress))
+                actionResult = StatusCode(StatusCodes.Status500InternalServerError, "UserNotFound");
+            if (actionResult == null)
+                project = await projectFactory.Get(GetCoreSettings(), emailAddress, projectId);
+            if (actionResult == null && project == null)
+                actionResult = NotFound();
+            return (actionResult, project);
+        }
+
+        protected virtual CoreSettings GetCoreSettings()
+        {
+            if (_coreSettings == null)
+                _coreSettings = _settingsFactory.CreateCore(_settings.Value);
+            return _coreSettings;
+        }
+
+        protected virtual AuthorizationSettings GetAuthorizationSettings()
+        {
+            if (_authorizationSettings == null)
+                _authorizationSettings = _settingsFactory.CreateAuthorization(_settings.Value);
+            return _authorizationSettings;
         }
     }
 }

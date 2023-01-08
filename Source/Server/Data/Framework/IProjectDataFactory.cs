@@ -9,6 +9,6 @@ namespace YardLight.Data.Framework
     public interface IProjectDataFactory
     {
         Task<ProjectData> Get(ISettings settings, Guid projectId);
-        Task<IEnumerable<ProjectData>> GetByUserId(ISettings settings, Guid userId);
+        Task<IEnumerable<ProjectData>> GetByEmailAddress(ISettings settings, string emailAddress);
     }
 }

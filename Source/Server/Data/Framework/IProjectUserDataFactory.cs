@@ -7,6 +7,6 @@ namespace YardLight.Data.Framework
 {
     public interface IProjectUserDataFactory
     {
-        Task<ProjectUserData> Get(ISettings settings, Guid projectId, Guid userId);
+        Task<ProjectUserData> Get(ISettings settings, Guid projectId, string emailAddress);
     }
 }
