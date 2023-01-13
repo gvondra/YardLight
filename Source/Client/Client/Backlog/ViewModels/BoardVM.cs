@@ -19,6 +19,51 @@ namespace YardLight.Client.Backlog.ViewModels
         private ReadOnlyCollection<object> _allBoardItems;
         private int _rowCount;
         private int _columnCount;
+        private DateTime? _itterationStart;
+        private DateTime? _itterationEnd;
+        private Visibility _itterationDatesVisible = Visibility.Collapsed;
+
+        public Visibility ItterationDatesVisible
+        {
+            get => _itterationDatesVisible;
+            set
+            {
+                if (_itterationDatesVisible != value)
+                {
+                    _itterationDatesVisible = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public DateTime? ItterationStart
+        {
+            get => _itterationStart;
+            set
+            {
+                if (_itterationStart != value)
+                {
+                    _itterationStart = value;
+                    NotifyPropertyChanged();
+                }
+                SetItterationDatesVisibility();
+            }
+        }
+
+        public DateTime? ItterationEnd
+        {
+            get => _itterationEnd;
+            set
+            {
+                if (_itterationEnd != value)
+                {
+                    _itterationEnd = value;
+                    NotifyPropertyChanged();
+                }
+                SetItterationDatesVisibility();
+            }
+        }
+
         public int RowCount
         {
             get => _rowCount;
@@ -111,5 +156,9 @@ namespace YardLight.Client.Backlog.ViewModels
             }
         }
 
+        private void SetItterationDatesVisibility()
+        {
+            ItterationDatesVisible = (ItterationStart.HasValue || ItterationEnd.HasValue) ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 }

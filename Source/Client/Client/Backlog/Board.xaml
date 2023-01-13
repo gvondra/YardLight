@@ -12,6 +12,11 @@
       Title="Yard Light: Board" Style="{StaticResource DefaultPageStyle}"
       KeepAlive="True">
 
+    <Page.Resources>
+        <Style x:Key="ItterationDateStyle" TargetType="Label">
+            <Setter Property="Visibility" Value="{Binding ItterationDatesVisible}"/>
+        </Style>
+    </Page.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
@@ -35,6 +40,8 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
                     <TextBlock TextDecorations="Underline">Filter</TextBlock>
@@ -51,6 +58,14 @@
                 <ComboBox Grid.Column="1" Grid.Row="2" IsEditable="True" ItemsSource="{Binding Filter.Teams}" Text="{Binding Filter.Team, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
                 <Label Grid.Column="0" Grid.Row="3">Itteration</Label>
                 <ComboBox Grid.Column="1" Grid.Row="3" IsEditable="True" ItemsSource="{Binding Filter.Itterations}" Text="{Binding Filter.Itteration, UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+                <Label Grid.Column="0" Grid.Row="4" Style="{StaticResource ItterationDateStyle}">Itteration Start</Label>
+                <Label Grid.Column="1" Grid.Row="4" Style="{StaticResource ItterationDateStyle}">
+                    <TextBlock Text="{Binding ItterationStart, StringFormat='yyyy-MM-dd'}"/>
+                </Label>
+                <Label Grid.Column="0" Grid.Row="5" Style="{StaticResource ItterationDateStyle}">Itteration End</Label>
+                <Label Grid.Column="1" Grid.Row="5" Style="{StaticResource ItterationDateStyle}">
+                    <TextBlock Text="{Binding ItterationEnd, StringFormat='yyyy-MM-dd'}"/>
+                </Label>
             </Grid>
         </Border>
         <ItemsControl x:Name="boardGrid" ItemsSource="{Binding AllBoardItems}" >

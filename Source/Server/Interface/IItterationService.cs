@@ -7,7 +7,7 @@ namespace YardLight.Interface
 {
     public interface IItterationService
     {
-        Task<List<Itteration>> GetByProjectId(ISettings settings, Guid projectId);
+        Task<List<Itteration>> GetByProjectId(ISettings settings, Guid projectId, string name = null);
         Task<Itteration> Save(ISettings settings, Guid projectId, Guid itterationId, Itteration itteration);
         Task<Itteration> Save(ISettings settings, Itteration itteration);
     }

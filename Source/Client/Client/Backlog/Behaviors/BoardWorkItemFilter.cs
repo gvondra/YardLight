@@ -54,6 +54,56 @@ namespace YardLight.Client.Backlog.Behaviors
             _boardVM.WorkItems = new ReadOnlyCollection<WorkItemVM>(new List<WorkItemVM>());
             Task.Run(() => LoadWorkItems(_boardVM.Project, _workItemFilterVM))
                 .ContinueWith(LoadWorkItemsCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+            if (string.IsNullOrEmpty(_workItemFilterVM.Itteration) 
+                || (_workItemFilterVM.Itterations != null && !_workItemFilterVM.Itterations.Any(f => string.Equals(f, _workItemFilterVM.Itteration))))
+            {
+                _boardVM.ItterationStart = null;
+                _boardVM.ItterationEnd = null;
+            }
+            if (!string.IsNullOrEmpty(_workItemFilterVM.Itteration))
+            {
+                Task.Run(() => GetItteration(_boardVM.Project, _workItemFilterVM))
+                    .ContinueWith(GetItterationCallback, null, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+        }
+
+        private Task<List<Itteration>> GetItteration(Project project, WorkItemFilterVM workItemFilterVM)
+        {
+            Task<List<Itteration>> result = null;
+            if (!string.IsNullOrEmpty(workItemFilterVM.Itteration))
+            {
+                using (ILifetimeScope scope = DependencyInjection.ContainerFactory.Container.BeginLifetimeScope())
+                {
+                    ISettingsFactory settingsFactory = scope.Resolve<ISettingsFactory>();
+                    IItterationService itterationService = scope.Resolve<IItterationService>();
+                    result = itterationService.GetByProjectId(settingsFactory.CreateApi(), project.ProjectId, workItemFilterVM.Itteration);
+                }
+            }
+            if (result == null)
+                result = Task.FromResult(new List<Itteration>());
+            return result;
+        }
+
+        private async Task GetItterationCallback(Task<List<Itteration>> getItteration, object state)
+        {
+            try
+            {
+                List<Itteration> itterations = await getItteration;
+                if (itterations != null && itterations.Count > 0)
+                {
+                    _boardVM.ItterationStart = itterations[0].Start;
+                    _boardVM.ItterationEnd = itterations[0].End;
+                }
+                else
+                {
+                    _boardVM.ItterationStart = null;
+                    _boardVM.ItterationEnd = null;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                ErrorWindow.Open(ex, null);
+            }
         }
 
         private async Task<List<WorkItemVM>> LoadWorkItems(Project project, WorkItemFilterVM workItemFilterVM)

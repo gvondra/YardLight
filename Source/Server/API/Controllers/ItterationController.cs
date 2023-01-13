@@ -42,7 +42,7 @@ namespace API.Controllers
         [HttpGet()]
         [ProducesResponseType(typeof(Itteration[]), 200)]
         [Authorize(Constants.POLICY_BL_AUTH)]
-        public async Task<IActionResult> Search([FromRoute] Guid? projectId)
+        public async Task<IActionResult> Search([FromRoute] Guid? projectId, [FromQuery] string name)
         {
             DateTime start = DateTime.UtcNow;
             IActionResult result = null;
@@ -61,6 +61,8 @@ namespace API.Controllers
                 {
                     ISettings settings = GetCoreSettings();
                     IEnumerable<IItteration> innerItterations = await _itterationFactory.GetByProjectId(settings, projectId.Value);
+                    if (!string.IsNullOrEmpty(name))
+                        innerItterations = innerItterations.Where(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
                     IMapper mapper = new Mapper(MapperConfiguration.Get());
                     result = Ok(
                         innerItterations.Select<IItteration, Itteration>(i => mapper.Map<Itteration>(i))

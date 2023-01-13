@@ -18,13 +18,15 @@ namespace YardLight.Interface
             _service = service;
         }
 
-        public Task<List<Itteration>> GetByProjectId(ISettings settings, Guid projectId)
+        public Task<List<Itteration>> GetByProjectId(ISettings settings, Guid projectId, string name = null)
         {
             IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
                 .AddPath("v2/Project/{projectId}/Itteration")
                 .AddPathParameter("projectId", projectId.ToString("N"))
                 .AddJwtAuthorizationToken(settings.GetToken)
                 ;
+            if (!string.IsNullOrEmpty(name))
+                request.AddQueryParameter("name", name);
             return _restUtil.Send<List<Itteration>>(_service, request);
         }
 
