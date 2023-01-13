@@ -1,5 +1,6 @@
 ﻿using BrassLoon.DataClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +32,20 @@ namespace YardLight.Data
                 DataUtil.AssignDataStateManager,
                 parameters
                 )).FirstOrDefault();
+        }
+
+        public Task<IEnumerable<ProjectUserData>> GetByProjectId(ISettings settings, Guid projectId)
+        {
+            IDataParameter[] parameters = new IDataParameter[]
+            {
+                DataUtil.CreateParameter(_providerFactory, "projectId", DbType.Guid, DataUtil.GetParameterValue(projectId))
+            };
+            return _dataFactory.GetData(settings, _providerFactory,
+                "[yl].[GetProjectUser_by_ProjectId]",
+                () => new ProjectUserData(),
+                DataUtil.AssignDataStateManager,
+                parameters
+                );
         }
     }
 }

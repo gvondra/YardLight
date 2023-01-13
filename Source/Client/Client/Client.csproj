@@ -166,8 +166,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="YardLight.Interface, Version=1.0.0.46, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.46\lib\net48\YardLight.Interface.dll</HintPath>
+    <Reference Include="YardLight.Interface, Version=1.0.0.48, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YardLight.Interface.1.0.0-alpha.48\lib\net48\YardLight.Interface.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -261,9 +261,12 @@
       <DependentUpon>OpenProjectWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Behaviors\ItterationComparer.cs" />
+    <Compile Include="ProjectSettings\Behaviors\AddProjectMemberCommand.cs" />
     <Compile Include="ProjectSettings\Behaviors\ItterationsVMLoader.cs" />
     <Compile Include="ProjectSettings\Behaviors\ItterationValidator.cs" />
+    <Compile Include="ProjectSettings\Behaviors\MembersVMLoader.cs" />
     <Compile Include="ProjectSettings\Behaviors\ProjectSettingsValidator.cs" />
+    <Compile Include="ProjectSettings\Behaviors\RemoveProjectMemberCommand.cs" />
     <Compile Include="ProjectSettings\Behaviors\SaveItterationCommand.cs" />
     <Compile Include="ProjectSettings\Behaviors\WorkItemTypeValidator.cs" />
     <Compile Include="ProjectSettings\Behaviors\WorkItemStatusValidator.cs" />
@@ -288,11 +291,15 @@
     <Compile Include="ProjectSettings\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProjectSettings\Members.xaml.cs">
+      <DependentUpon>Members.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProjectSettings\ProjectSettings.xaml.cs">
       <DependentUpon>ProjectSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProjectSettings\ViewModel\ItterationsVM.cs" />
     <Compile Include="ProjectSettings\ViewModel\ItterationVM.cs" />
+    <Compile Include="ProjectSettings\ViewModel\MembersVM.cs" />
     <Compile Include="ProjectSettings\ViewModel\ProjectSettingsVM.cs" />
     <Compile Include="ProjectSettings\ViewModel\WorkItemTypesVM.cs" />
     <Compile Include="ProjectSettings\ViewModel\WorkItemStatusesVM.cs" />
@@ -433,6 +440,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProjectSettings\Main.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProjectSettings\Members.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

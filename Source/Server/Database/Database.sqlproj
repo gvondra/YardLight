@@ -104,6 +104,7 @@
     <Build Include="Table\yl.Itteration.sql" />
     <Build Include="Stored Procedure\yl.SaveItteration.sql" />
     <PreDeploy Include="Scripts\PreDeployment1.sql" />
+    <Build Include="Stored Procedure\yl.GetProjectUser_by_ProjectId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />

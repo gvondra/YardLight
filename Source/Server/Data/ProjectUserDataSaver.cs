@@ -43,7 +43,7 @@ namespace YardLight.Data
 
         public async Task Update(ISqlTransactionHandler transactionHandler, ProjectUserData data)
         {
-            if (data.Manager.GetState(data) == DataState.Updated)
+            if (data.Manager.GetState(data) != DataState.Unchanged)
             {
                 await _providerFactory.EstablishTransaction(transactionHandler, data);
                 using (DbCommand command = transactionHandler.Connection.CreateCommand())

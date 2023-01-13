@@ -29,7 +29,7 @@ namespace YardLight.Core
             _dataSaver = dataSaver;
         }
 
-        private Project Create(ProjectData data) => new Project(data, _dataSaver);
+        private Project Create(ProjectData data) => new Project(data, _dataSaver, this);
 
         public IProject Create(string title)
         {
@@ -68,6 +68,13 @@ namespace YardLight.Core
                 return data?.IsActive ?? false;
             },
             new Context($"{projectId.ToString("N")}:{emailAddress.ToLower()}"));            
+        }
+
+        public async Task<IEnumerable<string>> GetUsers(ISettings settings, Guid projectId)
+        {
+            return (await _projectUserDataFactory.GetByProjectId(new DataSettings(settings), projectId))
+                .Select(u => u.EmailAddress)
+                .OrderBy(u => u?.ToLower() ?? string.Empty);
         }
     }
 }

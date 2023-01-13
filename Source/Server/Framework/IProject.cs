@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using YardLight.CommonCore;
 namespace YardLight.Framework
@@ -12,5 +13,7 @@ namespace YardLight.Framework
 
         Task Create(ITransactionHandler transactionHandler, string userEmailAddress);
         Task Update(ITransactionHandler transactionHandler);
+
+        Task<IEnumerable<string>> GetUsers(ISettings settings);
     }
 }

@@ -106,6 +106,42 @@ namespace API.Controllers
             return result;
         }
 
+        [HttpGet("{id}/Users")]
+        [Authorize(Constants.POLICY_BL_AUTH)]
+        [ProducesResponseType(typeof(string[]), 200)]
+        public async Task<IActionResult> GetUsers([FromRoute] Guid? id)
+        {
+            DateTime start = DateTime.UtcNow;
+            IActionResult result = null;
+            try
+            {
+                IProject project = null;
+                if (result == null && !id.HasValue || id.Value.Equals(Guid.Empty))
+                    result = BadRequest("Missing id parameter value");
+                if (result == null)
+                {
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, id.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
+                }
+                if (result == null)
+                {
+                    CoreSettings coreSettings = GetCoreSettings();
+                    result = Ok(await project.GetUsers(coreSettings));
+                }
+            }
+            catch (System.Exception ex)
+            {
+                WriteException(ex);
+                result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                await WriteMetrics("get-project-users", start, result, new Dictionary<string, string> { { nameof(id), id?.ToString("D") } });
+            }
+            return result;
+        }
+
         [HttpPost()]
         [Authorize(Constants.POLICY_BL_AUTH)]
         [ProducesResponseType(typeof(Project), 200)]
@@ -190,6 +226,88 @@ namespace API.Controllers
             finally
             {
                 await WriteMetrics("update-project", start, result);
+            }
+            return result;
+        }
+
+        [HttpPost("{id}/Users")]
+        [Authorize(Constants.POLICY_BL_AUTH)]
+        public async Task<IActionResult> AddUser([FromRoute] Guid? id, [FromQuery] string emailAddress)
+        {
+            DateTime start = DateTime.UtcNow;
+            IActionResult result = null;
+            try
+            {
+                IProject project = null;
+                if (result == null && !id.HasValue || id.Value.Equals(Guid.Empty))
+                    result = BadRequest("Missing id parameter value");
+                if (result == null && string.IsNullOrEmpty(emailAddress))
+                    result = BadRequest("Missing email address parameter value");
+                if (result == null)
+                {
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, id.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
+                }
+                if (result == null)
+                {
+                    CoreSettings coreSettings = GetCoreSettings();
+                    await _projectSaver.UpdateProjectUser(coreSettings, project.ProjectId, emailAddress, true);
+                    result = Ok();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                WriteException(ex);
+                result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                await WriteMetrics("add-project-user", start, result, new Dictionary<string, string> { { nameof(id), id?.ToString("D") } });
+            }
+            return result;
+        }
+
+        [HttpDelete("{id}/Users")]
+        [Authorize(Constants.POLICY_BL_AUTH)]
+        public async Task<IActionResult> RemoveUser([FromRoute] Guid? id, [FromQuery] string emailAddress)
+        {
+            DateTime start = DateTime.UtcNow;
+            IActionResult result = null;
+            try
+            {
+                IProject project = null;
+                if (result == null && !id.HasValue || id.Value.Equals(Guid.Empty))
+                    result = BadRequest("Missing id parameter value");
+                if (result == null && string.IsNullOrEmpty(emailAddress))
+                    result = BadRequest("Missing email address parameter value");
+                if (result == null)
+                {
+                    string currentUserEmailAddress = await GetCurrentUserEmailAddress(GetAuthorizationSettings());
+                    if (string.Equals(currentUserEmailAddress, emailAddress, StringComparison.OrdinalIgnoreCase))
+                        result = BadRequest("You cannot remove yourself from the project"); // to avoid having projects with no users.
+                }
+                if (result == null)
+                {
+                    ValueTuple<IActionResult, IProject> userProject = await GetProjectForCurrentUser(_projectFactory, id.Value);
+                    result = userProject.Item1;
+                    project = userProject.Item2;
+                }
+                if (result == null)
+                {
+                    CoreSettings coreSettings = GetCoreSettings();
+                    await _projectSaver.UpdateProjectUser(coreSettings, project.ProjectId, emailAddress, false);
+                    result = Ok();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                WriteException(ex);
+                result = StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                await WriteMetrics("remove-project-user", start, result, new Dictionary<string, string> { { nameof(id), id?.ToString("D") } });
             }
             return result;
         }

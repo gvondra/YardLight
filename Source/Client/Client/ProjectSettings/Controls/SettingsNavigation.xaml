@@ -18,6 +18,9 @@
             <Label>
                 <Hyperlink Click="Hyperlink_Click" CommandParameter="ProjectSettings/WorkItemTypes.xaml">Work Item Type</Hyperlink>
             </Label>
+            <Label>
+                <Hyperlink Click="Hyperlink_Click" CommandParameter="ProjectSettings/Members.xaml">Members</Hyperlink>
+            </Label>
         </StackPanel>
     </Border>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using YardLight.CommonCore;
 using YardLight.Data.Framework;
@@ -11,12 +12,15 @@ namespace YardLight.Core
     {
         private readonly ProjectData _data;
         private readonly IProjectDataSaver _dataSaver;
+        private readonly IProjectFactory _projectFactory;
 
         public Project(ProjectData data,
-            IProjectDataSaver dataSaver)
+            IProjectDataSaver dataSaver,
+            IProjectFactory projectFactory)
         {
             _data = data;
             _dataSaver = dataSaver;
+            _projectFactory = projectFactory;
         }
 
         public Guid ProjectId => _data.ProjectId;
@@ -29,6 +33,9 @@ namespace YardLight.Core
 
         public Task Create(ITransactionHandler transactionHandler, string userEmailAddress) 
             => _dataSaver.Create(transactionHandler, _data, userEmailAddress);
+
+        public Task<IEnumerable<string>> GetUsers(ISettings settings)
+            => _projectFactory.GetUsers(settings, ProjectId);
 
         public Task Update(ITransactionHandler transactionHandler) => _dataSaver.Update(transactionHandler, _data);
     }

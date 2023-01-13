@@ -8,5 +8,6 @@ namespace YardLight.Framework
     {
         Task Create(ISettings settings, IProject project, string userEmailAddress);
         Task Update(ISettings settings, IProject project);
+        Task UpdateProjectUser(ISettings settings, Guid projectId, string emailAddress, bool isActive);
     }
 }

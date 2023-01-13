@@ -55,6 +55,46 @@ namespace YardLight.Interface
             return response.Value;
         }
 
+        public async Task AddUser(ISettings settings, Guid id, string emailAddress)
+        {
+            if (string.IsNullOrEmpty(emailAddress))
+                throw new ArgumentNullException(nameof(emailAddress));
+            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Post)
+                .AddPath("Project/{id}/Users")
+                .AddPathParameter("id", id.ToString("N"))
+                .AddQueryParameter("emailAddress", emailAddress)
+                .AddJwtAuthorizationToken(settings.GetToken)
+                ;
+            _restUtil.CheckSuccess(
+                await _service.Send(request)
+                );
+        }
+
+        public async Task RemoveUser(ISettings settings, Guid id, string emailAddress)
+        {
+            if (string.IsNullOrEmpty(emailAddress))
+                throw new ArgumentNullException(nameof(emailAddress));
+            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Delete)
+                .AddPath("Project/{id}/Users")
+                .AddPathParameter("id", id.ToString("N"))
+                .AddQueryParameter("emailAddress", emailAddress)
+                .AddJwtAuthorizationToken(settings.GetToken)
+                ;
+            _restUtil.CheckSuccess(
+                await _service.Send(request)
+                );
+        }
+
+        public Task<string[]> GetUsers(ISettings settings, Guid id)
+        {
+            IRequest request = _service.CreateRequest(new Uri(settings.BaseAddress), HttpMethod.Get)
+                .AddPath("Project/{id}/Users")
+                .AddPathParameter("id", id.ToString("N"))                
+                .AddJwtAuthorizationToken(settings.GetToken)
+                ;
+            return _restUtil.Send<string[]>(_service, request);
+        }
+
         public Task<Project> Update(ISettings settings, Project project)
         {
             return Update(settings, project.ProjectId, project);

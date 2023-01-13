@@ -13,4 +13,10 @@ BEGIN
 	WHERE [ProjectId] = @projectId
 	AND [EmailAddress] = @emailAddress
 	;
+	if @@ROWCOUNT = 0 AND @isActive = 1
+	BEGIN
+	-- we want this to be an active user, and the update didn't change any rows
+	-- so we'll insert this a new user
+	EXEC [yl].[CreateProjectUser] @projectId, @emailAddress, @isActive, @timestamp OUT;
+	END
 END
