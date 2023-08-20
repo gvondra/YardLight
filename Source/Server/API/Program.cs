@@ -33,8 +33,7 @@ namespace API
                     {
                         Settings settings = new Settings();
                         builder.Configuration.Bind(settings);
-                        c.AccountApiBaseAddress = settings.BrassLoonAccountApiBaseAddress;
-                        c.LogApiBaseAddress = settings.BrassLoonLogApiBaseAddress;
+                        c.LogApiBaseAddress = settings.BrassLoonLogRpcAddress;
                         c.LogDomainId = settings.LogDomainId.Value;
                         c.LogClientId = settings.BrassLoonLogClientId.Value;
                         c.LogClientSecret = settings.BrassLoonLogClientSecret;
