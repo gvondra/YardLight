@@ -24,10 +24,10 @@
 	<ItemGroup>
     <PackageReference Include="Autofac" Version="7.1.*" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.*" />
-    <PackageReference Include="AutoMapper" Version="12.0.*" />
+    <PackageReference Include="AutoMapper" Version="13.0.*" />
     <PackageReference Include="BrassLoon.Extensions.Logging" Version="1.0.0-beta.*" />
-    <PackageReference Include="BrassLoon.Interface.Authorization" Version="2.0.0" />
-    <PackageReference Include="BrassLoon.Interface.Log" Version="3.0.0" />
+    <PackageReference Include="BrassLoon.Interface.Authorization" Version="4.2.*" />
+    <PackageReference Include="BrassLoon.Interface.Log" Version="4.1.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.*" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.*" />
     <PackageReference Include="YardLight.Interface" Version="1.0.0-alpha.*" />
